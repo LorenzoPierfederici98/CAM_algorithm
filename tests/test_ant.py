@@ -40,7 +40,7 @@ class AntTesting(unittest.TestCase):
         self.assertAlmostEqual(ant_energy - ant.alpha * (1. - update_value), ant.energy)
 
     def test_find_neighbours(self):
-        """Checks the number of first-order neighbours."""
+        """Checks the number of the first-order neighbours."""
         dimensions = [10, 10, 3]
         matrix = np.zeros(dimensions)
         voxel_coordinates = np.array([[0, 0, 0], np.array(dimensions) - 1, [dimensions[0] - 1, dimensions[1] - 1, dimensions[2] - 2], [dimensions[0] - 2, dimensions[1] - 2, dimensions[2] - 2]])
