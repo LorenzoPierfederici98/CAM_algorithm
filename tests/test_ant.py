@@ -26,24 +26,45 @@ import unittest
 sys.path.append(os.path.join(os.path.dirname(sys.path[0])))
 from src.ant_constructor import Ant
 
+
 class AntTesting(unittest.TestCase):
-    """Class inheriting from unittest.TestCase for the ant class functionalities testing.
-    """
+    """Class inheriting from unittest.TestCase for the ant class functionalities testing."""
+
+    def test_private_attributes(self):
+        """Tests that the private attributes are read-only."""
+        ant = Ant([], [])
+        def test_alpha(a):
+            a.alpha = 0.
+        def test_beta(a):
+            a.beta = 0.
+        def test_delta(a):
+            a.delta = 0.
+        self.assertRaises(AttributeError, test_alpha, ant)
+        self.assertRaises(AttributeError, test_beta, ant)
+        self.assertRaises(AttributeError, test_delta, ant)
+
     def test_energy_update(self):
         """Checks the update of the ant energy."""
-        matrix = []
-        voxel_coordinates = []
-        ant = Ant(matrix, voxel_coordinates)
+        ant = Ant([], [])
         ant_energy = ant.energy
-        update_value = 10.
+        update_value = 10.0
         ant.update_energy(update_value)
-        self.assertAlmostEqual(ant_energy - ant.alpha * (1. - update_value), ant.energy)
+        self.assertAlmostEqual(
+            ant_energy - ant.alpha * (1.0 - update_value), ant.energy
+        )
 
     def test_find_first_neighbours(self):
         """Checks the number of the first-order neighbours."""
         dimensions = [10, 10, 3]
         matrix = np.zeros(dimensions)
-        voxel_coordinates = np.array([[0, 0, 0], np.array(dimensions) - 1, [dimensions[0] - 1, dimensions[1] - 1, dimensions[2] - 2], [dimensions[0] - 2, dimensions[1] - 2, dimensions[2] - 2]])
+        voxel_coordinates = np.array(
+            [
+                [0, 0, 0],
+                np.array(dimensions) - 1,
+                [dimensions[0] - 1, dimensions[1] - 1, dimensions[2] - 2],
+                [dimensions[0] - 2, dimensions[1] - 2, dimensions[2] - 2],
+            ]
+        )
         for i in range(len(voxel_coordinates[:, 0])):
             ant = Ant(matrix, voxel_coordinates[i])
             neighbour_number = [7, 7, 11, 26]
@@ -53,11 +74,19 @@ class AntTesting(unittest.TestCase):
         """Checks the number of the second-order neighbours."""
         dimensions = [10, 10, 5]
         matrix = np.zeros(dimensions)
-        voxel_coordinates = np.array([[0, 0, 0], np.array(dimensions) - 1, [dimensions[0] - 1, dimensions[1] - 1, dimensions[2] - 2], [dimensions[0] - 3, dimensions[1] - 3, dimensions[2] - 3]])
+        voxel_coordinates = np.array(
+            [
+                [0, 0, 0],
+                np.array(dimensions) - 1,
+                [dimensions[0] - 1, dimensions[1] - 1, dimensions[2] - 2],
+                [dimensions[0] - 3, dimensions[1] - 3, dimensions[2] - 3],
+            ]
+        )
         for i in range(len(voxel_coordinates[:, 0])):
             ant = Ant(matrix, voxel_coordinates[i])
             neighbour_number = [26, 26, 35, 124]
             self.assertEqual(neighbour_number[i], ant.find_second_neighbours().shape[0])
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
