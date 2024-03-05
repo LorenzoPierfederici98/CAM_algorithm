@@ -18,6 +18,7 @@
 
 import numpy as np
 
+
 class Ant:
     """Class describing the ant worker who builds the pheromone map.
 
@@ -48,10 +49,6 @@ class Ant:
     def __init__(self, image_matrix, voxel_coordinates):
         self.image_matrix = image_matrix
         self.voxel_coordinates = voxel_coordinates
-        if len(voxel_coordinates) != 0:
-            self.x = voxel_coordinates[0]
-            self.y = voxel_coordinates[1]
-            self.z = voxel_coordinates[2]
         self._beta = 3.5
         self._delta = 0.2
         self._alpha = 0.2
@@ -77,7 +74,10 @@ class Ant:
         self.energy = self.energy - self._alpha * (1.0 - value)
 
     def find_first_neighbours(self):
-        """Finds the indexes of the first-order neighbours of the ant current voxel with no "Pac-Man" effect i.e considering the borders of the image matrix. The current voxel is not considered as a first neighbour.
+        """Finds the indexes of the first-order neighbours of 
+        the ant current voxel with no "Pac-Man" effect i.e 
+        considering the borders of the image matrix. The current 
+        voxel is not considered as a first neighbour.
 
         Returns
         -------
@@ -92,26 +92,38 @@ class Ant:
         # Delete the coordinates of the current voxel i.e [0, 0, 0] and compute
         # the coordinates of the first order neighbours of the current voxel.
         neighbours = np.delete(neighbours, 13, axis=0) + self.voxel_coordinates
-        if self.x == 0 or self.y == 0 or self.z == 0:
+        if (
+            self.voxel_coordinates[0] == 0
+            or self.voxel_coordinates[1] == 0
+            or self.voxel_coordinates[2] == 0
+        ):
             neighbours = np.delete(
                 neighbours, np.unique(np.where(neighbours < 0)[0]), axis=0
             )
-        if self.x == self.image_matrix.shape[0] - 1:
+        if self.voxel_coordinates[0] == self.image_matrix.shape[0] - 1:
             neighbours = np.delete(
-                neighbours, np.unique(np.where(neighbours[:, 0] > self.x)[0]), axis=0
+                neighbours,
+                np.unique(np.where(neighbours[:, 0] > self.voxel_coordinates[0])[0]),
+                axis=0,
             )
-        if self.y == self.image_matrix.shape[1] - 1:
+        if self.voxel_coordinates[1] == self.image_matrix.shape[1] - 1:
             neighbours = np.delete(
-                neighbours, np.unique(np.where(neighbours[:, 1] > self.y)[0]), axis=0
+                neighbours,
+                np.unique(np.where(neighbours[:, 1] > self.voxel_coordinates[1])[0]),
+                axis=0,
             )
-        if self.z == self.image_matrix.shape[2] - 1:
+        if self.voxel_coordinates[2] == self.image_matrix.shape[2] - 1:
             neighbours = np.delete(
-                neighbours, np.unique(np.where(neighbours[:, 2] > self.z)[0]), axis=0
+                neighbours,
+                np.unique(np.where(neighbours[:, 2] > self.voxel_coordinates[2])[0]),
+                axis=0,
             )
         return neighbours
 
     def find_second_neighbours(self):
-        """Finds the indexes of the second-order neighbours of the ant current voxel. The construction is similar to that one of the find_first_neighbours function.
+        """Finds the indexes of the second-order neighbours of 
+        the ant current voxel. The construction is similar to 
+        that one of the find_first_neighbours function.
 
         Returns
         -------
@@ -121,23 +133,36 @@ class Ant:
 
         neighbours = np.transpose(np.indices((5, 5, 5)) - 2).reshape(-1, 3)
         neighbours = np.delete(neighbours, 62, axis=0) + self.voxel_coordinates
-        if (self.x in (0, 1, 2)) or (self.y in (0, 1, 2)) or (self.z in (0, 1, 2)):
+        if (
+            (self.voxel_coordinates[0] in (0, 1, 2))
+            or (self.voxel_coordinates[1] in (0, 1, 2))
+            or (self.voxel_coordinates[2] in (0, 1, 2))
+        ):
             neighbours = np.delete(
                 neighbours, np.unique(np.where(neighbours < 0)[0]), axis=0
             )
-        if self.x in (self.image_matrix.shape[0] - 1, self.image_matrix.shape[0] - 2):
+        if self.voxel_coordinates[0] in (
+            self.image_matrix.shape[0] - 1,
+            self.image_matrix.shape[0] - 2,
+        ):
             neighbours = np.delete(
                 neighbours,
                 np.unique(np.where(neighbours[:, 0] >= self.image_matrix.shape[0])[0]),
                 axis=0,
             )
-        if self.y in (self.image_matrix.shape[1] - 1, self.image_matrix.shape[1] - 2):
+        if self.voxel_coordinates[1] in (
+            self.image_matrix.shape[1] - 1,
+            self.image_matrix.shape[1] - 2,
+        ):
             neighbours = np.delete(
                 neighbours,
                 np.unique(np.where(neighbours[:, 1] >= self.image_matrix.shape[1])[0]),
                 axis=0,
             )
-        if self.z in (self.image_matrix.shape[2] - 1, self.image_matrix.shape[2] - 2):
+        if self.voxel_coordinates[2] in (
+            self.image_matrix.shape[2] - 1,
+            self.image_matrix.shape[2] - 2,
+        ):
             neighbours = np.delete(
                 neighbours,
                 np.unique(np.where(neighbours[:, 2] >= self.image_matrix.shape[2])[0]),
@@ -146,7 +171,10 @@ class Ant:
         return neighbours
 
     def pheromone_release(self):
-        """Computes the quantity of pheromone to be released into the voxel to build the pheromone map. The quantity of pheromone released corresponds to the intensity of the voxel of the image matrix plus a small offset which certifies that the voxel was visited.
+        """Computes the quantity of pheromone to be released into 
+        the voxel to build the pheromone map. The quantity of pheromone 
+        released corresponds to the intensity of the voxel of the image
+        matrix plus a small offset which certifies that the voxel was visited.
 
         Returns
         -------
@@ -154,12 +182,21 @@ class Ant:
             The pheromone value to be stored into the pheromone map voxel.
         """
 
-        pheromone_value = self.image_matrix[self.x, self.y, self.z] + 0.01
+        pheromone_value = (
+            self.image_matrix[
+                self.voxel_coordinates[0],
+                self.voxel_coordinates[1],
+                self.voxel_coordinates[2],
+            ]
+            + 0.01
+        )
         return pheromone_value
 
     def evaluate_destination(self, first_neighbours, pheromone_map, voxel_dict):
-        """Computes the probability for the first-neighbouring voxels to be chosen as the next destination of the ant. The next voxel is chosen with a roulette wheel algorithm among those neighbours 
-        
+        """Computes the probability for the first-neighbouring voxels 
+        to be chosen as the next destination of the ant. The next voxel 
+        is chosen with a roulette wheel algorithm among those neighbours
+
         Inputs
         ------
         first_neighbours : ndarray
@@ -208,7 +245,7 @@ class Ant:
             )
         )[0]
         valid_first_neighbours = first_neighbours[mask]
-        # Indexes of the voxels already occupied by an ant.
+        # Indexes of the voxels already occupied by an ant
         occupied_indexes = []
         for i in range(valid_first_neighbours.shape[0]):
             try:
@@ -223,19 +260,28 @@ class Ant:
         )
         if valid_first_neighbours.shape[0] == 0:
             return []
-        W = (1. + pheromone_map[
+        W = (
+            1.0
+            + pheromone_map[
                 valid_first_neighbours[:, 0],
                 valid_first_neighbours[:, 1],
                 valid_first_neighbours[:, 2],
-            ] / (1. + self.delta * pheromone_map[
-                valid_first_neighbours[:, 0],
-                valid_first_neighbours[:, 1],
-                valid_first_neighbours[:, 2],
-            ]))** (self.beta)
+            ]
+            / (
+                1.0
+                + self.delta
+                * pheromone_map[
+                    valid_first_neighbours[:, 0],
+                    valid_first_neighbours[:, 1],
+                    valid_first_neighbours[:, 2],
+                ]
+            )
+        ) ** (self.beta)
         probability = W / W.sum()
         rand_num = np.random.uniform(0, np.max(probability))
         next_voxel_index = np.where(probability > rand_num)[0][0]
         return list(valid_first_neighbours[next_voxel_index])
+
 
 if __name__ == "__main__":
     A = np.zeros((5, 5, 5))
