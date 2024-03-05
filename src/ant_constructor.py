@@ -74,9 +74,9 @@ class Ant:
         self.energy = self.energy - self._alpha * (1.0 - value)
 
     def find_first_neighbours(self):
-        """Finds the indexes of the first-order neighbours of 
-        the ant current voxel with no "Pac-Man" effect i.e 
-        considering the borders of the image matrix. The current 
+        """Finds the indexes of the first-order neighbours of
+        the ant current voxel with no "Pac-Man" effect i.e
+        considering the borders of the image matrix. The current
         voxel is not considered as a first neighbour.
 
         Returns
@@ -121,8 +121,8 @@ class Ant:
         return neighbours
 
     def find_second_neighbours(self):
-        """Finds the indexes of the second-order neighbours of 
-        the ant current voxel. The construction is similar to 
+        """Finds the indexes of the second-order neighbours of
+        the ant current voxel. The construction is similar to
         that one of the find_first_neighbours function.
 
         Returns
@@ -171,8 +171,8 @@ class Ant:
         return neighbours
 
     def pheromone_release(self):
-        """Computes the quantity of pheromone to be released into 
-        the voxel to build the pheromone map. The quantity of pheromone 
+        """Computes the quantity of pheromone to be released into
+        the voxel to build the pheromone map. The quantity of pheromone
         released corresponds to the intensity of the voxel of the image
         matrix plus a small offset which certifies that the voxel was visited.
 
@@ -193,8 +193,8 @@ class Ant:
         return pheromone_value
 
     def evaluate_destination(self, first_neighbours, pheromone_map, voxel_dict):
-        """Computes the probability for the first-neighbouring voxels 
-        to be chosen as the next destination of the ant. The next voxel 
+        """Computes the probability for the first-neighbouring voxels
+        to be chosen as the next destination of the ant. The next voxel
         is chosen with a roulette wheel algorithm among those neighbours
 
         Inputs
