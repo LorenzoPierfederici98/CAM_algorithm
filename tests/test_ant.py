@@ -16,10 +16,10 @@
 
 """Module for the unit-testing of the ant class."""
 
-import numpy as np
 import sys
 import os
 import unittest
+import numpy as np
 
 # This adds src to the list of directories the interpreter will search
 # for the required module.
