@@ -33,12 +33,16 @@ class AntTesting(unittest.TestCase):
     def test_private_attributes(self):
         """Tests that the private attributes are read-only."""
         ant = Ant([], [])
+
         def test_alpha(a):
-            a.alpha = 0.
+            a.alpha = 0.0
+
         def test_beta(a):
-            a.beta = 0.
+            a.beta = 0.0
+
         def test_delta(a):
-            a.delta = 0.
+            a.delta = 0.0
+
         self.assertRaises(AttributeError, test_alpha, ant)
         self.assertRaises(AttributeError, test_beta, ant)
         self.assertRaises(AttributeError, test_delta, ant)
@@ -87,6 +91,40 @@ class AntTesting(unittest.TestCase):
             neighbour_number = [26, 26, 35, 124]
             self.assertEqual(neighbour_number[i], ant.find_second_neighbours().shape[0])
 
+    def test_evaluate_destination(self):
+        """Checks the evaluate_destination function which chooses the
+        next voxel destination of the ant."""
+        dimensions = [5, 5, 5]
+        image_matrix = np.zeros(dimensions)
+        image_matrix[2:4, 2:4, 2:4] = 5.0
+        current_voxel = [2, 2, 2]
+        ant = Ant(image_matrix, current_voxel)
+        first_neighbours = ant.find_first_neighbours()
+        # All the neighbouring voxels are occupied i.e voxel_dict key
+        # has value True for all first-neighbours
+        voxel_dict = {f"{elem}": True for elem in first_neighbours}
+        self.assertEqual(
+            [], ant.evaluate_destination(first_neighbours, image_matrix, voxel_dict)
+        )
+        # Now only the second half of first-neighbours is occupied
+        voxel_dict.update(
+            {
+                f"{elem}": False
+                for elem in first_neighbours[: int(first_neighbours.shape[0] / 2)]
+            }
+        )
+        # Choose a random first-neighbour from those occupied 
+        # for N_TEST iteration(s) and check that it isn't chosen 
+        # as the next voxel destination
+        N_TEST = 15
+        for _ in range(N_TEST):
+            j = np.random.randint(
+                int(first_neighbours.shape[0] / 2), first_neighbours.shape[0]
+            )
+            self.assertFalse(
+                (first_neighbours[j] ==
+                ant.evaluate_destination(first_neighbours, image_matrix, voxel_dict)).all()
+            )
 
 if __name__ == "__main__":
     unittest.main()

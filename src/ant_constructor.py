@@ -233,10 +233,9 @@ class Ant:
                 valid_first_neighbours[:, 2],
             ]))** (self.beta)
         probability = W / W.sum()
-        rand_num = np.random.rand()
+        rand_num = np.random.uniform(0, np.max(probability))
         next_voxel_index = np.where(probability > rand_num)[0][0]
         return list(valid_first_neighbours[next_voxel_index])
-
 
 if __name__ == "__main__":
     A = np.zeros((5, 5, 5))
@@ -246,5 +245,5 @@ if __name__ == "__main__":
     first_neigh = ant.find_first_neighbours()
     vox_dict = {}
     for elem in first_neigh:
-        vox_dict[f"{elem}"] = [False]
+        vox_dict[f"{elem}"] = False
     print(ant.evaluate_destination(first_neigh, A, vox_dict))
