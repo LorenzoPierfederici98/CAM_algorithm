@@ -14,6 +14,8 @@
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+# pylint: disable=invalid-name
+
 """Module building the ant class."""
 
 import numpy as np
@@ -206,7 +208,9 @@ class Ant:
             The matrix whose voxels contain pheromone values.
 
         voxel_dict : dict
-            The dictionary whose keys correspond to the indexes of the first-neighbouring voxels, the values are False or True whether the voxel are free or occupied, respectively.
+            The dictionary whose keys correspond to the indexes
+            of the first-neighbouring voxels, the values are False
+            or True whether the voxel are free or occupied, respectively.
 
         Returns
         -------
@@ -260,7 +264,7 @@ class Ant:
         )
         if valid_first_neighbours.shape[0] == 0:
             return []
-        W = (
+        W_PROBABILITY = (
             1.0
             + pheromone_map[
                 valid_first_neighbours[:, 0],
@@ -277,7 +281,7 @@ class Ant:
                 ]
             )
         ) ** (self.beta)
-        probability = W / W.sum()
+        probability = W_PROBABILITY / W_PROBABILITY.sum()
         rand_num = np.random.uniform(0, np.max(probability))
         next_voxel_index = np.where(probability > rand_num)[0][0]
         return list(valid_first_neighbours[next_voxel_index])
