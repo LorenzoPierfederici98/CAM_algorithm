@@ -14,7 +14,7 @@
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# pylint: disable=invalid-name
+# pylint: disable=C0103
 
 """Module building the ant class."""
 
@@ -194,7 +194,7 @@ class Ant:
         )
         return pheromone_value
 
-    def evaluate_destination(self, first_neighbours, pheromone_map, voxel_dict):
+    def evaluate_destination(self, first_neighbours, pheromone_map):
         """Computes the probability for the first-neighbouring voxels
         to be chosen as the next destination of the ant. The next voxel
         is chosen with a roulette wheel algorithm among those neighbours
@@ -205,30 +205,26 @@ class Ant:
             Array whose rows correspond to the indexes of the first-neighbouring voxels.
 
         pheromone_map : ndarray
-            The matrix whose voxels contain pheromone values.
-
-        voxel_dict : dict
-            The dictionary whose keys correspond to the indexes
-            of the first-neighbouring voxels, the values are False
-            or True whether the voxel are free or occupied, respectively.
+            Four-dimensional matrix. The first 3 dimensions contain the image matrix, the fourth dimension is used to store a boolean value False or True whether the corresponding voxel is free or occupied, respectively.
 
         Returns
         -------
         valid_first_neigbours : list of int
-            Indexes of the chosen voxel-destination.
+            Indexes of the chosen voxel-destination. Returns an empty list
+            if there are no possible voxel destinations.
         """
 
         # The maximum number of visits per voxel depends on the
         # quantity of pheromone in that voxel relative to that one in
         # the whole pheromone map.
-        if np.amax(pheromone_map) != 0:
+        if np.amax(pheromone_map[:, :, :, 0]) != 0:
             max_visit_number = int(
                 40
                 + 80
                 * (
                     self.pheromone_release()
-                    - np.amax(pheromone_map)
-                    / (np.amin(pheromone_map) - np.amax(pheromone_map))
+                    - np.amax(pheromone_map[:, :, :, 0])
+                    / (np.amin(pheromone_map[:, :, :, 0]) - np.amax(pheromone_map[:, :, :, 0]))
                 )
             )
         else:
@@ -236,7 +232,7 @@ class Ant:
         # Select only voxels with a number of visits less than max_visit_number
         mask = np.where(
             pheromone_map[
-                first_neighbours[:, 0], first_neighbours[:, 1], first_neighbours[:, 2]
+                first_neighbours[:, 0], first_neighbours[:, 1], first_neighbours[:, 2], 0
             ]
             <= max_visit_number
             * (
@@ -249,14 +245,17 @@ class Ant:
             )
         )[0]
         valid_first_neighbours = first_neighbours[mask]
+        if valid_first_neighbours.shape[0] == 0:
+            return []
         # Indexes of the voxels already occupied by an ant
-        occupied_indexes = []
-        for i in range(valid_first_neighbours.shape[0]):
-            try:
-                if voxel_dict.get(str(valid_first_neighbours[i])) is True:
-                    occupied_indexes.append(i)
-            except KeyError:
-                continue
+        occupied_indexes = pheromone_map[
+            valid_first_neighbours[:, 0],
+            valid_first_neighbours[:, 1],
+            valid_first_neighbours[:, 2],
+            1,
+        ].nonzero()[0]
+        if occupied_indexes.shape[0] == 0:
+            return []
         # Delete the occupied voxels from the array of valid
         # first neighbours
         valid_first_neighbours = np.delete(
@@ -286,14 +285,14 @@ class Ant:
         next_voxel_index = np.where(probability > rand_num)[0][0]
         return list(valid_first_neighbours[next_voxel_index])
 
-
 if __name__ == "__main__":
     A = np.zeros((5, 5, 5))
     A[1:2, 1:2, 1:2] = 1.0
-    A[3:4, 3:4, 3:4] = 4.0
+    A[3:4, 3:4, 3:4] = 2.0
+    pheromone_map = np.zeros((5, 5, 5, 2))
+    pheromone_map[:, :, :, 0] = A
+    pheromone_map[:, :, :, 1] = False
     ant = Ant(A, [2, 2, 2])
     first_neigh = ant.find_first_neighbours()
-    vox_dict = {}
-    for elem in first_neigh:
-        vox_dict[f"{elem}"] = False
-    print(ant.evaluate_destination(first_neigh, A, vox_dict))
+    pheromone_map[first_neigh[:first_neigh.shape[0] // 2, 0], first_neigh[:first_neigh.shape[0] // 2, 1], first_neigh[:first_neigh.shape[0] // 2, 2], 1] = True
+    print(ant.evaluate_destination(first_neigh, pheromone_map))

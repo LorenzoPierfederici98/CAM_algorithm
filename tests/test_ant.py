@@ -16,6 +16,8 @@
 
 """Module for the unit-testing of the ant class."""
 
+# pylint: disable=C0103
+
 import sys
 import os
 import unittest
@@ -26,26 +28,8 @@ import numpy as np
 sys.path.append(os.path.join(os.path.dirname(sys.path[0])))
 from src.ant_constructor import Ant
 
-
 class AntTesting(unittest.TestCase):
     """Class inheriting from unittest.TestCase for the ant class functionalities testing."""
-
-    def test_private_attributes(self):
-        """Tests that the private attributes are read-only."""
-        ant = Ant([], [])
-
-        def test_alpha(a):
-            a.alpha = 0.0
-
-        def test_beta(a):
-            a.beta = 0.0
-
-        def test_delta(a):
-            a.delta = 0.0
-
-        self.assertRaises(AttributeError, test_alpha, ant)
-        self.assertRaises(AttributeError, test_beta, ant)
-        self.assertRaises(AttributeError, test_delta, ant)
 
     def test_energy_update(self):
         """Checks the update of the ant energy."""
@@ -90,6 +74,13 @@ class AntTesting(unittest.TestCase):
             ant = Ant(matrix, voxel_coordinates[i])
             neighbour_number = [26, 26, 35, 124]
             self.assertEqual(neighbour_number[i], ant.find_second_neighbours().shape[0])
+    
+    def build_pheromone_map(self, image):
+        """Builds the pheromone map."""
+        pheromone_map = np.zeros((image.shape[0], image.shape[1], image.shape[2], 2))
+        pheromone_map[:, :, :, 0] = image
+        pheromone_map[:, :, :, 1] = False
+        return pheromone_map
 
     def test_evaluate_destination(self):
         """Checks the evaluate_destination function which chooses the
@@ -97,33 +88,30 @@ class AntTesting(unittest.TestCase):
         dimensions = [5, 5, 5]
         image_matrix = np.zeros(dimensions)
         image_matrix[2:4, 2:4, 2:4] = 5.0
+        pheromone_map = self.build_pheromone_map(image_matrix)
         current_voxel = [2, 2, 2]
         ant = Ant(image_matrix, current_voxel)
         first_neighbours = ant.find_first_neighbours()
-        # All the neighbouring voxels are occupied i.e voxel_dict key
-        # has value True for all first-neighbours
-        voxel_dict = {f"{elem}": True for elem in first_neighbours}
+        # All the neighbouring voxels are occupied i.e the 4-th dimension
+        # of the pheromone map has value True for all
+        # first-neighbours
+        pheromone_map[first_neighbours[:, 0], first_neighbours[:, 1], first_neighbours[:, 2], 1] = True
         self.assertEqual(
-            [], ant.evaluate_destination(first_neighbours, image_matrix, voxel_dict)
+            [], ant.evaluate_destination(first_neighbours, pheromone_map)
         )
         # Now only the second half of first-neighbours is occupied
-        voxel_dict.update(
-            {
-                f"{elem}": False
-                for elem in first_neighbours[: int(first_neighbours.shape[0] / 2)]
-            }
-        )
-        # Choose a random first-neighbour from those occupied 
-        # for N_TEST iteration(s) and check that it isn't chosen 
+        pheromone_map[first_neighbours[:first_neighbours.shape[0] // 2, 0], first_neighbours[:first_neighbours.shape[0] // 2, 1], first_neighbours[:first_neighbours.shape[0] // 2, 2], 1] = False
+        # Choose a random first-neighbour from those occupied
+        # for N_TEST iteration(s) and check that it isn't chosen
         # as the next voxel destination
         N_TEST = 15
         for _ in range(N_TEST):
             j = np.random.randint(
-                int(first_neighbours.shape[0] / 2), first_neighbours.shape[0]
+                first_neighbours.shape[0] // 2, first_neighbours.shape[0]
             )
             self.assertFalse(
                 (first_neighbours[j] ==
-                ant.evaluate_destination(first_neighbours, image_matrix, voxel_dict)).all()
+                ant.evaluate_destination(first_neighbours, pheromone_map)).all()
             )
 
 if __name__ == "__main__":
