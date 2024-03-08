@@ -74,7 +74,7 @@ class AntTesting(unittest.TestCase):
             ant = Ant(matrix, voxel_coordinates[i])
             neighbour_number = [26, 26, 35, 124]
             self.assertEqual(neighbour_number[i], ant.find_second_neighbours().shape[0])
-    
+
     def build_pheromone_map(self, image):
         """Builds the pheromone map."""
         pheromone_map = np.zeros((image.shape[0], image.shape[1], image.shape[2], 2))

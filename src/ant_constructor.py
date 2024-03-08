@@ -20,7 +20,6 @@
 
 import numpy as np
 
-
 class Ant:
     """Class describing the ant worker who builds the pheromone map.
 
@@ -221,15 +220,15 @@ class Ant:
             max_visit_number = int(
                 40
                 + 80
-                * (
-                    self.pheromone_release()
-                    - np.amax(pheromone_map[:, :, :, 0])
+                * 
+                    (self.pheromone_release()
+                    - np.amax(pheromone_map[:, :, :, 0]))
                     / (np.amin(pheromone_map[:, :, :, 0]) - np.amax(pheromone_map[:, :, :, 0]))
-                )
             )
         else:
             max_visit_number = 40
         # Select only voxels with a number of visits less than max_visit_number
+        print(f'max_visit = {max_visit_number}\n')
         mask = np.where(
             pheromone_map[
                 first_neighbours[:, 0], first_neighbours[:, 1], first_neighbours[:, 2], 0
@@ -286,13 +285,4 @@ class Ant:
         return list(valid_first_neighbours[next_voxel_index])
 
 if __name__ == "__main__":
-    A = np.zeros((5, 5, 5))
-    A[1:2, 1:2, 1:2] = 1.0
-    A[3:4, 3:4, 3:4] = 2.0
-    pheromone_map = np.zeros((5, 5, 5, 2))
-    pheromone_map[:, :, :, 0] = A
-    pheromone_map[:, :, :, 1] = False
-    ant = Ant(A, [2, 2, 2])
-    first_neigh = ant.find_first_neighbours()
-    pheromone_map[first_neigh[:first_neigh.shape[0] // 2, 0], first_neigh[:first_neigh.shape[0] // 2, 1], first_neigh[:first_neigh.shape[0] // 2, 2], 1] = True
-    print(ant.evaluate_destination(first_neigh, pheromone_map))
+    ant = Ant([], [])
