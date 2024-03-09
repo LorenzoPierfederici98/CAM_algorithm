@@ -23,14 +23,15 @@ import traceback
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 class ImageData:
     """Class handling the image matrix and the pheromone map.
-    
+
     Attributes
     ----------
     matrix_dimensions : list of int
         The shape of the image matrix
-        
+
     Methods
     -------
     create_cube : creates a cube as an image matrix.
@@ -42,7 +43,7 @@ class ImageData:
         self.matrix_dimensions = matrix_dimensions
 
     def create_cube(self, length, center):
-        """Creates a cube with a certain length in a random position.
+        """Creates a cube with a certain length from the given center-coordinates.
 
         Inputs
         ------
@@ -57,16 +58,20 @@ class ImageData:
         image_matrix : ndarray
             The cube image matrix.
         """
-
         image_matrix = np.zeros(self.matrix_dimensions)
         image_matrix[
-            center[0] - length : center[0] + length,
-            center[1] - length : center[1] + length,
-            center[2] - length : center[2] + length,
-        ] = 10.0
+            center[0] - length // 2 : center[0] + length // 2,
+            center[1] - length // 2 : center[1] + length // 2,
+            center[2] - length // 2 : center[2] + length // 2
+        ] = 5.0
+        # image_matrix[
+        #     center[0] - length // 4 : center[0] + length // 4,
+        #     center[1] - length // 4 : center[1] + length // 4,
+        #     center[2] - length // 4 : center[2] + length // 4
+        # ] = 10.0
         return image_matrix
 
-    def initialize_pheromone_map(self, image_matrix):
+    def initialize_pheromone_map(self):
         """Initializes the pheromone map. The first 3 dimensions store
         the voxels values of the image matrix, the fourth dimension stores
         False for every voxel i.e it isn't occupied by an ant.
@@ -92,31 +97,36 @@ class ImageData:
         )
         pheromone_map[:, :, :, 1] = False
         return pheromone_map
-    
-    def image_display(self, ax, image_matrix, slice_value, image_title, view='axial', cmap='viridis'):
+
+    def image_display(
+        self, ax, image_matrix, slice_value, image_title, view="axial", cmap="viridis"
+    ):
         """Displays a certain view of the image matrix"""
-        slice_string = ''
+        slice_string = ""
         try:
-            if view == 'axial':
+            if view == "axial":
                 ax.imshow(image_matrix[:, :, slice_value], cmap=cmap)
-                slice_string = 'z'
-            elif view == 'coronal':
+                slice_string = "z"
+            elif view == "coronal":
                 ax.imshow(image_matrix[:, slice_value, :], cmap=cmap)
-                slice_string = 'y'
-            elif view == 'sagittal':
+                slice_string = "y"
+            elif view == "sagittal":
                 ax.imshow(image_matrix[slice_value, :, :], cmap=cmap)
-                slice_string = 'z'
+                slice_string = "z"
             else:
                 raise ValueError
         except IndexError as e:
-            print('Invalid value of slice\n')
+            print("Invalid value of slice\n")
             traceback.print_exception(e.__class__, e, e.__traceback__)
         except ValueError as e:
-            print('Invalid input, view must be either \'axial\', \'coronal\' or \'sagittal\'.\n')
+            print(
+                "Invalid input, view must be either 'axial', 'coronal' or 'sagittal'.\n"
+            )
             traceback.print_exception(e.__class__, e, e.__traceback__)
 
-        ax.set_title(f'{image_title}: {view} view {slice_string} = {slice_value}')
-        #plt.colorbar()
+        ax.set_title(f"{image_title}: {view} view {slice_string} = {slice_value}")
+        # plt.colorbar()
+
 
 if __name__ == "__main__":
     matrix_dim = [512, 512, 512]

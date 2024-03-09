@@ -184,7 +184,7 @@ class Ant:
         """
 
         pheromone_value = (
-            self.image_matrix[
+                self.image_matrix[
                 self.voxel_coordinates[0],
                 self.voxel_coordinates[1],
                 self.voxel_coordinates[2],
@@ -220,7 +220,7 @@ class Ant:
             max_visit_number = int(
                 40
                 + 80
-                * 
+                *
                     (self.pheromone_release()
                     - np.amax(pheromone_map[:, :, :, 0]))
                     / (np.amin(pheromone_map[:, :, :, 0]) - np.amax(pheromone_map[:, :, :, 0]))
@@ -228,17 +228,16 @@ class Ant:
         else:
             max_visit_number = 40
         # Select only voxels with a number of visits less than max_visit_number
-        print(f'max_visit = {max_visit_number}\n')
         mask = np.where(
             pheromone_map[
                 first_neighbours[:, 0], first_neighbours[:, 1], first_neighbours[:, 2], 0
             ]
-            <= max_visit_number
+            < max_visit_number
             * (
-                self.image_matrix[
+                    self.image_matrix[
                     first_neighbours[:, 0],
                     first_neighbours[:, 1],
-                    first_neighbours[:, 2],
+                    first_neighbours[:, 2]
                 ]
                 + 0.01
             )
@@ -251,7 +250,7 @@ class Ant:
             valid_first_neighbours[:, 0],
             valid_first_neighbours[:, 1],
             valid_first_neighbours[:, 2],
-            1,
+            1
         ].nonzero()[0]
         if occupied_indexes.shape[0] == 0:
             return []
@@ -267,7 +266,7 @@ class Ant:
             + pheromone_map[
                 valid_first_neighbours[:, 0],
                 valid_first_neighbours[:, 1],
-                valid_first_neighbours[:, 2],
+                valid_first_neighbours[:, 2]
             ]
             / (
                 1.0
@@ -275,7 +274,7 @@ class Ant:
                 * pheromone_map[
                     valid_first_neighbours[:, 0],
                     valid_first_neighbours[:, 1],
-                    valid_first_neighbours[:, 2],
+                    valid_first_neighbours[:, 2]
                 ]
             )
         ) ** (self.beta)
