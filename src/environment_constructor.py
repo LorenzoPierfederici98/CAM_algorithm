@@ -95,7 +95,6 @@ class ImageData:
                 2,
             ]
         )
-        pheromone_map[:, :, :, 1] = False
         return pheromone_map
 
     def image_display(

@@ -20,24 +20,30 @@
 """Module implementing the CAM algorithm."""
 
 import numpy as np
+import os
 import matplotlib.pyplot as plt
 import time
-from multiprocessing import Process, Manager
+import multiprocessing
+from multiprocessing.sharedctypes import RawArray
 from ant_constructor import Ant
 from environment_constructor import ImageData
+
 
 def update_pheromone_map(ant_worker, pheromone_matrix, pheromone):
     [x, y, z] = ant_worker.voxel_coordinates
     pheromone_matrix[x, y, z, 0] += pheromone
     pheromone_matrix[x, y, z, 1] = 1
 
-def find_next_voxel(ant_worker, pheromone_matrix):
+def find_next_voxel(ant_worker):
+    print(str(os.getpid()))
+    arr = np.frombuffer(np_x, dtype=np.float32).reshape(np_x_shape)
+    print(ant_worker.voxel_coordinates)
     [x, y, z] = ant_worker.voxel_coordinates
     first_neigh = ant_worker.find_first_neighbours()
-    next_vox = ant_worker.evaluate_destination(first_neigh, pheromone_matrix)
-    pheromone_matrix[x, y, z, 1] = 0
+    next_vox = ant_worker.evaluate_destination(first_neigh, arr)
+    arr[x, y, z, 1] = 0
     if len(next_vox) != 0:
-        pheromone_matrix[next_vox[0], next_vox[1], next_vox[2], 1] = 1
+        arr[next_vox[0], next_vox[1], next_vox[2], 1] = 1
     return next_vox
 
 def plot_display(
@@ -63,13 +69,30 @@ def plot_display(
     ax[1][2].set_title("Pheromone map, sagittal view")
     plt.tight_layout()
 
+
+def pool_initializer(Pheromone_Map, Pheromone_Map_shape):
+    global np_x
+    np_x = Pheromone_Map
+    global np_x_shape
+    np_x_shape = Pheromone_Map_shape
+
+
 matrix_dim = [80, 80, 80]
 imagedata = ImageData(matrix_dim)
 cube_length = 40
 center_coordinates = [40, 40, 40]
 cube_image = imagedata.create_cube(cube_length, center_coordinates)
 non_zero_image_voxels = np.transpose(np.array(np.nonzero(cube_image))).reshape(-1, 3)
+
 pheromone_map = imagedata.initialize_pheromone_map()
+np_x_shape = pheromone_map.shape
+pheromone_shared = RawArray("i", np.array(pheromone_map.shape).prod().item())
+np_x = pheromone_shared
+pheromone_shared_main = np.frombuffer(pheromone_shared, dtype=np.float32).reshape(
+    pheromone_map.shape
+)
+np.copyto(pheromone_shared_main, pheromone_map)
+
 anthill_position = [40, 40, 40]
 first_ant = Ant(cube_image, anthill_position)
 first_ant_neighbours = first_ant.find_first_neighbours()
@@ -86,27 +109,30 @@ pheromone_values = np.array([])
 ant_number = []
 
 if __name__ == "__main__":
-    while len(ant_colony) != 0 and n_iteration <= 10:
+    while len(ant_colony) != 0 and n_iteration <= 5:
         released_pheromone = np.zeros(len(ant_colony))
         for i, ant in enumerate(ant_colony):
             released_pheromone[i] = ant.pheromone_release()
-            update_pheromone_map(ant, pheromone_map, released_pheromone[i])
+            update_pheromone_map(ant, pheromone_shared_main, released_pheromone[i])
             pheromone_values = np.append(pheromone_values, released_pheromone[i])
             pheromone_mean = pheromone_values.mean()
         start_time_local = time.perf_counter()
-        for i, ant in enumerate(ant_colony):
-            next_voxel = find_next_voxel(ant, pheromone_map)
-            ant.update_energy(released_pheromone[i] / pheromone_mean)
-            if len(next_voxel) == 0:
-                del ant_colony[i]
-                continue
-            ant.voxel_coordinates = next_voxel
-        print(len(ant_colony),time.perf_counter() - start_time_local)
+        # for i, ant in enumerate(ant_colony):
+        #     next_voxel = find_next_voxel(ant, pheromone_map)
+        #     ant.update_energy(released_pheromone[i] / pheromone_mean)
+        #     if len(next_voxel) == 0:
+        #         del ant_colony[i]
+        #         continue
+        #     ant.voxel_coordinates = next_voxel
+        pool = multiprocessing.Pool(processes=6, initializer=pool_initializer, initargs=(pheromone_shared, pheromone_map.shape))
+        next_voxel = pool.map(find_next_voxel, ant_colony, chunksize=len(ant_colony)//6)
+        print(next_voxel)
+        print(len(ant_colony), time.perf_counter() - start_time_local)
         for i, ant in enumerate(ant_colony):
             if ant.energy < energy_death:
                 del ant_colony[i]
                 if len(ant_colony) == 0:
-                    print('No ants left.\n')
+                    print("No ants left.\n")
                 continue
             if ant.energy > energy_reproduction:
                 ant.energy = 1.0 + ant.alpha
@@ -138,7 +164,7 @@ if __name__ == "__main__":
         n_iteration += 1
 
     non_zero_voxels = np.unique(
-        np.transpose(np.array(np.nonzero(pheromone_map[:, :, :, 0]))).reshape(-1, 3),
+        np.transpose(np.array(np.nonzero(pheromone_shared_main[:, :, :, 0]))).reshape(-1, 3),
         axis=0,
     )
     print(f"Image voxels: {non_zero_image_voxels.shape[0]}\n")
@@ -167,6 +193,6 @@ if __name__ == "__main__":
         )
     }
     plot_display(
-        ant_number, cube_image, visited_voxels, pheromone_map, anthill_position
+        ant_number, cube_image, visited_voxels, pheromone_shared_main, anthill_position
     )
     plt.show()
