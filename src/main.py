@@ -22,21 +22,22 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+from multiprocessing import Process, Manager
 from ant_constructor import Ant
 from environment_constructor import ImageData
 
 def update_pheromone_map(ant_worker, pheromone_matrix, pheromone):
     [x, y, z] = ant_worker.voxel_coordinates
     pheromone_matrix[x, y, z, 0] += pheromone
-    pheromone_matrix[x, y, z, 1] = True
+    pheromone_matrix[x, y, z, 1] = 1
 
 def find_next_voxel(ant_worker, pheromone_matrix):
     [x, y, z] = ant_worker.voxel_coordinates
     first_neigh = ant_worker.find_first_neighbours()
     next_vox = ant_worker.evaluate_destination(first_neigh, pheromone_matrix)
-    pheromone_matrix[x, y, z, 1] = False
+    pheromone_matrix[x, y, z, 1] = 0
     if len(next_vox) != 0:
-        pheromone_matrix[next_vox[0], next_vox[1], next_vox[2], 1] = True
+        pheromone_matrix[next_vox[0], next_vox[1], next_vox[2], 1] = 1
     return next_vox
 
 def plot_display(
@@ -68,10 +69,8 @@ cube_length = 40
 center_coordinates = [40, 40, 40]
 cube_image = imagedata.create_cube(cube_length, center_coordinates)
 non_zero_image_voxels = np.transpose(np.array(np.nonzero(cube_image))).reshape(-1, 3)
-print(f"Non zero image voxels: {non_zero_image_voxels.shape[0]}")
 pheromone_map = imagedata.initialize_pheromone_map()
-
-anthill_position = [20, 20, 20]
+anthill_position = [40, 40, 40]
 first_ant = Ant(cube_image, anthill_position)
 first_ant_neighbours = first_ant.find_first_neighbours()
 ant_colony = [Ant(cube_image, list(elem)) for elem in first_ant_neighbours]
@@ -87,22 +86,22 @@ pheromone_values = np.array([])
 ant_number = []
 
 if __name__ == "__main__":
-    while len(ant_colony) != 0 and n_iteration <= 100:
-        print(f'Iteration: {n_iteration}\n')
+    while len(ant_colony) != 0 and n_iteration <= 10:
         released_pheromone = np.zeros(len(ant_colony))
         for i, ant in enumerate(ant_colony):
             released_pheromone[i] = ant.pheromone_release()
             update_pheromone_map(ant, pheromone_map, released_pheromone[i])
             pheromone_values = np.append(pheromone_values, released_pheromone[i])
-        pheromone_mean = pheromone_values.mean()
+            pheromone_mean = pheromone_values.mean()
+        start_time_local = time.perf_counter()
         for i, ant in enumerate(ant_colony):
-            time_0 = time.time()
             next_voxel = find_next_voxel(ant, pheromone_map)
             ant.update_energy(released_pheromone[i] / pheromone_mean)
             if len(next_voxel) == 0:
                 del ant_colony[i]
                 continue
             ant.voxel_coordinates = next_voxel
+        print(len(ant_colony),time.perf_counter() - start_time_local)
         for i, ant in enumerate(ant_colony):
             if ant.energy < energy_death:
                 del ant_colony[i]
@@ -119,7 +118,7 @@ if __name__ == "__main__":
                         first_neighbours[:, 2],
                         1,
                     ]
-                    == False
+                    == 0
                 )[0]
                 valid_neighbours = np.array(
                     [first_neighbours[index] for index in valid_index]
@@ -133,16 +132,16 @@ if __name__ == "__main__":
                     valid_neighbours[:, 1],
                     valid_neighbours[:, 2],
                     1,
-                ] = True
+                ] = 1
                 continue
         ant_number.append(len(ant_colony))
-        print(f'Number of ants: {len(ant_colony)}\n')
         n_iteration += 1
 
     non_zero_voxels = np.unique(
         np.transpose(np.array(np.nonzero(pheromone_map[:, :, :, 0]))).reshape(-1, 3),
         axis=0,
     )
+    print(f"Image voxels: {non_zero_image_voxels.shape[0]}\n")
     print(f"Visited voxels: {non_zero_voxels.shape[0]}\n")
     print(
         f"Visited voxels percentage: {100 * non_zero_voxels.shape[0] / non_zero_image_voxels.shape[0] :.3f} %\n"

@@ -28,7 +28,7 @@ class Ant:
     image_matrix : ndarray
         The original image matrix.
 
-    voxel_coordinates : list of int
+    voxel_coordinates : list[int]
         The coordinates of the ant current voxel.
 
     energy : float
@@ -82,8 +82,8 @@ class Ant:
 
         Returns
         -------
-        neighbours : array of int
-            List of the indexes of the first-order neighbours of the ant current voxel.
+        neighbours : array[int]
+            Array of the indexes of the first-order neighbours of the ant current voxel.
         """
 
         # Create the matrix whose rows contain the indexes of the
@@ -128,8 +128,8 @@ class Ant:
 
         Returns
         -------
-        neighbours : array of int
-            List of the indexes of the second-order neighbours of the current voxel.
+        neighbours : array[int]
+            Array of the indexes of the second-order neighbours of the current voxel.
         """
 
         neighbours = np.transpose(np.indices((5, 5, 5)) - 2).reshape(-1, 3)
@@ -198,13 +198,13 @@ class Ant:
         to be chosen as the next destination of the ant. The next voxel
         is chosen with a roulette wheel algorithm among those neighbours
 
-        Inputs
+        Args
         ------
         first_neighbours : ndarray
             Array whose rows correspond to the indexes of the first-neighbouring voxels.
 
         pheromone_map : ndarray
-            Four-dimensional matrix. The first 3 dimensions contain the image matrix, the fourth dimension is used to store a boolean value False or True whether the corresponding voxel is free or occupied, respectively.
+            Four-dimensional matrix. The first 3 dimensions contain the image matrix, the fourth dimension is used to store value 0 or 1 whether the corresponding voxel is free or occupied, respectively.
 
         Returns
         -------
