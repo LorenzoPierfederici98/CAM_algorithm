@@ -28,22 +28,21 @@ from multiprocessing.sharedctypes import RawArray
 from ant_constructor import Ant
 from environment_constructor import ImageData
 
-
 def update_pheromone_map(ant_worker, pheromone_matrix, pheromone):
     [x, y, z] = ant_worker.voxel_coordinates
     pheromone_matrix[x, y, z, 0] += pheromone
     pheromone_matrix[x, y, z, 1] = 1
 
 def find_next_voxel(ant_worker):
-    print(str(os.getpid()))
+    #print(os.getpid())
     arr = np.frombuffer(np_x, dtype=np.float32).reshape(np_x_shape)
-    print(ant_worker.voxel_coordinates)
     [x, y, z] = ant_worker.voxel_coordinates
     first_neigh = ant_worker.find_first_neighbours()
     next_vox = ant_worker.evaluate_destination(first_neigh, arr)
     arr[x, y, z, 1] = 0
     if len(next_vox) != 0:
         arr[next_vox[0], next_vox[1], next_vox[2], 1] = 1
+    #print(next_vox)
     return next_vox
 
 def plot_display(
@@ -70,11 +69,13 @@ def plot_display(
     plt.tight_layout()
 
 
-def pool_initializer(Pheromone_Map, Pheromone_Map_shape):
+def pool_initializer(Pheromone_Map, Pheromone_Map_shape, local_lock):
     global np_x
     np_x = Pheromone_Map
     global np_x_shape
     np_x_shape = Pheromone_Map_shape
+    global lock
+    lock = local_lock
 
 
 matrix_dim = [80, 80, 80]
@@ -93,7 +94,7 @@ pheromone_shared_main = np.frombuffer(pheromone_shared, dtype=np.float32).reshap
 )
 np.copyto(pheromone_shared_main, pheromone_map)
 
-anthill_position = [40, 40, 40]
+anthill_position = [30, 30, 30]
 first_ant = Ant(cube_image, anthill_position)
 first_ant_neighbours = first_ant.find_first_neighbours()
 ant_colony = [Ant(cube_image, list(elem)) for elem in first_ant_neighbours]
@@ -107,15 +108,17 @@ energy_death = 1.0
 energy_reproduction = 1.3
 pheromone_values = np.array([])
 ant_number = []
-
+Lock = multiprocessing.Lock()
 if __name__ == "__main__":
-    while len(ant_colony) != 0 and n_iteration <= 5:
+    while len(ant_colony) != 0 and n_iteration <= 100:
         released_pheromone = np.zeros(len(ant_colony))
+        start_time_local = time.perf_counter()
         for i, ant in enumerate(ant_colony):
             released_pheromone[i] = ant.pheromone_release()
             update_pheromone_map(ant, pheromone_shared_main, released_pheromone[i])
             pheromone_values = np.append(pheromone_values, released_pheromone[i])
-            pheromone_mean = pheromone_values.mean()
+        print(len(ant_colony), f'1st loop: {(time.perf_counter() - start_time_local):.3f}\n')
+        pheromone_mean = pheromone_values.mean()
         start_time_local = time.perf_counter()
         # for i, ant in enumerate(ant_colony):
         #     next_voxel = find_next_voxel(ant, pheromone_map)
@@ -124,10 +127,25 @@ if __name__ == "__main__":
         #         del ant_colony[i]
         #         continue
         #     ant.voxel_coordinates = next_voxel
-        pool = multiprocessing.Pool(processes=6, initializer=pool_initializer, initargs=(pheromone_shared, pheromone_map.shape))
-        next_voxel = pool.map(find_next_voxel, ant_colony, chunksize=len(ant_colony)//6)
-        print(next_voxel)
-        print(len(ant_colony), time.perf_counter() - start_time_local)
+        with multiprocessing.Pool(
+            processes=6,
+            initializer=pool_initializer,
+            initargs=(pheromone_shared, pheromone_map.shape, Lock)
+        ) as pool:
+            next_voxel = pool.map(
+                find_next_voxel, ant_colony, chunksize=len(ant_colony) // 6
+            )
+        print(f'2nd loop: {(time.perf_counter() - start_time_local):.3f}\n')
+        start_time_local = time.perf_counter()
+        for i, ant in enumerate(ant_colony):
+            if not next_voxel[i]:
+                del ant_colony[i]
+                released_pheromone = np.delete(released_pheromone, i)
+                continue
+            ant_colony[i].voxel_coordinates = next_voxel[i]
+            ant_colony[i].update_energy(released_pheromone[i] / pheromone_mean)
+        print(f'3rd loop: {(time.perf_counter() - start_time_local):.3f}\n')
+        start_time_local = time.perf_counter()
         for i, ant in enumerate(ant_colony):
             if ant.energy < energy_death:
                 del ant_colony[i]
@@ -138,7 +156,7 @@ if __name__ == "__main__":
                 ant.energy = 1.0 + ant.alpha
                 first_neighbours = ant.find_first_neighbours()
                 valid_index = np.where(
-                    pheromone_map[
+                    pheromone_shared_main[
                         first_neighbours[:, 0],
                         first_neighbours[:, 1],
                         first_neighbours[:, 2],
@@ -153,20 +171,24 @@ if __name__ == "__main__":
                     continue
                 for neigh in valid_neighbours:
                     ant_colony.append(Ant(cube_image, list(neigh)))
-                pheromone_map[
+                pheromone_shared_main[
                     valid_neighbours[:, 0],
                     valid_neighbours[:, 1],
                     valid_neighbours[:, 2],
                     1,
                 ] = 1
                 continue
+        print(f'4th loop: {(time.perf_counter() - start_time_local):.3f}\n')
         ant_number.append(len(ant_colony))
         n_iteration += 1
 
     non_zero_voxels = np.unique(
-        np.transpose(np.array(np.nonzero(pheromone_shared_main[:, :, :, 0]))).reshape(-1, 3),
+        np.transpose(np.array(np.nonzero(pheromone_shared_main[:, :, :, 0]))).reshape(
+            -1, 3
+        ),
         axis=0,
     )
+    print(non_zero_voxels)
     print(f"Image voxels: {non_zero_image_voxels.shape[0]}\n")
     print(f"Visited voxels: {non_zero_voxels.shape[0]}\n")
     print(
