@@ -77,7 +77,7 @@ def find_next_voxel(ant_worker):
 def plot_display(
     ants_number,
     image_matrix,
-    visited_voxels_dict,
+    visited_voxs_dict,
     pheromone_matrix,
     anthill_coordinates,
 ):
@@ -93,30 +93,39 @@ def plot_display(
     image_matrix : ndarray
         The matrix of the image to be segmented.
 
-    visited_voxels_dict : dict
+    visited_voxs_dict : dict
         The dictionary containing all the visited voxels.
 
     pheromone_matrix : ndarray
         The matrix of the pheromone map built by the ants.
 
     anthill_coordinates : list[int]
-        The coordinates of the voxel chosen as the anthill position, used to display different slices of the pheromone map.
+        The coordinates of the voxel chosen as the anthill position,
+        used to display different slices of the pheromone map.
     """
 
     _, ax = plt.subplots(2, 3)
     ax[0][0].plot(ants_number)
     ax[0][0].set_title("Number of ants per cycle")
-    ax[0][1].imshow(image_matrix[:, :, 40], cmap="gray")
-    ax[0][2].bar(list(visited_voxels_dict.keys()), visited_voxels_dict.values())
+    plot_1 = ax[0][1].imshow(image_matrix[:, :, anthill_coordinates[2]], cmap="gray")
+    ax[0][2].bar(list(visited_voxs_dict.keys()), visited_voxs_dict.values())
     ax[0][2].set_title("Bar plot of visited voxels")
     ax[0][2].set_xticks([])
     ax[0][1].set_title("Original image, axial view")
-    ax[1][0].imshow(pheromone_matrix[:, :, anthill_coordinates[2], 0], cmap="gray")
+    plot_2 = ax[1][0].imshow(
+        pheromone_matrix[:, :, anthill_coordinates[2], 0], cmap="gray"
+    )
     ax[1][0].set_title("Pheromone map, axial view")
-    ax[1][1].imshow(pheromone_matrix[:, anthill_coordinates[1], :, 0], cmap="gray")
+    plot_3 = ax[1][1].imshow(
+        pheromone_matrix[:, anthill_coordinates[1], :, 0], cmap="gray"
+    )
     ax[1][1].set_title("Pheromone map, coronal view")
-    ax[1][2].imshow(pheromone_matrix[anthill_coordinates[0], :, :, 0], cmap="gray")
+    plot_4 = ax[1][2].imshow(
+        pheromone_matrix[anthill_coordinates[0], :, :, 0], cmap="gray"
+    )
     ax[1][2].set_title("Pheromone map, sagittal view")
+    for plot, ax in zip([plot_1, plot_2, plot_3, plot_4], [ax[0][1], ax[1][0], ax[1][1], ax[1][2]]):
+        plt.colorbar(plot, ax=ax)
     plt.tight_layout()
 
 
@@ -138,38 +147,34 @@ def pool_initializer(pheromone_matrix, pheromone_matrix_shape):
     global np_x_shape
     np_x_shape = pheromone_matrix_shape
 
+
 def statistics(image_matrix, pheromone_matrix):
     image_voxels = np.transpose(np.array(np.nonzero(image_matrix))).reshape(-1, 3)
-    visited_voxels = np.unique(
-        np.transpose(np.array(np.nonzero(pheromone_matrix[:, :, :, 0]))).reshape(
-            -1, 3
-        ),
+    visited_voxs = np.unique(
+        np.transpose(np.array(np.nonzero(pheromone_matrix[:, :, :, 0]))).reshape(-1, 3),
         axis=0,
     )
     image_voxels_dict = {
         f"{list(elem)}": int(value)
         for elem, value in zip(
-            image_voxels, image_matrix[
-                    image_voxels[:, 0], image_voxels[:, 1], image_voxels[:, 2]
-                ]
+            image_voxels,
+            image_matrix[image_voxels[:, 0], image_voxels[:, 1], image_voxels[:, 2]],
         )
     }
     visited_voxels_dict = {
         f"{list(elem)}": int(value)
         for elem, value in zip(
-            visited_voxels,
+            visited_voxs,
             (
                 pheromone_map[
-                    visited_voxels[:, 0],
-                    visited_voxels[:, 1],
-                    visited_voxels[:, 2],
+                    visited_voxs[:, 0],
+                    visited_voxs[:, 1],
+                    visited_voxs[:, 2],
                     0,
                 ]
             )
             / (
-                image_matrix[
-                    visited_voxels[:, 0], visited_voxels[:, 1], visited_voxels[:, 2]
-                ]
+                image_matrix[visited_voxs[:, 0], visited_voxs[:, 1], visited_voxs[:, 2]]
                 + 0.01
             ),
         )
@@ -179,8 +184,11 @@ def statistics(image_matrix, pheromone_matrix):
     for key in common_keys:
         common_dict[key] = visited_voxels_dict[key]
     print(f"Image voxels: {image_voxels.shape[0]}\n")
-    print(f"Visited voxels: {visited_voxels.shape[0]}\nOf which belonging to the image: {len(common_dict)}\n")
+    print(
+        f"Visited voxels: {visited_voxs.shape[0]}\nOf which belonging to the image: {len(common_dict)} ({(100 * len(common_dict) / image_voxels.shape[0]):.1f}%)\n"
+    )
     return visited_voxels_dict
+
 
 matrix_dim = [80, 80, 80]
 imagedata = ImageData(matrix_dim)
@@ -198,7 +206,7 @@ pheromone_map = np.frombuffer(pheromone_shared, dtype=np.float32).reshape(
 )
 np.copyto(pheromone_map, pheromone_map_init)
 
-anthill_position = [40, 40, 40]
+anthill_position = [30, 30, 30]
 first_ant = Ant(cube_image, anthill_position)
 first_ant_neighbours = first_ant.find_first_neighbours()
 ant_colony = [Ant(cube_image, list(elem)) for elem in first_ant_neighbours]
@@ -218,8 +226,8 @@ colony_length = 0
 if __name__ == "__main__":
 
     start_time_local = time.perf_counter()
-    while len(ant_colony) != 0 and n_iteration <= 400:
-        print(f'Iter:{n_iteration}\t#ants:{len(ant_colony)}\n')
+    while len(ant_colony) != 0 and n_iteration <= 10:
+        print(f"Iter:{n_iteration}\t#ants:{len(ant_colony)}\n")
         chunksize = max(2, len(ant_colony) // 4)
         with multiprocessing.Pool(
             processes=4,
@@ -275,9 +283,10 @@ if __name__ == "__main__":
 
         ant_number.append(len(ant_colony))
         n_iteration += 1
-    print(f"Elapsed time: {(time.perf_counter() - start_time_local):.3f}\n")
-    visited_voxs = statistics(cube_image, pheromone_map)
+
+    print(f"Elapsed time: {(time.perf_counter() - start_time_local) / 60:.3f} min\n")
+    visited_voxels = statistics(cube_image, pheromone_map)
     plot_display(
-        ant_number, cube_image, visited_voxs, pheromone_map, anthill_position
+        ant_number, cube_image, visited_voxels, pheromone_map, anthill_position
     )
     plt.show()
