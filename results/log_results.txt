@@ -1,0 +1,8 @@
+2024-03-13 19:42:48,280:INFO: Elapsed time: 0.272 min
+
+2024-03-13 19:42:48,403:INFO: Image voxels: 64000
+
+2024-03-13 19:42:48,403:INFO: Visited voxels: 3546
+
+2024-03-13 19:42:48,403:INFO: Of which belonging to the image: 3476 (5.4%)
+

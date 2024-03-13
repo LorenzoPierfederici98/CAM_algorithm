@@ -20,12 +20,75 @@
 """Module implementing the CAM algorithm."""
 
 import time
+import argparse
+import logging
 import multiprocessing
 from multiprocessing.sharedctypes import RawArray
 import numpy as np
 import matplotlib.pyplot as plt
 from ant_constructor import Ant
 from environment_constructor import ImageData
+
+logging.basicConfig(
+    format="%(asctime)s:%(levelname)s: %(message)s",
+    filename="../results/log_results.txt",
+    filemode="w",
+    level=logging.INFO,
+)
+
+parser = argparse.ArgumentParser(description="Module implementing the CAM algorithm.")
+parser.add_argument(
+    "-l",
+    "--anthill_coordinates",
+    type=int,
+    nargs="+",
+    help="The anthill voxel position.",
+    metavar=("list", "int"),
+    required=True,
+)
+parser.add_argument(
+    "-n",
+    "--n_iteration",
+    type=int,
+    help="Number of iterations before stopping.",
+    metavar="int",
+    required=True,
+)
+args = parser.parse_args()
+print(args)
+def set_colony(anthill_coordinates, image_matrix):
+    """Initializes the ant colony from a voxel given by the user.
+    All the 26 first-neighbouring voxels are then occupied by an ant.
+
+    Args
+    ----
+    anthill_coordinates : list[int]
+        The coordinates of the first ant, chosen by the user.
+
+    image_matrix : ndarray
+        The matrix of the image to be segmented.
+
+    Returns
+    -------
+    colony : list[obj]
+        The list containing all the 27 ants of the colony.
+
+    anthill_voxel : list[int]
+        The coordinates of the first ant, chosen by the user.
+    """
+
+    if (np.array(anthill_coordinates) >= np.array(image_matrix.shape)).any() or (
+        np.array(anthill_coordinates) < 0
+    ).any():
+
+        raise IndexError
+
+    anthill_voxel = anthill_coordinates
+    first_ant = Ant(image_matrix, anthill_voxel)
+    first_ant_neighbours = first_ant.find_first_neighbours()
+    colony = [Ant(image_matrix, list(elem)) for elem in first_ant_neighbours]
+    colony = colony[: len(colony) // 2] + [first_ant] + colony[len(colony) // 2 :]
+    return colony, anthill_voxel
 
 
 def update_pheromone_map(ant_worker):
@@ -104,8 +167,8 @@ def plot_display(
         used to display different slices of the pheromone map.
     """
 
-    _, ax = plt.subplots(2, 3)
-    norm = "log"
+    _, ax = plt.subplots(2, 3, figsize=(12, 9))
+    norm = "asinh"
     cmap = "gray"
     ax[0][0].plot(ants_number)
     ax[0][0].set_title("Number of ants per cycle")
@@ -126,8 +189,11 @@ def plot_display(
         pheromone_matrix[anthill_coordinates[0], :, :, 0], norm=norm, cmap=cmap
     )
     ax[1][2].set_title("Pheromone map, sagittal view")
-    for plot, ax in zip([plot_1, plot_2, plot_3, plot_4], [ax[0][1], ax[1][0], ax[1][1], ax[1][2]]):
+    for plot, ax in zip(
+        [plot_1, plot_2, plot_3, plot_4], [ax[0][1], ax[1][0], ax[1][1], ax[1][2]]
+    ):
         plt.colorbar(plot, ax=ax)
+    plt.savefig("../results/CAM_results.png")
     plt.tight_layout()
 
 
@@ -185,9 +251,10 @@ def statistics(image_matrix, pheromone_matrix):
     common_keys = set(image_voxels_dict).intersection(visited_voxels_dict)
     for key in common_keys:
         common_dict[key] = visited_voxels_dict[key]
-    print(f"Image voxels: {image_voxels.shape[0]}\n")
-    print(
-        f"Visited voxels: {visited_voxs.shape[0]}\nOf which belonging to the image: {len(common_dict)} ({(100 * len(common_dict) / image_voxels.shape[0]):.1f}%)\n"
+    logging.info(f"Image voxels: {image_voxels.shape[0]}\n")
+    logging.info(f"Visited voxels: {visited_voxs.shape[0]}\n")
+    logging.info(
+        f"Of which belonging to the image: {len(common_dict)} ({(100 * len(common_dict) / image_voxels.shape[0]):.1f}%)\n"
     )
     return common_dict
 
@@ -208,27 +275,17 @@ pheromone_map = np.frombuffer(pheromone_shared, dtype=np.float32).reshape(
 )
 np.copyto(pheromone_map, pheromone_map_init)
 
-anthill_position = [30, 30, 30]
-first_ant = Ant(cube_image, anthill_position)
-first_ant_neighbours = first_ant.find_first_neighbours()
-ant_colony = [Ant(cube_image, list(elem)) for elem in first_ant_neighbours]
-ant_colony = (
-    ant_colony[: len(ant_colony) // 2]
-    + [first_ant]
-    + ant_colony[len(ant_colony) // 2 :]
-)
-
 n_iteration = 0
 energy_death = 1.0
 energy_reproduction = 1.3
-pheromone_values = np.array([])
 ant_number = []
 pheromone_mean_sum = 0
 colony_length = 0
-if __name__ == "__main__":
 
+if __name__ == "__main__":
+    ant_colony, anthill_position = set_colony(args.anthill_coordinates, cube_image)
     start_time_local = time.perf_counter()
-    while len(ant_colony) != 0 and n_iteration <= 250:
+    while len(ant_colony) != 0 and n_iteration <= args.n_iteration:
         print(f"Iter:{n_iteration}\t#ants:{len(ant_colony)}\n")
         chunksize = max(2, len(ant_colony) // 4)
         with multiprocessing.Pool(
@@ -286,7 +343,9 @@ if __name__ == "__main__":
         ant_number.append(len(ant_colony))
         n_iteration += 1
 
-    print(f"Elapsed time: {(time.perf_counter() - start_time_local) / 60:.3f} min\n")
+    logging.info(
+        f"Elapsed time: {(time.perf_counter() - start_time_local) / 60:.3f} min\n"
+    )
     visited_voxels = statistics(cube_image, pheromone_map)
     plot_display(
         ant_number, cube_image, visited_voxels, pheromone_map, anthill_position
