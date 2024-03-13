@@ -280,7 +280,7 @@ class Ant:
         ) ** (self.beta)
         probability = W_PROBABILITY / W_PROBABILITY.sum()
         rand_num = np.random.uniform(0, np.max(probability))
-        next_voxel_index = np.where(probability > rand_num)[0][0]
+        next_voxel_index = np.where(probability >= rand_num)[0][0]
         return list(valid_first_neighbours[next_voxel_index])
 
 if __name__ == "__main__":

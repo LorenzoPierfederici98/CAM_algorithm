@@ -29,7 +29,7 @@ from environment_constructor import ImageData
 
 
 def update_pheromone_map(ant_worker):
-    """Updates the pheromone map and signals to the colony that the ant voxel as occupied.
+    """Updates the pheromone map and signals the ant voxel as occupied to the colony.
 
     Args
     ----
@@ -51,7 +51,7 @@ def update_pheromone_map(ant_worker):
 
 
 def find_next_voxel(ant_worker):
-    """Finds the next destination of the ant and signals to the colonty that the ant voxel is free.
+    """Finds the next destination of the ant and signals the ant voxel as free to the colony.
 
     Args
     ----
@@ -105,23 +105,25 @@ def plot_display(
     """
 
     _, ax = plt.subplots(2, 3)
+    norm = "log"
+    cmap = "gray"
     ax[0][0].plot(ants_number)
     ax[0][0].set_title("Number of ants per cycle")
     plot_1 = ax[0][1].imshow(image_matrix[:, :, anthill_coordinates[2]], cmap="gray")
     ax[0][2].bar(list(visited_voxs_dict.keys()), visited_voxs_dict.values())
-    ax[0][2].set_title("Bar plot of visited voxels")
+    ax[0][2].set_title("Bar plot of visited voxels part of the image")
     ax[0][2].set_xticks([])
     ax[0][1].set_title("Original image, axial view")
     plot_2 = ax[1][0].imshow(
-        pheromone_matrix[:, :, anthill_coordinates[2], 0], cmap="gray"
+        pheromone_matrix[:, :, anthill_coordinates[2], 0], norm=norm, cmap=cmap
     )
     ax[1][0].set_title("Pheromone map, axial view")
     plot_3 = ax[1][1].imshow(
-        pheromone_matrix[:, anthill_coordinates[1], :, 0], cmap="gray"
+        pheromone_matrix[:, anthill_coordinates[1], :, 0], norm=norm, cmap=cmap
     )
     ax[1][1].set_title("Pheromone map, coronal view")
     plot_4 = ax[1][2].imshow(
-        pheromone_matrix[anthill_coordinates[0], :, :, 0], cmap="gray"
+        pheromone_matrix[anthill_coordinates[0], :, :, 0], norm=norm, cmap=cmap
     )
     ax[1][2].set_title("Pheromone map, sagittal view")
     for plot, ax in zip([plot_1, plot_2, plot_3, plot_4], [ax[0][1], ax[1][0], ax[1][1], ax[1][2]]):
@@ -187,7 +189,7 @@ def statistics(image_matrix, pheromone_matrix):
     print(
         f"Visited voxels: {visited_voxs.shape[0]}\nOf which belonging to the image: {len(common_dict)} ({(100 * len(common_dict) / image_voxels.shape[0]):.1f}%)\n"
     )
-    return visited_voxels_dict
+    return common_dict
 
 
 matrix_dim = [80, 80, 80]
@@ -226,7 +228,7 @@ colony_length = 0
 if __name__ == "__main__":
 
     start_time_local = time.perf_counter()
-    while len(ant_colony) != 0 and n_iteration <= 10:
+    while len(ant_colony) != 0 and n_iteration <= 250:
         print(f"Iter:{n_iteration}\t#ants:{len(ant_colony)}\n")
         chunksize = max(2, len(ant_colony) // 4)
         with multiprocessing.Pool(
