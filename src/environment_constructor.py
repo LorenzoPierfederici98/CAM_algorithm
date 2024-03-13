@@ -64,11 +64,11 @@ class ImageData:
             center[1] - length // 2 : center[1] + length // 2,
             center[2] - length // 2 : center[2] + length // 2
         ] = 5.0
-        # image_matrix[
-        #     center[0] - length // 4 : center[0] + length // 4,
-        #     center[1] - length // 4 : center[1] + length // 4,
-        #     center[2] - length // 4 : center[2] + length // 4
-        # ] = 10.0
+        image_matrix[
+            center[0] - length // 4 : center[0] + length // 4,
+            center[1] - length // 4 : center[1] + length // 4,
+            center[2] - length // 4 : center[2] + length // 4
+        ] = 10.0
         return image_matrix
 
     def initialize_pheromone_map(self):

@@ -228,7 +228,6 @@ class Ant:
         else:
             max_visit_number = 40
         # Select only voxels with a number of visits less than max_visit_number
-        max_visit_number = 15
         mask = np.where(
             pheromone_map[
                 first_neighbours[:, 0], first_neighbours[:, 1], first_neighbours[:, 2], 0
