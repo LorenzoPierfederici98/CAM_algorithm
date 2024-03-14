@@ -11,4 +11,4 @@ Repository of the project for the CMEPDA course implementing a Channeler Ant Mod
 [![LorenzoPierfederici98](https://circleci.com/gh/LorenzoPierfederici98/esame_cmepda.svg?style=shield)](https://app.circleci.com/pipelines/github/LorenzoPierfederici98/esame_cmepda)
 
 The CAM algorithm exploits virtual ant colonies whose behaviour mimics the cooperation strategies put in place by real ants, which is here exploited in image processing.
-[cerello20103]
+[@cerello20103]
