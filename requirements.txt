@@ -1,9 +1,3 @@
 numpy
 scipy
 matplotlib
-pydicom
-os
-glob
-time
-argparse
-logging
