@@ -1,6 +1,6 @@
 
 # esame_cmepda
-[![LorenzoPierfederici98](https://circleci.com/gh/LorenzoPierfederici98/esame_cmepda.svg?style=shield)](https://app.circleci.com/pipelines/github/LorenzoPierfederici98/esame_cmepda) [![Documentation Status](https://readthedocs.org/projects/CAM_algorithm/badge/?version=latest)](https://esame-cmepda.readthedocs.io/en/latest/?badge=latest)
+[![LorenzoPierfederici98](https://circleci.com/gh/LorenzoPierfederici98/CAM_algorithm.svg?style=shield)](https://app.circleci.com/pipelines/github/LorenzoPierfederici98/esame_cmepda) [![Documentation Status](https://readthedocs.org/projects/CAM_algorithm/badge/?version=latest)](https://esame-cmepda.readthedocs.io/en/latest/?badge=latest)
 
 ## Overview
 Repository of the project for the CMEPDA course implementing a Channeler Ant Model (CAM) algorithm in order to segment aerial trees.
