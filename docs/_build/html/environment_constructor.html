@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>environment_constructor &mdash; CAM algorithm 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="main" href="main.html" />
+    <link rel="prev" title="ant_constructor" href="ant_constructor.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CAM algorithm
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ant_constructor.html">ant_constructor</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">environment_constructor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html">main</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="help.html">Need help?</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CAM algorithm</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">environment_constructor</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/environment_constructor.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-environment_constructor">
+<span id="environment-constructor"></span><h1>environment_constructor<a class="headerlink" href="#module-environment_constructor" title="Permalink to this headline">¶</a></h1>
+<p>Module building the environment of the ant colony i.e
+creates the image matrix and initializes the pheromone map.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="environment_constructor.ImageData">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">environment_constructor.</span></span><span class="sig-name descname"><span class="pre">ImageData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix_dimensions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment_constructor.ImageData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class handling the image matrix and the pheromone map.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="environment_constructor.ImageData.matrix_dimensions">
+<span class="sig-name descname"><span class="pre">matrix_dimensions</span></span><a class="headerlink" href="#environment_constructor.ImageData.matrix_dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>The shape of the image matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list of int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">create_cube</span> <span class="pre">:</span> <span class="pre">creates</span> <span class="pre">a</span> <span class="pre">cube</span> <span class="pre">as</span> <span class="pre">an</span> <span class="pre">image</span> <span class="pre">matrix.</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">initialize_pheromone_map</span> <span class="pre">:</span> <span class="pre">initializes</span> <span class="pre">the</span> <span class="pre">pheromone</span> <span class="pre">map.</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">image_from_file</span> <span class="pre">:</span> <span class="pre">classmethod,</span> <span class="pre">alternative</span> <span class="pre">constructor</span> <span class="pre">which</span> <span class="pre">provides</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">an</span> <span class="pre">image</span> <span class="pre">from</span> <span class="pre">a</span> <span class="pre">dicom</span> <span class="pre">folder.</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="environment_constructor.ImageData.create_cube">
+<span class="sig-name descname"><span class="pre">create_cube</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment_constructor.ImageData.create_cube" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a cube with a certain length from the given center-coordinates.</p>
+<dl class="simple">
+<dt>length<span class="classifier">int</span></dt><dd><p>The length of the cube, which must be less than matrix dimensions.</p>
+</dd>
+<dt>center<span class="classifier">list of int</span></dt><dd><p>The coordinates of the center of the cube.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>image_matrix</strong> – The cube image matrix.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="environment_constructor.ImageData.image_from_file">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">image_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment_constructor.ImageData.image_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads an image from a dicom folder whose path is
+given by the user. The output image is the result of
+the stacked slices of the dicom folder, sorted by their
+SliceLocation value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – The absolute path of the dicom folder.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>CT_array</strong> (<em>ndarray</em>) – The image matrix.</p></li>
+<li><p><strong>aspect_ratio</strong> (<em>dict</em>) – Dictionary of values that preserve the
+aspect ratio of the different slices.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="environment_constructor.ImageData.initialize_pheromone_map">
+<span class="sig-name descname"><span class="pre">initialize_pheromone_map</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#environment_constructor.ImageData.initialize_pheromone_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the pheromone map. The first 3 dimensions store
+the voxels values of the image matrix, the fourth dimension stores
+False for every voxel i.e it isn’t occupied by an ant.</p>
+<dl class="simple">
+<dt>image_matrix<span class="classifier">ndarray</span></dt><dd><p>The matrix of the image to be segmented.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>pheromone_map</strong> – The initialized pheromone map.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ant_constructor.html" class="btn btn-neutral float-left" title="ant_constructor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="main.html" class="btn btn-neutral float-right" title="main" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Lorenzo Pierfederici.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

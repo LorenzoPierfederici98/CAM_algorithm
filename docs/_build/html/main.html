@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>main &mdash; CAM algorithm 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="License" href="license.html" />
+    <link rel="prev" title="Welcome to CAM algorithm’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CAM algorithm
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">main</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="help.html">Need help?</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CAM algorithm</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">main</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/main.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-main">
+<span id="main"></span><h1>main<a class="headerlink" href="#module-main" title="Permalink to this headline">¶</a></h1>
+<p>Module implementing the CAM algorithm.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="main.find_next_voxel">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">find_next_voxel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ant_worker</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.find_next_voxel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the next destination of the ant and signals the ant voxel as free to the colony.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ant_worker</strong> (<em>obj</em>) – The ant member of the ant colony.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>next_vox</strong> – The coordinates of the ant destination.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.plot_display">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">plot_display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ants_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visited_voxs_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pheromone_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anthill_coordinates</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.plot_display" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays the plots of the number of ants per cycle,
+the original image matrix, the bar plot of the visited voxels
+and the pheromone map built by the ants.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ants_number</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The list of the nu,ber of ants per cycle.</p></li>
+<li><p><strong>image_matrix</strong> (<em>ndarray</em>) – The matrix of the image to be segmented.</p></li>
+<li><p><strong>visited_voxs_dict</strong> (<em>dict</em>) – The dictionary containing all the visited voxels.</p></li>
+<li><p><strong>pheromone_matrix</strong> (<em>ndarray</em>) – The matrix of the pheromone map built by the ants.</p></li>
+<li><p><strong>anthill_coordinates</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The coordinates of the voxel chosen as the anthill position,
+used to display different slices of the pheromone map.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.pool_initializer">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">pool_initializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pheromone_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pheromone_matrix_shape</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.pool_initializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to be used as the Pool initializer to share the
+pheromone map between the processes instantiated by Pool.map.
+Sets the pheromone map and its shape as global variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Pheromone_Map</strong> (<em>ndarray</em>) – The RawArray from multiprocessing used to share the pheromone map.</p></li>
+<li><p><strong>Pheromone_Map_shape</strong> (<em>tuple</em><em>[</em><em>int</em><em>]</em>) – The shape of the pheromone map.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.set_colony">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">set_colony</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anthill_coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.set_colony" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the ant colony from a voxel given by the user.
+All the 26 first-neighbouring voxels are then occupied by an ant.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anthill_coordinates</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The coordinates of the first ant, chosen by the user.</p></li>
+<li><p><strong>image_matrix</strong> (<em>ndarray</em>) – The matrix of the image to be segmented.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>colony</strong> (<em>list[obj]</em>) – The list containing all the 27 ants of the colony.</p></li>
+<li><p><strong>anthill_voxel</strong> (<em>list[int]</em>) – The coordinates of the first ant, chosen by the user.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>IndexError</strong> – If the input coordinates are not valid.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.set_image_and_pheromone">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">set_image_and_pheromone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.set_image_and_pheromone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiates the image from a path given by the user and
+the pheromone map as a four-dimensional numpy array of zeros. A RawArray
+of multiprocessing.sharedctypes is first created and then used as a buffer
+to share the pheromone map as a numpy array between processes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>image_matrix</strong> (<em>ndarray</em>) – The image_matrix.</p></li>
+<li><p><strong>pheromone_map_init</strong> (<em>ndarray</em>) – The initialized pheromone map.</p></li>
+<li><p><strong>pheromone_shared_</strong> (<em>RawArray[float]</em>) – The buffer used to share the pheromone map between processes.</p></li>
+<li><p><strong>pheromone_matrix</strong> (<em>ndarray</em>) – The pheromone map which will be deployed in the algorithm.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.statistics">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pheromone_matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.statistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides statistics about the run such as: the number of
+non-zero image voxels, the number of voxels visited by the ants,
+the visited voxels which are also part of the non-zero image
+voxels and the respective number of visits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image_matrix</strong> (<em>ndarray</em>) – The image matrix.</p></li>
+<li><p><strong>pheromone_matrix</strong> (<em>ndarray</em>) – The pheromone map.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>common_dict</strong> – The dictionary of the visit voxels and their number of visits
+which are also non-zero image voxels.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.update_pheromone_map">
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">update_pheromone_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ant_worker</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.update_pheromone_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the pheromone map and signals the ant voxel as occupied to the colony.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ant_worker</strong> (<em>obj</em>) – The ant member of the ant colony.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>pheromone</strong> – The value of pheromone released in the ant voxel.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to CAM algorithm’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="license.html" class="btn btn-neutral float-right" title="License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Lorenzo Pierfederici.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

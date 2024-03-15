@@ -39,27 +39,6 @@ logging.basicConfig(
 )
 
 
-parser = argparse.ArgumentParser(description="Module implementing the CAM algorithm.")
-parser.add_argument(
-    "anthill_coordinates",
-    help="The anthill voxel position.",
-    type=int,
-    nargs=3
-)
-parser.add_argument(
-    "n_iteration",
-    help="Number of iterations before stopping.",
-    type=int,
-)
-parser.add_argument(
-    "--file_path",
-    type=str,
-    help="The absolute path of the image file.",
-    metavar="str",
-)
-args = parser.parse_args()
-
-
 def set_colony(anthill_coordinates, image_matrix):
     """Initializes the ant colony from a voxel given by the user.
     All the 26 first-neighbouring voxels are then occupied by an ant.
@@ -226,11 +205,11 @@ def pool_initializer(pheromone_matrix, pheromone_matrix_shape):
 
 
 def statistics(image_matrix, pheromone_matrix):
-    """Provides statistics about the run such as: the number of 
+    """Provides statistics about the run such as: the number of
     non-zero image voxels, the number of voxels visited by the ants,
     the visited voxels which are also part of the non-zero image
     voxels and the respective number of visits.
-    
+
     Args
     ----
     image_matrix : ndarray
@@ -288,12 +267,17 @@ def statistics(image_matrix, pheromone_matrix):
     return common_dict
 
 
-def set_image_and_pheromone():
-    """Instantiates the image from a path given by the user and 
+def set_image_and_pheromone(file_path):
+    """Instantiates the image from a path given by the user and
     the pheromone map as a four-dimensional numpy array of zeros. A RawArray
     of multiprocessing.sharedctypes is first created and then used as a buffer
     to share the pheromone map as a numpy array between processes.
-    
+
+    Args
+    ----
+    file_path : str
+        The path of the dicom folder given by the user.
+
     Returns
     -------
     image_matrix : ndarray
@@ -309,7 +293,7 @@ def set_image_and_pheromone():
         The pheromone map which will be deployed in the algorithm.
     """
 
-    image_matrix, a_ratio = ImageData.image_from_file(args.file_path)
+    image_matrix, a_ratio = ImageData.image_from_file(file_path)
     imagedata = ImageData(image_matrix.shape)
     pheromone_map_init_ = imagedata.initialize_pheromone_map()
     global np_x_shape
@@ -322,12 +306,37 @@ def set_image_and_pheromone():
     pheromone_matrix = np.frombuffer(pheromone_shared_, dtype=np.float32).reshape(
         pheromone_map_init_.shape
     )
-    return image_matrix, a_ratio, pheromone_map_init_, pheromone_shared_, pheromone_matrix
+    return (
+        image_matrix,
+        a_ratio,
+        pheromone_map_init_,
+        pheromone_shared_,
+        pheromone_matrix,
+    )
 
 
 if __name__ == "__main__":
 
-    image, aspect_ratio, pheromone_map_init, pheromone_shared, pheromone_map = set_image_and_pheromone()
+    parser = argparse.ArgumentParser(description="Module implementing the CAM algorithm.")
+    parser.add_argument(
+        "anthill_coordinates", help="The anthill voxel position.", type=int, nargs=3
+    )
+    parser.add_argument(
+        "n_iteration",
+        help="Number of iterations before stopping.",
+        type=int,
+    )
+    parser.add_argument(
+        "--file_path",
+        type=str,
+        help="The absolute path of the image file.",
+        metavar="str",
+    )
+    args = parser.parse_args()
+
+    image, aspect_ratio, pheromone_map_init, pheromone_shared, pheromone_map = (
+        set_image_and_pheromone(args.file_path)
+    )
     # copies pheromone_map_init into pheromone_map
     np.copyto(pheromone_map, pheromone_map_init)
 
@@ -407,7 +416,5 @@ if __name__ == "__main__":
         f"Elapsed time: {(time.perf_counter() - start_time_local) / 60:.3f} min\n"
     )
     visited_voxels = statistics(image, pheromone_map)
-    plot_display(
-        ant_number, image, visited_voxels, pheromone_map, anthill_position
-    )
+    plot_display(ant_number, image, visited_voxels, pheromone_map, anthill_position)
     plt.show()

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ant_constructor &mdash; CAM algorithm 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="environment_constructor" href="environment_constructor.html" />
+    <link rel="prev" title="Welcome to CAM algorithm’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CAM algorithm
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ant_constructor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="environment_constructor.html">environment_constructor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html">main</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="help.html">Need help?</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CAM algorithm</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">ant_constructor</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/ant_constructor.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-ant_constructor">
+<span id="ant-constructor"></span><h1>ant_constructor<a class="headerlink" href="#module-ant_constructor" title="Permalink to this headline">¶</a></h1>
+<p>Module building the ant class.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ant_constructor.Ant">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ant_constructor.</span></span><span class="sig-name descname"><span class="pre">Ant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voxel_coordinates</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ant_constructor.Ant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class describing the ant worker who builds the pheromone map.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ant_constructor.Ant.image_matrix">
+<span class="sig-name descname"><span class="pre">image_matrix</span></span><a class="headerlink" href="#ant_constructor.Ant.image_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>The original image matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ant_constructor.Ant.voxel_coordinates">
+<span class="sig-name descname"><span class="pre">voxel_coordinates</span></span><a class="headerlink" href="#ant_constructor.Ant.voxel_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>The coordinates of the ant current voxel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ant_constructor.Ant.energy">
+<span class="sig-name descname"><span class="pre">energy</span></span><a class="headerlink" href="#ant_constructor.Ant.energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>The ant energy</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">update_energy</span> <span class="pre">:</span> <span class="pre">updates</span> <span class="pre">the</span> <span class="pre">ant</span> <span class="pre">energy.</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">find_first_neighbours</span> <span class="pre">:</span> <span class="pre">finds</span> <span class="pre">the</span> <span class="pre">first-order</span> <span class="pre">neighbours</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">current</span> <span class="pre">voxel.</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">find_second_neighbours</span> <span class="pre">:</span> <span class="pre">finds</span> <span class="pre">the</span> <span class="pre">second-order</span> <span class="pre">neighbours</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">current</span> <span class="pre">voxel.</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">pheromone_release</span> <span class="pre">:</span> <span class="pre">releases</span> <span class="pre">pheromone</span> <span class="pre">in</span> <span class="pre">a</span> <span class="pre">voxel.</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">compute_probability</span> <span class="pre">:</span> <span class="pre">computes</span> <span class="pre">the</span> <span class="pre">probability</span> <span class="pre">to</span> <span class="pre">choose</span> <span class="pre">a</span> <span class="pre">voxel</span> <span class="pre">destination.</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ant_constructor.Ant.alpha">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">alpha</span></span><a class="headerlink" href="#ant_constructor.Ant.alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the alpha attribute as read-only.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ant_constructor.Ant.beta">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">beta</span></span><a class="headerlink" href="#ant_constructor.Ant.beta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the beta attribute as read-only.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ant_constructor.Ant.delta">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">delta</span></span><a class="headerlink" href="#ant_constructor.Ant.delta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the delta attribute as read-only.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ant_constructor.Ant.evaluate_destination">
+<span class="sig-name descname"><span class="pre">evaluate_destination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first_neighbours</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pheromone_map</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ant_constructor.Ant.evaluate_destination" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the probability for the first-neighbouring voxels
+to be chosen as the next destination of the ant. The next voxel
+is chosen with a roulette wheel algorithm among those neighbours</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>first_neighbours</strong> (<em>ndarray</em>) – Array whose rows correspond to the indexes of the first-neighbouring voxels.</p></li>
+<li><p><strong>pheromone_map</strong> (<em>ndarray</em>) – Four-dimensional matrix. The first 3 dimensions contain the image matrix, the fourth dimension is used to store value 0 or 1 whether the corresponding voxel is free or occupied, respectively.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>valid_first_neigbours</strong> – Indexes of the chosen voxel-destination. Returns an empty list
+if there are no possible voxel destinations.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ant_constructor.Ant.find_first_neighbours">
+<span class="sig-name descname"><span class="pre">find_first_neighbours</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ant_constructor.Ant.find_first_neighbours" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the indexes of the first-order neighbours of
+the ant current voxel with no “Pac-Man” effect i.e
+considering the borders of the image matrix. The current
+voxel is not considered as a first neighbour.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>neighbours</strong> – Array of the indexes of the first-order neighbours of the ant current voxel.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ant_constructor.Ant.find_second_neighbours">
+<span class="sig-name descname"><span class="pre">find_second_neighbours</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ant_constructor.Ant.find_second_neighbours" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds the indexes of the second-order neighbours of
+the ant current voxel. The construction is similar to
+that one of the find_first_neighbours function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>neighbours</strong> – Array of the indexes of the second-order neighbours of the current voxel.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array[int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ant_constructor.Ant.pheromone_release">
+<span class="sig-name descname"><span class="pre">pheromone_release</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ant_constructor.Ant.pheromone_release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the quantity of pheromone to be released into
+the voxel to build the pheromone map. The quantity of pheromone
+released corresponds to the intensity of the voxel of the image
+matrix plus a small offset which certifies that the voxel was visited.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>pheromone_value</strong> – The pheromone value to be stored into the pheromone map voxel.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ant_constructor.Ant.update_energy">
+<span class="sig-name descname"><span class="pre">update_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ant_constructor.Ant.update_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the ant energy.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to CAM algorithm’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="environment_constructor.html" class="btn btn-neutral float-right" title="environment_constructor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Lorenzo Pierfederici.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

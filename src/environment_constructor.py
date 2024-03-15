@@ -19,9 +19,9 @@
 """Module building the environment of the ant colony i.e 
 creates the image matrix and initializes the pheromone map."""
 
-import pydicom
 import os
 import glob
+import pydicom
 import numpy as np
 #import matplotlib.pyplot as plt
 
@@ -55,7 +55,7 @@ class ImageData:
         length : int
             The length of the cube, which must be less than matrix dimensions.
 
-        center : list of int
+        center : list[int]
             The coordinates of the center of the cube.
 
         Returns
