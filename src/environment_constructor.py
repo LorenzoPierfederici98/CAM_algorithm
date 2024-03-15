@@ -19,9 +19,11 @@
 """Module building the environment of the ant colony i.e 
 creates the image matrix and initializes the pheromone map."""
 
-import traceback
+import pydicom
+import os
+import glob
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 
 class ImageData:
@@ -37,6 +39,9 @@ class ImageData:
     create_cube : creates a cube as an image matrix.
 
     initialize_pheromone_map : initializes the pheromone map.
+
+    image_from_file : classmethod, alternative constructor which provides
+    an image from a dicom folder.
     """
 
     def __init__(self, matrix_dimensions):
@@ -62,12 +67,12 @@ class ImageData:
         image_matrix[
             center[0] - length // 2 : center[0] + length // 2,
             center[1] - length // 2 : center[1] + length // 2,
-            center[2] - length // 2 : center[2] + length // 2
+            center[2] - length // 2 : center[2] + length // 2,
         ] = 5.0
         image_matrix[
             center[0] - length // 4 : center[0] + length // 4,
             center[1] - length // 4 : center[1] + length // 4,
-            center[2] - length // 4 : center[2] + length // 4
+            center[2] - length // 4 : center[2] + length // 4,
         ] = 10.0
         return image_matrix
 
@@ -97,36 +102,50 @@ class ImageData:
         )
         return pheromone_map
 
-    def image_display(
-        self, ax, image_matrix, slice_value, image_title, view="axial", cmap="viridis"
-    ):
-        """Displays a certain view of the image matrix"""
-        slice_string = ""
-        try:
-            if view == "axial":
-                ax.imshow(image_matrix[:, :, slice_value], cmap=cmap)
-                slice_string = "z"
-            elif view == "coronal":
-                ax.imshow(image_matrix[:, slice_value, :], cmap=cmap)
-                slice_string = "y"
-            elif view == "sagittal":
-                ax.imshow(image_matrix[slice_value, :, :], cmap=cmap)
-                slice_string = "z"
-            else:
-                raise ValueError
-        except IndexError as e:
-            print("Invalid value of slice\n")
-            traceback.print_exception(e.__class__, e, e.__traceback__)
-        except ValueError as e:
-            print(
-                "Invalid input, view must be either 'axial', 'coronal' or 'sagittal'.\n"
-            )
-            traceback.print_exception(e.__class__, e, e.__traceback__)
+    @classmethod
+    def image_from_file(cls, file_path):
+        """Loads an image from a dicom folder whose path is
+        given by the user. The output image is the result of
+        the stacked slices of the dicom folder, sorted by their
+        SliceLocation value.
 
-        ax.set_title(f"{image_title}: {view} view {slice_string} = {slice_value}")
-        # plt.colorbar()
+        Args
+        ----
+        file_path : str
+            The absolute path of the dicom folder.
+
+        Returns
+        -------
+        CT_array : ndarray
+            The image matrix.
+
+        aspect_ratio : dict
+            Dictionary of values that preserve the
+            aspect ratio of the different slices.
+        """
+
+        dicom_files = glob.glob(os.path.join(file_path, "*"))
+        dicom_slices = [ pydicom.read_file(fname) for fname in dicom_files]
+        slices = [dcm_slice for dcm_slice in dicom_slices if hasattr(dcm_slice, 'SliceLocation')]
+        slices.sort(key=lambda x: x.SliceLocation)
+        shape = slices[0].Rows, slices[0].Columns, len(slices)
+        CT_array = np.zeros(shape, dtype=slices[0].pixel_array.dtype)
+        for i, dcm in enumerate(slices):
+            CT_array[:, :, i] = dcm.pixel_array
+        CT_array = np.flip(CT_array, axis=1)
+        x, y, z = *slices[0].PixelSpacing, slices[0].SliceThickness
+        aspect_ratio = {
+            'axial': y/x,
+            'sagittal': y/z,
+            'coronal': x/z
+        }
+        # ax = plt.subplot(1, 1, 1)
+        # ax.imshow(CT_array[:, :, CT_array.shape[1] // 2], cmap="gray")
+        # ax.set_aspect(aspect_ratio['axial'])
+        return CT_array, aspect_ratio
 
 
 if __name__ == "__main__":
     matrix_dim = [512, 512, 512]
     imagedata = ImageData(matrix_dim)
+

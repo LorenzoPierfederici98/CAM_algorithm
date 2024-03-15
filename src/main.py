@@ -16,6 +16,7 @@
 #     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # pylint: disable=C0103
+# pylint: disable=W1203
 
 """Module implementing the CAM algorithm."""
 
@@ -29,6 +30,7 @@ import matplotlib.pyplot as plt
 from ant_constructor import Ant
 from environment_constructor import ImageData
 
+
 logging.basicConfig(
     format="%(asctime)s:%(levelname)s: %(message)s",
     filename="../results/log_results.txt",
@@ -36,26 +38,28 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
+
 parser = argparse.ArgumentParser(description="Module implementing the CAM algorithm.")
 parser.add_argument(
-    "-l",
-    "--anthill_coordinates",
-    type=int,
-    nargs="+",
+    "anthill_coordinates",
     help="The anthill voxel position.",
-    metavar=("list", "int"),
-    required=True,
+    type=int,
+    nargs=3
 )
 parser.add_argument(
-    "-n",
-    "--n_iteration",
-    type=int,
+    "n_iteration",
     help="Number of iterations before stopping.",
-    metavar="int",
-    required=True,
+    type=int,
+)
+parser.add_argument(
+    "--file_path",
+    type=str,
+    help="The absolute path of the image file.",
+    metavar="str",
 )
 args = parser.parse_args()
-print(args)
+
+
 def set_colony(anthill_coordinates, image_matrix):
     """Initializes the ant colony from a voxel given by the user.
     All the 26 first-neighbouring voxels are then occupied by an ant.
@@ -75,12 +79,17 @@ def set_colony(anthill_coordinates, image_matrix):
 
     anthill_voxel : list[int]
         The coordinates of the first ant, chosen by the user.
+
+    Raises
+    ------
+    IndexError
+        If the input coordinates are not valid.
     """
 
     if (np.array(anthill_coordinates) >= np.array(image_matrix.shape)).any() or (
         np.array(anthill_coordinates) < 0
     ).any():
-
+        print("Invalid coordinates.\n")
         raise IndexError
 
     anthill_voxel = anthill_coordinates
@@ -217,6 +226,26 @@ def pool_initializer(pheromone_matrix, pheromone_matrix_shape):
 
 
 def statistics(image_matrix, pheromone_matrix):
+    """Provides statistics about the run such as: the number of 
+    non-zero image voxels, the number of voxels visited by the ants,
+    the visited voxels which are also part of the non-zero image
+    voxels and the respective number of visits.
+    
+    Args
+    ----
+    image_matrix : ndarray
+        The image matrix.
+
+    pheromone_matrix : ndarray
+        The pheromone map.
+
+    Returns
+    -------
+    common_dict : dict
+        The dictionary of the visit voxels and their number of visits
+        which are also non-zero image voxels.
+    """
+
     image_voxels = np.transpose(np.array(np.nonzero(image_matrix))).reshape(-1, 3)
     visited_voxs = np.unique(
         np.transpose(np.array(np.nonzero(pheromone_matrix[:, :, :, 0]))).reshape(-1, 3),
@@ -259,47 +288,77 @@ def statistics(image_matrix, pheromone_matrix):
     return common_dict
 
 
-matrix_dim = [80, 80, 80]
-imagedata = ImageData(matrix_dim)
-cube_length = 40
-center_coordinates = [40, 40, 40]
-cube_image = imagedata.create_cube(cube_length, center_coordinates)
+def set_image_and_pheromone():
+    """Instantiates the image from a path given by the user and 
+    the pheromone map as a four-dimensional numpy array of zeros. A RawArray
+    of multiprocessing.sharedctypes is first created and then used as a buffer
+    to share the pheromone map as a numpy array between processes.
+    
+    Returns
+    -------
+    image_matrix : ndarray
+        The image_matrix.
 
-pheromone_map_init = imagedata.initialize_pheromone_map()
-np_x_shape = pheromone_map_init.shape
-pheromone_shared = RawArray("i", np.array(pheromone_map_init.shape).prod().item())
-np_x = pheromone_shared
-# RawArray used as buffer to share the pheromone_map as np array
-pheromone_map = np.frombuffer(pheromone_shared, dtype=np.float32).reshape(
-    pheromone_map_init.shape
-)
-np.copyto(pheromone_map, pheromone_map_init)
+    pheromone_map_init : ndarray
+        The initialized pheromone map.
 
-n_iteration = 0
-energy_death = 1.0
-energy_reproduction = 1.3
-ant_number = []
-pheromone_mean_sum = 0
-colony_length = 0
+    pheromone_shared_ : RawArray[float]
+        The buffer used to share the pheromone map between processes.
+
+    pheromone_matrix : ndarray
+        The pheromone map which will be deployed in the algorithm.
+    """
+
+    image_matrix, a_ratio = ImageData.image_from_file(args.file_path)
+    imagedata = ImageData(image_matrix.shape)
+    pheromone_map_init_ = imagedata.initialize_pheromone_map()
+    global np_x_shape
+    np_x_shape = pheromone_map_init_.shape
+    pheromone_shared_ = RawArray("f", np.array(pheromone_map_init_.shape).prod().item())
+    print(type(pheromone_shared_))
+    global np_x
+    np_x = pheromone_shared_
+    # RawArray used as buffer to share the pheromone_map as np array
+    pheromone_matrix = np.frombuffer(pheromone_shared_, dtype=np.float32).reshape(
+        pheromone_map_init_.shape
+    )
+    return image_matrix, a_ratio, pheromone_map_init_, pheromone_shared_, pheromone_matrix
+
 
 if __name__ == "__main__":
-    ant_colony, anthill_position = set_colony(args.anthill_coordinates, cube_image)
+
+    image, aspect_ratio, pheromone_map_init, pheromone_shared, pheromone_map = set_image_and_pheromone()
+    # copies pheromone_map_init into pheromone_map
+    np.copyto(pheromone_map, pheromone_map_init)
+
+    n_iteration = 0
+    energy_death = 0.5
+    energy_reproduction = 1.2
+    ant_number = []
+    pheromone_mean_sum = 0
+    colony_length = 0
+
+    ant_colony, anthill_position = set_colony(args.anthill_coordinates, image)
     start_time_local = time.perf_counter()
+
     while len(ant_colony) != 0 and n_iteration <= args.n_iteration:
         print(f"Iter:{n_iteration}\t#ants:{len(ant_colony)}\n")
+
         chunksize = max(2, len(ant_colony) // 4)
         with multiprocessing.Pool(
             processes=4,
             initializer=pool_initializer,
-            initargs=(pheromone_shared, pheromone_map_init.shape),
+            initargs=(pheromone_shared, pheromone_map.shape),
         ) as pool:
             released_pheromone = pool.map(
                 update_pheromone_map, ant_colony, chunksize=chunksize
             )
             next_voxel = pool.map(find_next_voxel, ant_colony, chunksize=chunksize)
+
         colony_length += len(ant_colony)
         pheromone_mean_sum += sum(released_pheromone)
         pheromone_mean = pheromone_mean_sum / colony_length
+
         for i, ant in enumerate(ant_colony):
             if len(next_voxel[i]) == 0:
                 del ant_colony[i]
@@ -307,6 +366,7 @@ if __name__ == "__main__":
                 continue
             ant.voxel_coordinates = next_voxel[i]
             ant.update_energy(released_pheromone[i] / pheromone_mean)
+
         for i, ant in enumerate(ant_colony):
             if ant.energy < energy_death:
                 del ant_colony[i]
@@ -331,7 +391,7 @@ if __name__ == "__main__":
                 if valid_neighbours.shape[0] == 0:
                     continue
                 for neigh in valid_neighbours:
-                    ant_colony.append(Ant(cube_image, list(neigh)))
+                    ant_colony.append(Ant(image, list(neigh)))
                 pheromone_map[
                     valid_neighbours[:, 0],
                     valid_neighbours[:, 1],
@@ -346,8 +406,8 @@ if __name__ == "__main__":
     logging.info(
         f"Elapsed time: {(time.perf_counter() - start_time_local) / 60:.3f} min\n"
     )
-    visited_voxels = statistics(cube_image, pheromone_map)
+    visited_voxels = statistics(image, pheromone_map)
     plot_display(
-        ant_number, cube_image, visited_voxels, pheromone_map, anthill_position
+        ant_number, image, visited_voxels, pheromone_map, anthill_position
     )
     plt.show()
