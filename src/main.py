@@ -126,27 +126,19 @@ def find_next_voxel(ant_worker):
 
 
 def plot_display(
-    ants_number,
     a_ratio,
     image_matrix,
-    visited_voxs_dict,
     pheromone_matrix,
     anthill_coordinates,
 ):
-    """Displays the plots of the number of ants per cycle,
-    the original image matrix, the bar plot of the visited voxels
-    and the pheromone map built by the ants.
+    """Displays the axial view of the image matrix, the axial, coronal
+    and sagittal views of the pheromone map; the z, x and y slices of
+    the different views correspond to those ones of the anthill location.
 
     Args
     ----
-    ants_number : list[int]
-        The list of the number of ants per cycle.
-
     image_matrix : ndarray
         The matrix of the image to be segmented.
-
-    visited_voxs_dict : dict
-        The dictionary containing all the visited voxels.
 
     pheromone_matrix : ndarray
         The matrix of the pheromone map built by the ants.
@@ -156,35 +148,29 @@ def plot_display(
         used to display different slices of the pheromone map.
     """
 
-    _, ax = plt.subplots(2, 3, figsize=(12, 9))
+    _, ax = plt.subplots(2, 2, figsize=(10, 7))
     norm = "asinh"
     cmap = "gray"
-    ax[0][0].plot(ants_number)
-    ax[0][0].set_title("Number of ants per cycle")
-    ax[0][1].set_aspect(a_ratio["axial"])
-    plot_1 = ax[0][1].imshow(image_matrix[:, :, anthill_coordinates[2]], cmap="gray")
-    ax[0][2].bar(list(visited_voxs_dict.keys()), visited_voxs_dict.values())
-    ax[0][2].set_title("Bar plot of visited voxels part of the image")
-    ax[0][2].set_xticks([])
-    ax[0][1].set_title("Original image, axial view")
-    plot_2 = ax[1][0].imshow(
+    ax[0][0].set_aspect(a_ratio["axial"])
+    plot_1 = ax[0][0].imshow(image_matrix[:, :, anthill_coordinates[2]], cmap="gray")
+    ax[0][0].set_title("Original image, axial view")
+    plot_2 = ax[0][1].imshow(
         pheromone_matrix[:, :, anthill_coordinates[2], 0], norm=norm, cmap=cmap
     )
-    ax[1][0].set_title("Pheromone map, axial view")
-    plot_3 = ax[1][1].imshow(
+    ax[0][1].set_title("Pheromone map, axial view")
+    plot_3 = ax[1][0].imshow(
         pheromone_matrix[:, anthill_coordinates[1], :, 0], norm=norm, cmap=cmap
     )
-    ax[1][1].set_title("Pheromone map, coronal view")
-    plot_4 = ax[1][2].imshow(
+    ax[1][0].set_title("Pheromone map, coronal view")
+    plot_4 = ax[1][1].imshow(
         pheromone_matrix[anthill_coordinates[0], :, :, 0], norm=norm, cmap=cmap
     )
-    ax[1][2].set_title("Pheromone map, sagittal view")
+    ax[1][1].set_title("Pheromone map, sagittal view")
     for plot, ax in zip(
-        [plot_1, plot_2, plot_3, plot_4], [ax[0][1], ax[1][0], ax[1][1], ax[1][2]]
+        [plot_1, plot_2, plot_3, plot_4], [ax[0][0], ax[0][1], ax[1][0], ax[1][1]]
     ):
         plt.colorbar(plot, ax=ax)
     plt.savefig("../results/CAM_results.png")
-    plt.tight_layout()
 
 
 def pool_initializer(pheromone_matrix, pheromone_matrix_shape):
@@ -206,7 +192,7 @@ def pool_initializer(pheromone_matrix, pheromone_matrix_shape):
     np_x_shape = pheromone_matrix_shape
 
 
-def statistics(image_matrix, pheromone_matrix):
+def statistics(ants_number, image_matrix, pheromone_matrix):
     """Provides statistics about the run such as: the number of
     non-zero image voxels, the number of voxels visited by the ants,
     the visited voxels which are also part of the non-zero image
@@ -214,17 +200,14 @@ def statistics(image_matrix, pheromone_matrix):
 
     Args
     ----
+    ants_number : list[int]
+        The list of the number of ants per cycle.
+
     image_matrix : ndarray
         The image matrix.
 
     pheromone_matrix : ndarray
         The pheromone map.
-
-    Returns
-    -------
-    common_dict : dict
-        The dictionary of the visit voxels and their number of visits
-        which are also non-zero image voxels.
     """
 
     image_voxels = np.transpose(np.array(np.nonzero(image_matrix))).reshape(-1, 3)
@@ -266,7 +249,13 @@ def statistics(image_matrix, pheromone_matrix):
     logging.info(
         f"Of which belonging to the image: {len(common_dict)} ({(100 * len(common_dict) / image_voxels.shape[0]):.1f}%)\n"
     )
-    return common_dict
+    _, ax = plt.subplots(2, 2, figsize=(10, 7))
+    ax[0][0].plot(ants_number)
+    ax[0][0].set_title("Number of ants per cycle")
+    ax[0][1].bar(list(common_dict.keys()), common_dict.values())
+    ax[0][1].set_title("Bar plot of visited voxels part of the image")
+    ax[0][1].set_xticks([])
+    plt.savefig("../results/CAM_statistics.png")
 
 
 def set_image_and_pheromone(file_path):
@@ -407,6 +396,7 @@ if __name__ == "__main__":
                 )
                 if valid_neighbours.shape[0] == 0:
                     continue
+
                 second_neighbours = ant.find_second_neighbours()
                 image_second_neigh = (
                     image[
@@ -427,6 +417,7 @@ if __name__ == "__main__":
                     ),
                     26,
                 )
+
                 for neigh in valid_neighbours[:n_offspring]:
                     ant_colony.append(Ant(image, list(neigh)))
                 pheromone_map[
@@ -443,8 +434,7 @@ if __name__ == "__main__":
     logging.info(
         f"Elapsed time: {(time.perf_counter() - start_time_local) / 60:.3f} min\n"
     )
-    visited_voxels = statistics(image, pheromone_map)
-    plot_display(
-        ant_number, aspect_ratio, image, visited_voxels, pheromone_map, anthill_position
+    statistics(ant_number, image, pheromone_map)
+    plot_display(aspect_ratio, image, pheromone_map, anthill_position
     )
     plt.show()

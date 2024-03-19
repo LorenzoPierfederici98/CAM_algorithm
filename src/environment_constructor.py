@@ -139,7 +139,7 @@ class ImageData:
             'sagittal': y/z,
             'coronal': x/z
         }
-        CT_array = CT_array[167 : 409, 30 : 230, 267 - 10 : 267 + 10]
+        CT_array = CT_array[167 : 409, 30 : 230, 267 - 3 : 267 + 3]
         # ax = plt.subplot(1, 1, 1)
         # ax.imshow(CT_array[:, :, CT_array.shape[2] // 2], cmap="gray")
         # ax.set_aspect(aspect_ratio['axial'])
