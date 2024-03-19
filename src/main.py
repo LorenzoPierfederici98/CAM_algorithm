@@ -170,7 +170,7 @@ def plot_display(
         [plot_1, plot_2, plot_3, plot_4], [ax[0][0], ax[0][1], ax[1][0], ax[1][1]]
     ):
         plt.colorbar(plot, ax=ax)
-    plt.savefig("../results/CAM_results.png")
+    #plt.savefig("../results/CAM_results.png")
 
 
 def pool_initializer(pheromone_matrix, pheromone_matrix_shape):
@@ -226,18 +226,9 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
         f"{list(elem)}": int(value)
         for elem, value in zip(
             visited_voxs,
-            (
-                pheromone_map[
-                    visited_voxs[:, 0],
-                    visited_voxs[:, 1],
-                    visited_voxs[:, 2],
-                    0,
-                ]
-            )
-            / (
-                image_matrix[visited_voxs[:, 0], visited_voxs[:, 1], visited_voxs[:, 2]]
-                + 0.01
-            ),
+            pheromone_matrix[
+                visited_voxs[:, 0], visited_voxs[:, 1], visited_voxs[:, 2], 0
+            ],
         )
     }
     common_dict = {}
@@ -249,13 +240,33 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
     logging.info(
         f"Of which belonging to the image: {len(common_dict)} ({(100 * len(common_dict) / image_voxels.shape[0]):.1f}%)\n"
     )
+    pheromone_threshold = np.linspace(0, np.amax(pheromone_matrix), 500)
+    sensitivity = np.zeros(len(pheromone_threshold))
+    expl_level = np.zeros(len(pheromone_threshold))
+    cont_level = np.zeros(len(pheromone_threshold))
+    for index, val in enumerate(pheromone_threshold):
+        temp_common_dict = dict(
+            (key, value) for key, value in common_dict.items() if value >= val
+        )
+        temp_visited_dict = dict(
+            (key, value) for key, value in visited_voxels_dict.items() if value >= val
+        )
+        sensitivity[index] = len(temp_common_dict) / image_voxels.shape[0]
+        expl_level[index] = len(temp_visited_dict) / image_voxels.shape[0]
+        cont_level[index] = expl_level[index] - sensitivity[index]
     _, ax = plt.subplots(2, 2, figsize=(10, 7))
     ax[0][0].plot(ants_number)
     ax[0][0].set_title("Number of ants per cycle")
-    ax[0][1].bar(list(common_dict.keys()), common_dict.values())
-    ax[0][1].set_title("Bar plot of visited voxels part of the image")
+    ax[0][1].hist(common_dict.values(), bins=100)
+    ax[0][1].set_title("Hist of pheromone values")
     ax[0][1].set_xticks([])
-    plt.savefig("../results/CAM_statistics.png")
+    ax[1][0].plot(pheromone_threshold, sensitivity, label="S")
+    ax[1][0].plot(pheromone_threshold, expl_level, label="E")
+    ax[1][0].legend()
+    ax[1][0].set_title("S and E vs pheromone threshold")
+    ax[1][1].plot(cont_level, sensitivity, marker="o", linestyle="")
+    ax[1][1].set_title("S vs C")
+    #plt.savefig("../results/CAM_statistics.png")
 
 
 def set_image_and_pheromone(file_path):
@@ -435,6 +446,5 @@ if __name__ == "__main__":
         f"Elapsed time: {(time.perf_counter() - start_time_local) / 60:.3f} min\n"
     )
     statistics(ant_number, image, pheromone_map)
-    plot_display(aspect_ratio, image, pheromone_map, anthill_position
-    )
+    plot_display(aspect_ratio, image, pheromone_map, anthill_position)
     plt.show()
