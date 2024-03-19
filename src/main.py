@@ -127,6 +127,7 @@ def find_next_voxel(ant_worker):
 
 def plot_display(
     ants_number,
+    a_ratio,
     image_matrix,
     visited_voxs_dict,
     pheromone_matrix,
@@ -139,7 +140,7 @@ def plot_display(
     Args
     ----
     ants_number : list[int]
-        The list of the nu,ber of ants per cycle.
+        The list of the number of ants per cycle.
 
     image_matrix : ndarray
         The matrix of the image to be segmented.
@@ -160,6 +161,7 @@ def plot_display(
     cmap = "gray"
     ax[0][0].plot(ants_number)
     ax[0][0].set_title("Number of ants per cycle")
+    ax[0][1].set_aspect(a_ratio['axial'])
     plot_1 = ax[0][1].imshow(image_matrix[:, :, anthill_coordinates[2]], cmap="gray")
     ax[0][2].bar(list(visited_voxs_dict.keys()), visited_voxs_dict.values())
     ax[0][2].set_title("Bar plot of visited voxels part of the image")
@@ -299,7 +301,6 @@ def set_image_and_pheromone(file_path):
     global np_x_shape
     np_x_shape = pheromone_map_init_.shape
     pheromone_shared_ = RawArray("f", np.array(pheromone_map_init_.shape).prod().item())
-    print(type(pheromone_shared_))
     global np_x
     np_x = pheromone_shared_
     # RawArray used as buffer to share the pheromone_map as np array
@@ -317,19 +318,26 @@ def set_image_and_pheromone(file_path):
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description="Module implementing the CAM algorithm.")
+    parser = argparse.ArgumentParser(
+        description="Module implementing the CAM algorithm."
+    )
     parser.add_argument(
-        "anthill_coordinates", help="The anthill voxel position.", type=int, nargs=3
+        "anthill_coordinates",
+        help="The anthill voxel position.",
+        type=int,
+        nargs=3,
+        metavar="voxel_coordinate",
     )
     parser.add_argument(
         "n_iteration",
         help="Number of iterations before stopping.",
         type=int,
+        metavar="n_iteration",
     )
     parser.add_argument(
         "--file_path",
         type=str,
-        help="The absolute path of the image file.",
+        help="The absolute path of the image directory.",
         metavar="str",
     )
     args = parser.parse_args()
@@ -341,7 +349,7 @@ if __name__ == "__main__":
     np.copyto(pheromone_map, pheromone_map_init)
 
     n_iteration = 0
-    energy_death = 1.
+    energy_death = 1.0
     energy_reproduction = 1.3
     ant_number = []
     pheromone_mean_sum = 0
@@ -353,9 +361,9 @@ if __name__ == "__main__":
     while len(ant_colony) != 0 and n_iteration <= args.n_iteration:
         print(f"Iter:{n_iteration}\t#ants:{len(ant_colony)}\n")
 
-        chunksize = max(2, len(ant_colony) // 4)
+        chunksize = max(2, len(ant_colony) // 6)
         with multiprocessing.Pool(
-            processes=4,
+            processes=6,
             initializer=pool_initializer,
             initargs=(pheromone_shared, pheromone_map.shape),
         ) as pool:
@@ -416,5 +424,5 @@ if __name__ == "__main__":
         f"Elapsed time: {(time.perf_counter() - start_time_local) / 60:.3f} min\n"
     )
     visited_voxels = statistics(image, pheromone_map)
-    plot_display(ant_number, image, visited_voxels, pheromone_map, anthill_position)
+    plot_display(ant_number, aspect_ratio, image, visited_voxels, pheromone_map, anthill_position)
     plt.show()

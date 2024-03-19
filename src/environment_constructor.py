@@ -23,7 +23,7 @@ import os
 import glob
 import pydicom
 import numpy as np
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 
 class ImageData:
@@ -139,8 +139,9 @@ class ImageData:
             'sagittal': y/z,
             'coronal': x/z
         }
+        CT_array = CT_array[167 : 409, 30 : 230, 267 - 10 : 267 + 10]
         # ax = plt.subplot(1, 1, 1)
-        # ax.imshow(CT_array[:, :, CT_array.shape[1] // 2], cmap="gray")
+        # ax.imshow(CT_array[:, :, CT_array.shape[2] // 2], cmap="gray")
         # ax.set_aspect(aspect_ratio['axial'])
         return CT_array, aspect_ratio
 
@@ -148,4 +149,6 @@ class ImageData:
 if __name__ == "__main__":
     matrix_dim = [512, 512, 512]
     imagedata = ImageData(matrix_dim)
+    CT_arr = ImageData.image_from_file("D:/train_data/Training/CASE01")[0]
+    plt.show()
 

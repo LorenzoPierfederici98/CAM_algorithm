@@ -40,8 +40,6 @@ class Ant:
 
     find_first_neighbours : finds the first-order neighbours of the current voxel.
 
-    find_second_neighbours : finds the second-order neighbours of the current voxel.
-
     pheromone_release : releases pheromone in a voxel.
 
     compute_probability : computes the probability to choose a voxel destination.
@@ -121,55 +119,6 @@ class Ant:
             )
         return neighbours
 
-    def find_second_neighbours(self):
-        """Finds the indexes of the second-order neighbours of
-        the ant current voxel. The construction is similar to
-        that one of the find_first_neighbours function.
-
-        Returns
-        -------
-        neighbours : array[int]
-            Array of the indexes of the second-order neighbours of the current voxel.
-        """
-
-        neighbours = np.transpose(np.indices((5, 5, 5)) - 2).reshape(-1, 3)
-        neighbours = np.delete(neighbours, 62, axis=0) + self.voxel_coordinates
-        if (
-            (self.voxel_coordinates[0] in (0, 1, 2))
-            or (self.voxel_coordinates[1] in (0, 1, 2))
-            or (self.voxel_coordinates[2] in (0, 1, 2))
-        ):
-            neighbours = np.delete(
-                neighbours, np.unique(np.where(neighbours < 0)[0]), axis=0
-            )
-        if self.voxel_coordinates[0] in (
-            self.image_matrix.shape[0] - 1,
-            self.image_matrix.shape[0] - 2,
-        ):
-            neighbours = np.delete(
-                neighbours,
-                np.unique(np.where(neighbours[:, 0] >= self.image_matrix.shape[0])[0]),
-                axis=0,
-            )
-        if self.voxel_coordinates[1] in (
-            self.image_matrix.shape[1] - 1,
-            self.image_matrix.shape[1] - 2,
-        ):
-            neighbours = np.delete(
-                neighbours,
-                np.unique(np.where(neighbours[:, 1] >= self.image_matrix.shape[1])[0]),
-                axis=0,
-            )
-        if self.voxel_coordinates[2] in (
-            self.image_matrix.shape[2] - 1,
-            self.image_matrix.shape[2] - 2,
-        ):
-            neighbours = np.delete(
-                neighbours,
-                np.unique(np.where(neighbours[:, 2] >= self.image_matrix.shape[2])[0]),
-                axis=0,
-            )
-        return neighbours
 
     def pheromone_release(self):
         """Computes the quantity of pheromone to be released into
