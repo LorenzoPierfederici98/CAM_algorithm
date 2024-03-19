@@ -170,7 +170,7 @@ def plot_display(
         [plot_1, plot_2, plot_3, plot_4], [ax[0][0], ax[0][1], ax[1][0], ax[1][1]]
     ):
         plt.colorbar(plot, ax=ax)
-    #plt.savefig("../results/CAM_results.png")
+    plt.savefig("../results/CAM_results.png")
 
 
 def pool_initializer(pheromone_matrix, pheromone_matrix_shape):
@@ -210,7 +210,7 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
         The pheromone map.
     """
 
-    image_voxels = np.transpose(np.array(np.nonzero(image_matrix))).reshape(-1, 3)
+    image_voxels = np.transpose(np.array(np.nonzero(image_matrix>100))).reshape(-1, 3)
     visited_voxs = np.unique(
         np.transpose(np.array(np.nonzero(pheromone_matrix[:, :, :, 0]))).reshape(-1, 3),
         axis=0,
@@ -266,7 +266,7 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
     ax[1][0].set_title("S and E vs pheromone threshold")
     ax[1][1].plot(cont_level, sensitivity, marker="o", linestyle="")
     ax[1][1].set_title("S vs C")
-    #plt.savefig("../results/CAM_statistics.png")
+    plt.savefig("../results/CAM_statistics.png")
 
 
 def set_image_and_pheromone(file_path):
