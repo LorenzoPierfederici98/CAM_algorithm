@@ -161,7 +161,7 @@ def plot_display(
     cmap = "gray"
     ax[0][0].plot(ants_number)
     ax[0][0].set_title("Number of ants per cycle")
-    ax[0][1].set_aspect(a_ratio['axial'])
+    ax[0][1].set_aspect(a_ratio["axial"])
     plot_1 = ax[0][1].imshow(image_matrix[:, :, anthill_coordinates[2]], cmap="gray")
     ax[0][2].bar(list(visited_voxs_dict.keys()), visited_voxs_dict.values())
     ax[0][2].set_title("Bar plot of visited voxels part of the image")
@@ -407,7 +407,27 @@ if __name__ == "__main__":
                 )
                 if valid_neighbours.shape[0] == 0:
                     continue
-                for neigh in valid_neighbours:
+                second_neighbours = ant.find_second_neighbours()
+                image_second_neigh = (
+                    image[
+                        second_neighbours[:, 0],
+                        second_neighbours[:, 1],
+                        second_neighbours[:, 2],
+                    ]
+                    + 0.01
+                )
+                image_second_neigh_mean = image_second_neigh.mean()
+                image_second_max = np.amax(image_second_neigh)
+                image_second_min = np.amin(image_second_neigh)
+                n_offspring = min(
+                    int(
+                        26
+                        * (image_second_neigh_mean - image_second_min)
+                        / (image_second_max - image_second_min)
+                    ),
+                    26,
+                )
+                for neigh in valid_neighbours[:n_offspring]:
                     ant_colony.append(Ant(image, list(neigh)))
                 pheromone_map[
                     valid_neighbours[:, 0],
@@ -424,5 +444,7 @@ if __name__ == "__main__":
         f"Elapsed time: {(time.perf_counter() - start_time_local) / 60:.3f} min\n"
     )
     visited_voxels = statistics(image, pheromone_map)
-    plot_display(ant_number, aspect_ratio, image, visited_voxels, pheromone_map, anthill_position)
+    plot_display(
+        ant_number, aspect_ratio, image, visited_voxels, pheromone_map, anthill_position
+    )
     plt.show()
