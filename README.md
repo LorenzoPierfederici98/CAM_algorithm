@@ -20,7 +20,7 @@ graph TD;
     C-->|No possible destination| D[The ant dies];
     C-->|Possible destination| E[The ant moves and updates its energy];
     E-->|energy<energy_death| D
-    E-->|energy>energy_repr| F[The ant energy is reset to the default energy and $N_{offspring}$ ants are generated in the first neighb. voxels]
+    E-->|energy>energy_repr| F[The ant energy is reset to the default energy and the offspring ants are generated in the first neighb. voxels]
     F-->B
 ```
 ## Usage
