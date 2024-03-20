@@ -6,7 +6,8 @@
 Welcome to CAM algorithm's documentation!
 =========================================
 
-Repository of the project for the CMEPDA course implementing a Channeler Ant Model (CAM) algorithm in order to segment aerial trees.
+Repository of the project for the CMEPDA course implementing a Channeler Ant Model (CAM) algorithm in order to segment aerial trees, following the model described by Cerello et al. in the paper cited in the *References* section of the `github repository <https://github.com/LorenzoPierfederici98/CAM_algorithm>`_ .
+
 
 Overview
 ^^^^^^^^
