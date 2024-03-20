@@ -13,7 +13,13 @@ The ants lifespan is reuglated by the energy parameter: all the ants are assigne
 Following those rules the ants build the pheromone map, which is deployed to segment bronchial and vascular trees in lung CT images. The algorithm parameters are defined in the documentation.
 
 ## Workflow
-
+```mermaid
+graph TD;
+    A[Initialized pheromone map, all voxels are ant and pheromone-free]-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
 ## Usage
 The user has to provide the voxel position of the anthill from which the segmentation starts and the path of the image dicom directory.
 
@@ -33,7 +39,7 @@ options:
   --file_path str   The absolute path of the image
                     directory.
 ```
-The run results, such as the pheromone map and the evaluation metrics, are placed in the results directory.
+The run results, such as the image matrix dimensions, the pheromone map, the evaluation metrics and the elapsed time, are placed in the results directory.
 
 ## References
 [Cerello, Piergiorgio, et al. "3-D object segmentation using ant colonies." Pattern Recognition 43.4 (2010): 1476-1490.](https://www.sciencedirect.com/science/article/abs/pii/S003132030900380X?via%3Dihub)
