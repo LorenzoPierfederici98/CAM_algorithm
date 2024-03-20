@@ -15,6 +15,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -76,7 +77,43 @@
   <section id="welcome-to-cam-algorithm-s-documentation">
 <h1>Welcome to CAM algorithm’s documentation!<a class="headerlink" href="#welcome-to-cam-algorithm-s-documentation" title="Permalink to this headline">¶</a></h1>
 <p>Repository of the project for the CMEPDA course implementing a Channeler Ant Model (CAM) algorithm in order to segment aerial trees.</p>
-<p>The CAM algorithm exploits virtual ant colonies whose behaviour mimics the cooperation strategies put in place by real ants, which is here exploited in image processing.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>The CAM algorithm exploits virtual ant colonies whose behaviour mimics the cooperation strategies put in place by real ants, which is here used in image processing. The ant colony lives in the digital habitat of the image voxels, in which ants move and deposit pheromone in order to build a pheromone map.</p>
+<p>The life cycle of the ants is discretized in iterations: starting from the anthill voxel (chosen by the user) and all its first-order neighbours, the ants deposit pheromone values, corresponding to the respective image voxels intensities, and evaluate the next voxel destination among all the first-order neighbouring voxels not occupied by an ant. The evaluation of the destination voxel is made by computing a probability for all the free neighbouring voxels, which depends on their pheromone values; the next voxel is chosen with a roulette wheel algorithm, in order to find a balance between random paths and “directional” paths given by the pheromone trails.</p>
+<p>The ants lifespan is reuglated by the energy parameter: all the ants are assigned with a default value which varies with every iteration, depending on the pheromone value released by the ant and the pheromone mean per iteration released by the ant colony since the first iteration. Whenever an ant has energy greater than a reproduction value it generates <span class="math notranslate nohighlight">\(N_{offspring}\in[0, 26]\)</span> ants, related to the local properties of the enviornment, which are placed in the free first-order neighbouring voxels; if the energy is lower than a certain value or if the ant has no possible voxel destination it dies. Following those rules the ants build the pheromone map, which is deployed to segment bronchial and vascular trees in lung CT images.</p>
+</section>
+<section id="moving-rules">
+<h2>Moving rules<a class="headerlink" href="#moving-rules" title="Permalink to this headline">¶</a></h2>
+<p>The moving rules take into account both randomness and the colony global knowledge of the environment, provided by the pheromone values stored in the first-neighbouring voxels <span class="math notranslate nohighlight">\(\sigma_j\)</span> : a large amount of pheromone in a voxel corresponds to a higher probability to choose that one as a possibile destination for an ant. Starting from an ant at a voxel <span class="math notranslate nohighlight">\(v_i\)</span> it is computed the probability to choose a first-neighbouring voxel <span class="math notranslate nohighlight">\(v_j\)</span>, which must be ant-free and must have been visited a number of times lower than <span class="math notranslate nohighlight">\(N_V\)</span> (defined later), as follows</p>
+<div class="math notranslate nohighlight">
+\[P_{ij}(v_i\to v_j) = \frac{W(\sigma_j)}{\sum_{n_{neigh}}W(\sigma_n)}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(W(\sigma_j) = (1 + \frac{\sigma_j}{1 + \delta \sigma_j})^{\beta}\)</span> depends on the <em>osmotro-potaxic sensitivity</em> <span class="math notranslate nohighlight">\(\beta = 3.5\)</span> and the <em>sensory capacity</em> <span class="math notranslate nohighlight">\(1/\delta = 1/0.2\)</span> which determines a decrease in the ant sensitivity relatively to the pheromone if its concentration is too high in a voxel. A random float <span class="math notranslate nohighlight">\(rand\)</span> between 0 and <span class="math notranslate nohighlight">\(\max{P_{ij}}\)</span> is then extracted and the first voxel for which <span class="math notranslate nohighlight">\(P_{ij}\geq rand\)</span> is chosen to be the destination.</p>
+</section>
+<section id="pheromone-laying-rule">
+<h2>Pheromone laying rule<a class="headerlink" href="#pheromone-laying-rule" title="Permalink to this headline">¶</a></h2>
+<p>The pheromone value an ant deposits into a voxel <span class="math notranslate nohighlight">\(v_i\)</span> before leaving is</p>
+<div class="math notranslate nohighlight">
+\[T = \eta + I(v_i)\]</div>
+<p>With <span class="math notranslate nohighlight">\(I(v_i)\)</span> the intensity of the corresponding image voxel and <span class="math notranslate nohighlight">\(\eta = 0.01\)</span> a quantity that an ant would leave even into a voxel with zero intensity, certifying that it was visited. See the reference article for other laying rules.</p>
+</section>
+<section id="life-cycle">
+<h2>Life cycle<a class="headerlink" href="#life-cycle" title="Permalink to this headline">¶</a></h2>
+<p>The life cycle of the ants is regulated by the energy parameter with a default value of <span class="math notranslate nohighlight">\(\varepsilon_0 = 1 + \alpha\)</span> with <span class="math notranslate nohighlight">\(\alpha = 0.2\)</span>. The energy update of an ant takes into account the amount of pheromone deposited by it <span class="math notranslate nohighlight">\(\Delta_{ph}\)</span> and the average amount of pheromone per iteration released by the colony since the start <span class="math notranslate nohighlight">\(&lt;\Delta_{ph}&gt;\)</span></p>
+<div class="math notranslate nohighlight">
+\[\Delta\varepsilon = -\alpha (1 - \frac{\Delta_{ph}}{&lt;\Delta_{ph}&gt;})\]</div>
+<p>An ant dies whenever <span class="math notranslate nohighlight">\(\varepsilon\leq \varepsilon_D = 1\)</span> and gives birth whenever <span class="math notranslate nohighlight">\(\varepsilon\geq \varepsilon_R = 1.3\)</span>.</p>
+<p>The number of ants generated when a reproduction takes place <span class="math notranslate nohighlight">\(N_{offspring}\)</span> is a function of the local properties of the environment, which are evaluated replacing <span class="math notranslate nohighlight">\(T\)</span> with <span class="math notranslate nohighlight">\(T_5\)</span> the pheromone realising rule considering the intensity <span class="math notranslate nohighlight">\(I_5\)</span> as the image intensity averaged on the second-order neighbours of the ant current voxel.</p>
+<div class="math notranslate nohighlight">
+\[N_{offspring} = 26 \frac{T_5 - T_{5,min}}{T_{5,max} - T_{5,min}}\]</div>
+<p><span class="math notranslate nohighlight">\(T_{5,min}\)</span> <span class="math notranslate nohighlight">\(T_{5,max}\)</span> being the minimum and maximum pheromone releases in the second-order neighbours. If <span class="math notranslate nohighlight">\(N_{offspring}\)</span> is greater than the number of free first-order neighbours, it is set to this latter.</p>
+</section>
+<section id="number-of-visits-per-voxel">
+<h2>Number of visits per voxel<a class="headerlink" href="#number-of-visits-per-voxel" title="Permalink to this headline">¶</a></h2>
+<p>The number of visits a voxel V can receive <span class="math notranslate nohighlight">\(N_V\)</span> is voxel and pheromone dependent: in areas with small pheromone deposition a larger number of visits is allowed, vice versa in areas with larger pheromone deposition. The pheromone deposition ranges from <span class="math notranslate nohighlight">\(T_{min}\)</span> to <span class="math notranslate nohighlight">\(T_{max}\)</span>, so that for the voxel V:</p>
+<div class="math notranslate nohighlight">
+\[N_V = 40 + 80 \frac{T - T_{max}}{T_{min} - T_{max}}\]</div>
+<p><span class="math notranslate nohighlight">\(N_V\)</span> ranges from 40 to 120. A voxel which has reached the maximum number cannot be visited by the colony.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -87,6 +124,7 @@
 <li class="toctree-l1"><a class="reference internal" href="help.html">Need help?</a></li>
 </ul>
 </div>
+</section>
 </section>
 <section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>

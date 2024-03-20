@@ -96,16 +96,14 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="main.plot_display">
-<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">plot_display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ants_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visited_voxs_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pheromone_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anthill_coordinates</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.plot_display" title="Permalink to this definition">¶</a></dt>
-<dd><p>Displays the plots of the number of ants per cycle,
-the original image matrix, the bar plot of the visited voxels
-and the pheromone map built by the ants.</p>
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">plot_display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a_ratio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pheromone_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anthill_coordinates</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.plot_display" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays the axial view of the image matrix, the axial, coronal
+and sagittal views of the pheromone map; the z, x and y slices of
+the different views correspond to those ones of the anthill location.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ants_number</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The list of the nu,ber of ants per cycle.</p></li>
 <li><p><strong>image_matrix</strong> (<em>ndarray</em>) – The matrix of the image to be segmented.</p></li>
-<li><p><strong>visited_voxs_dict</strong> (<em>dict</em>) – The dictionary containing all the visited voxels.</p></li>
 <li><p><strong>pheromone_matrix</strong> (<em>ndarray</em>) – The matrix of the pheromone map built by the ants.</p></li>
 <li><p><strong>anthill_coordinates</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The coordinates of the voxel chosen as the anthill position,
 used to display different slices of the pheromone map.</p></li>
@@ -116,15 +114,15 @@ used to display different slices of the pheromone map.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="main.pool_initializer">
-<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">pool_initializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pheromone_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pheromone_matrix_shape</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.pool_initializer" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">pool_initializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pheromone_matrix_shared</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pheromone_matrix_shape</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.pool_initializer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to be used as the Pool initializer to share the
 pheromone map between the processes instantiated by Pool.map.
 Sets the pheromone map and its shape as global variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Pheromone_Map</strong> (<em>ndarray</em>) – The RawArray from multiprocessing used to share the pheromone map.</p></li>
-<li><p><strong>Pheromone_Map_shape</strong> (<em>tuple</em><em>[</em><em>int</em><em>]</em>) – The shape of the pheromone map.</p></li>
+<li><p><strong>pheromone_matrix_shared</strong> (<em>ndarray</em>) – The RawArray from multiprocessing used to share the pheromone map.</p></li>
+<li><p><strong>pheromone_matrix_shape</strong> (<em>tuple</em><em>[</em><em>int</em><em>]</em>) – The shape of the pheromone map.</p></li>
 </ul>
 </dd>
 </dl>
@@ -180,24 +178,21 @@ to share the pheromone map as a numpy array between processes.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="main.statistics">
-<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pheromone_matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.statistics" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ants_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pheromone_matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.statistics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides statistics about the run such as: the number of
 non-zero image voxels, the number of voxels visited by the ants,
 the visited voxels which are also part of the non-zero image
-voxels and the respective number of visits.</p>
+voxels and the respective number of visits. It also provides the
+algorithm evaluation metrics such as sensitivity, exploration and
+contamination level (defined in the documentation) as functions
+of the pheromone threshold.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>ants_number</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The list of the number of ants per cycle.</p></li>
 <li><p><strong>image_matrix</strong> (<em>ndarray</em>) – The image matrix.</p></li>
 <li><p><strong>pheromone_matrix</strong> (<em>ndarray</em>) – The pheromone map.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>common_dict</strong> – The dictionary of the visit voxels and their number of visits
-which are also non-zero image voxels.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
