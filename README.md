@@ -15,7 +15,7 @@ Following those rules the ants build the pheromone map, which is deployed to seg
 ## Usage
 The user has to provide the voxel position of the anthill from which the segmentation starts and the path of the image dicom directory.
 
-``python3.10 main.py -h
+```python3.10 main.py -h
 usage: main.py [-h] [--file_path str]
                voxel_coordinate voxel_coordinate
                voxel_coordinate n_iteration
@@ -29,7 +29,8 @@ positional arguments:
 options:
   -h, --help        show this help message and exit        
   --file_path str   The absolute path of the image
-                    directory.``
+                    directory.
+```
 
 ## References
 [Cerello, Piergiorgio, et al. "3-D object segmentation using ant colonies." Pattern Recognition 43.4 (2010): 1476-1490.](https://www.sciencedirect.com/science/article/abs/pii/S003132030900380X?via%3Dihub)
