@@ -170,7 +170,7 @@ def plot_display(
         [plot_1, plot_2, plot_3, plot_4], [ax[0][0], ax[0][1], ax[1][0], ax[1][1]]
     ):
         plt.colorbar(plot, ax=ax)
-    #plt.savefig("../results/CAM_results.png")
+    plt.savefig("../results/CAM_results.png")
 
 
 def pool_initializer(pheromone_matrix_shared, pheromone_matrix_shape):
@@ -261,7 +261,7 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
     ax[0][0].plot(ants_number)
     ax[0][0].set_title("Number of ants per cycle")
     ax[0][1].hist(common_dict.values(), bins="sqrt")
-    ax[0][1].set_title("Hist of pheromone values")
+    ax[0][1].set_title("Hist of pheromone values into image objects")
     ax[0][1].set_xticks([])
     ax[1][0].plot(pheromone_threshold, sensitivity, label="S")
     ax[1][0].plot(pheromone_threshold, expl_level, label="E")
@@ -269,7 +269,7 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
     ax[1][0].set_title("S and E vs pheromone threshold")
     ax[1][1].plot(cont_level, sensitivity, marker="o", linestyle="")
     ax[1][1].set_title("S vs C")
-    #plt.savefig("../results/CAM_statistics.png")
+    plt.savefig("../results/CAM_statistics.png")
 
 
 def set_image_and_pheromone(file_path):
