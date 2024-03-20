@@ -12,6 +12,8 @@ The evaluation of the destination voxel is made by computing a probability for a
 The ants lifespan is reuglated by the energy parameter: all the ants are assigned with a default value which varies with every iteration, depending on the pheromone value released by the ant and the pheromone mean per iteration released by the ant colony since the first iteration. Whenever an ant has energy greater than a reproduction value it generates $N_{offspring}\in[0, 26]$ ants, related to the local properties of the enviornment, which are placed in the free first-order neighbouring voxels; if the energy is lower than a certain value or if the ant has no possible voxel destination it dies.
 Following those rules the ants build the pheromone map, which is deployed to segment bronchial and vascular trees in lung CT images. The algorithm parameters are defined in the documentation.
 
+## Workflow
+
 ## Usage
 The user has to provide the voxel position of the anthill from which the segmentation starts and the path of the image dicom directory.
 
@@ -31,6 +33,7 @@ options:
   --file_path str   The absolute path of the image
                     directory.
 ```
+The run results, such as the pheromone map and the evaluation metrics, are placed in the results directory.
 
 ## References
 [Cerello, Piergiorgio, et al. "3-D object segmentation using ant colonies." Pattern Recognition 43.4 (2010): 1476-1490.](https://www.sciencedirect.com/science/article/abs/pii/S003132030900380X?via%3Dihub)
