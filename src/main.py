@@ -170,24 +170,24 @@ def plot_display(
         [plot_1, plot_2, plot_3, plot_4], [ax[0][0], ax[0][1], ax[1][0], ax[1][1]]
     ):
         plt.colorbar(plot, ax=ax)
-    plt.savefig("../results/CAM_results.png")
+    #plt.savefig("../results/CAM_results.png")
 
 
-def pool_initializer(pheromone_matrix, pheromone_matrix_shape):
+def pool_initializer(pheromone_matrix_shared, pheromone_matrix_shape):
     """Function to be used as the Pool initializer to share the
     pheromone map between the processes instantiated by Pool.map.
     Sets the pheromone map and its shape as global variables.
 
     Args
     ----
-    Pheromone_Map : ndarray
+    pheromone_matrix_shared : ndarray
         The RawArray from multiprocessing used to share the pheromone map.
 
-    Pheromone_Map_shape : tuple[int]
+    pheromone_matrix_shape : tuple[int]
         The shape of the pheromone map.
     """
     global np_x
-    np_x = pheromone_matrix
+    np_x = pheromone_matrix_shared
     global np_x_shape
     np_x_shape = pheromone_matrix_shape
 
@@ -196,7 +196,10 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
     """Provides statistics about the run such as: the number of
     non-zero image voxels, the number of voxels visited by the ants,
     the visited voxels which are also part of the non-zero image
-    voxels and the respective number of visits.
+    voxels and the respective number of visits. It also provides the
+    algorithm evaluation metrics such as sensitivity, exploration and
+    contamination level (defined in the documentation) as functions
+    of the pheromone threshold.
 
     Args
     ----
@@ -210,7 +213,7 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
         The pheromone map.
     """
 
-    image_voxels = np.transpose(np.array(np.nonzero(image_matrix>100))).reshape(-1, 3)
+    image_voxels = np.transpose(np.array(np.nonzero(image_matrix>200))).reshape(-1, 3)
     visited_voxs = np.unique(
         np.transpose(np.array(np.nonzero(pheromone_matrix[:, :, :, 0]))).reshape(-1, 3),
         axis=0,
@@ -257,7 +260,7 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
     _, ax = plt.subplots(2, 2, figsize=(10, 7))
     ax[0][0].plot(ants_number)
     ax[0][0].set_title("Number of ants per cycle")
-    ax[0][1].hist(common_dict.values(), bins=100)
+    ax[0][1].hist(common_dict.values(), bins="sqrt")
     ax[0][1].set_title("Hist of pheromone values")
     ax[0][1].set_xticks([])
     ax[1][0].plot(pheromone_threshold, sensitivity, label="S")
@@ -266,7 +269,7 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
     ax[1][0].set_title("S and E vs pheromone threshold")
     ax[1][1].plot(cont_level, sensitivity, marker="o", linestyle="")
     ax[1][1].set_title("S vs C")
-    plt.savefig("../results/CAM_statistics.png")
+    #plt.savefig("../results/CAM_statistics.png")
 
 
 def set_image_and_pheromone(file_path):
