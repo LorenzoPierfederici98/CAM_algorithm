@@ -15,10 +15,10 @@ Following those rules the ants build the pheromone map, which is deployed to seg
 ## Workflow
 ```mermaid
 graph TD;
-    A[Initialized pheromone map, all voxels are ant and pheromone-free]-->B;
-    A-->C;
-    B-->D;
-    C-->D;
+    A[Initialized pheromone map, all voxels are ant and pheromone-free]-->B[Anthill position chosen by the user, all 26 first neighbouring voxels are occupied by ants];
+    B-->C[Ants release the pheromone and evaluate the next destination];
+    C-->|No possible destination| D[The ant dies];
+    C-->|Possible destination| E[The ant moves and updates its energy];
 ```
 ## Usage
 The user has to provide the voxel position of the anthill from which the segmentation starts and the path of the image dicom directory.
