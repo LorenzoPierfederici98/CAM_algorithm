@@ -56,7 +56,7 @@ The number of visits a voxel V can receive :math:`N_V` is voxel and pheromone de
 
 .. math:: N_V = 40 + 80 \frac{T - T_{max}}{T_{min} - T_{max}}
 
-:math:`N_V` ranges from 40 to 120. A voxel which has reached the maximum number cannot be visited by the colony.
+:math:`N_V` ranges from 40 to 120. A voxel which has reached the maximum number cannot be further visited by the colony.
 
 
 .. toctree::
