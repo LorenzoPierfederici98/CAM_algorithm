@@ -19,10 +19,10 @@ graph TD;
     B-->C[Ants release the pheromone and evaluate the next destination];
     C-->|No possible destination| D[The ant dies];
     C-->|Possible destination| E[The ant moves and updates its energy];
-    E-->|energy<energy_death| D
-    E-->|energy>energy_repr| F[The ant energy is reset to the default energy and the offspring ants
+    E-->|energy<e_death| D
+    E-->|energy>e_repr| F[The ant energy is reset to the default energy and the offspring ants
 are generated in the first neighb. voxels]
-    F-->B
+    F-->C
 ```
 ## Usage
 The user has to provide the voxel position of the anthill from which the segmentation starts and the path of the image dicom directory.
