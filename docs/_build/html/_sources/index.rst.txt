@@ -23,7 +23,7 @@ The moving rules take into account both randomness and the colony global knowled
 
 .. math:: P_{ij}(v_i\to v_j) = \frac{W(\sigma_j)}{\sum_{n_{neigh}}W(\sigma_n)}
 
-Where :math:`W(\sigma_j) = (1 + \frac{\sigma_j}{1 + \delta \sigma_j})^{\beta}` depends on the *osmotro-potaxic sensitivity* :math:`\beta = 3.5` and the *sensory capacity* :math:`1/\delta = 1/0.2` which determines a decrease in the ant sensitivity relatively to the pheromone if its concentration is too high in a voxel. A random float :math:`rand` between 0 and :math:`\max{P_{ij}}` is then extracted and the first voxel for which :math:`P_{ij}\geq rand` is chosen to be the destination.
+Where :math:`W(\sigma_j) = (1 + \frac{\sigma_j}{1 + \delta \sigma_j})^{\beta}` depends on the *osmotro-potaxic sensitivity* :math:`\beta = 3.5` representing the pheromone trail influence in choosing the voxel destination and the *sensory capacity* :math:`1/\delta = 1/0.2` which determines a decrease in the ant sensitivity relatively to the pheromone if its concentration is too high in a voxel. A random float :math:`rand` between 0 and :math:`\max{P_{ij}}` is then extracted and the first voxel for which :math:`P_{ij}\geq rand` is chosen to be the destination.
 
 
 Pheromone laying rule
