@@ -170,6 +170,7 @@ def plot_display(
         [plot_1, plot_2, plot_3, plot_4], [ax[0][0], ax[0][1], ax[1][0], ax[1][1]]
     ):
         plt.colorbar(plot, ax=ax)
+    plt.tight_layout()
     plt.savefig("../results/CAM_results.png")
 
 
@@ -263,12 +264,16 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
     ax[0][1].hist(common_dict.values(), bins="sqrt")
     ax[0][1].set_title("Hist of pheromone values into image objects")
     ax[0][1].set_xticks([])
-    ax[1][0].plot(pheromone_threshold, sensitivity, label="S")
-    ax[1][0].plot(pheromone_threshold, expl_level, label="E")
+    ax[1][0].plot(pheromone_threshold / 1000, sensitivity, label="S")
+    ax[1][0].plot(pheromone_threshold / 1000, expl_level, label="E")
+    ax[1][0].set_xlabel("Pheromone threshold x$10^3$")
     ax[1][0].legend()
     ax[1][0].set_title("S and E vs pheromone threshold")
     ax[1][1].plot(cont_level, sensitivity, marker="o", linestyle="")
+    ax[1][1].set_ylabel("S")
+    ax[1][1].set_xlabel("C")
     ax[1][1].set_title("S vs C")
+    plt.tight_layout()
     plt.savefig("../results/CAM_statistics.png")
 
 
