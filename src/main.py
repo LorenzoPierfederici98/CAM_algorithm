@@ -94,7 +94,7 @@ def update_pheromone_map(ant_worker):
     """
 
     arr = np.frombuffer(np_x, dtype=np.float32).reshape(np_x_shape)
-    pheromone = ant_worker.pheromone_release()
+    pheromone = ant_worker.pheromone_release(ant_worker.voxel_coordinates)
     [x, y, z] = ant_worker.voxel_coordinates
     arr[x, y, z, 0] += pheromone
     arr[x, y, z, 1] = 1
@@ -417,14 +417,8 @@ if __name__ == "__main__":
                     continue
 
                 second_neighbours = ant.find_second_neighbours()
-                image_second_neigh = (
-                    10 * image[
-                        second_neighbours[:, 0],
-                        second_neighbours[:, 1],
-                        second_neighbours[:, 2],
-                    ]
-                    + 0.01
-                )
+                image_second_neigh = ant_colony[i].pheromone_release(second_neighbours)
+
                 image_second_neigh_mean = image_second_neigh.mean()
                 image_second_max = np.amax(image_second_neigh)
                 image_second_min = np.amin(image_second_neigh)

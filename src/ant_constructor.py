@@ -175,7 +175,7 @@ class Ant:
         return neighbours
 
 
-    def pheromone_release(self):
+    def pheromone_release(self, voxel_coordinates):
         """Computes the quantity of pheromone to be released into
         the voxel to build the pheromone map. The quantity of pheromone
         released corresponds to the intensity of the voxel of the image
@@ -186,15 +186,27 @@ class Ant:
         pheromone_value : float
             The pheromone value to be stored into the pheromone map voxel.
         """
+        propor_factor = 10
 
-        pheromone_value = (
-                10 * self.image_matrix[
-                self.voxel_coordinates[0],
-                self.voxel_coordinates[1],
-                self.voxel_coordinates[2],
-            ]
-            + 0.01
-        )
+        if isinstance(voxel_coordinates, list):
+            pheromone_value = (
+                    propor_factor * self.image_matrix[
+                    voxel_coordinates[0],
+                    voxel_coordinates[1],
+                    voxel_coordinates[2],
+                ]
+                + 0.01
+            )
+        elif isinstance(voxel_coordinates, np.ndarray):
+            pheromone_value = (
+                    propor_factor * self.image_matrix[
+                    voxel_coordinates[:, 0],
+                    voxel_coordinates[:, 1],
+                    voxel_coordinates[:, 2],
+                ]
+                + 0.01
+            )
+
         return pheromone_value
 
 
@@ -226,7 +238,7 @@ class Ant:
                 40
                 + 80
                 *
-                    (self.pheromone_release()
+                    (self.pheromone_release(self.voxel_coordinates)
                     - np.amax(pheromone_map[:, :, :, 0]))
                     / (np.amin(pheromone_map[:, :, :, 0]) - np.amax(pheromone_map[:, :, :, 0]))
             )
@@ -238,14 +250,7 @@ class Ant:
                 first_neighbours[:, 0], first_neighbours[:, 1], first_neighbours[:, 2], 0
             ]
             < max_visit_number
-            * (
-                    10 * self.image_matrix[
-                    first_neighbours[:, 0],
-                    first_neighbours[:, 1],
-                    first_neighbours[:, 2]
-                ]
-                + 0.01
-            )
+            * self.pheromone_release(first_neighbours)
         )[0]
         valid_first_neighbours = first_neighbours[mask]
         if valid_first_neighbours.shape[0] == 0:
