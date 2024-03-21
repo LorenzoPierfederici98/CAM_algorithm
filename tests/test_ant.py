@@ -28,6 +28,7 @@ import numpy as np
 sys.path.append(os.path.join(os.path.dirname(sys.path[0])))
 from src.ant_constructor import Ant
 
+
 class AntTesting(unittest.TestCase):
     """Class inheriting from unittest.TestCase for the ant class functionalities testing."""
 
@@ -79,7 +80,7 @@ class AntTesting(unittest.TestCase):
         """Builds the pheromone map."""
         pheromone_map = np.zeros((image.shape[0], image.shape[1], image.shape[2], 2))
         pheromone_map[:, :, :, 0] = image
-        pheromone_map[:, :, :, 1] = 0.
+        pheromone_map[:, :, :, 1] = 0.0
         return pheromone_map
 
     def test_evaluate_destination(self):
@@ -95,12 +96,17 @@ class AntTesting(unittest.TestCase):
         # All the neighbouring voxels are occupied i.e the 4-th dimension
         # of the pheromone map has value True for all
         # first-neighbours
-        pheromone_map[first_neighbours[:, 0], first_neighbours[:, 1], first_neighbours[:, 2], 1] = 1.
-        self.assertEqual(
-            [], ant.evaluate_destination(first_neighbours, pheromone_map)
-        )
+        pheromone_map[
+            first_neighbours[:, 0], first_neighbours[:, 1], first_neighbours[:, 2], 1
+        ] = 1.0
+        self.assertEqual([], ant.evaluate_destination(first_neighbours, pheromone_map))
         # Now only the second half of first-neighbours is occupied
-        pheromone_map[first_neighbours[:first_neighbours.shape[0] // 2, 0], first_neighbours[:first_neighbours.shape[0] // 2, 1], first_neighbours[:first_neighbours.shape[0] // 2, 2], 1] = 0.
+        pheromone_map[
+            first_neighbours[: first_neighbours.shape[0] // 2, 0],
+            first_neighbours[: first_neighbours.shape[0] // 2, 1],
+            first_neighbours[: first_neighbours.shape[0] // 2, 2],
+            1,
+        ] = 0.0
         # Choose a random first-neighbour from those occupied
         # for N_TEST iteration(s) and check that it isn't chosen
         # as the next voxel destination
@@ -110,9 +116,12 @@ class AntTesting(unittest.TestCase):
                 first_neighbours.shape[0] // 2, first_neighbours.shape[0]
             )
             self.assertFalse(
-                (first_neighbours[j] ==
-                ant.evaluate_destination(first_neighbours, pheromone_map)).all()
+                (
+                    first_neighbours[j]
+                    == ant.evaluate_destination(first_neighbours, pheromone_map)
+                ).all()
             )
+
 
 if __name__ == "__main__":
     unittest.main()

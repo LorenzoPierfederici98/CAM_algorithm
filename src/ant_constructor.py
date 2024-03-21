@@ -233,7 +233,7 @@ class Ant:
         # The maximum number of visits per voxel depends on the
         # quantity of pheromone in that voxel relative to that one in
         # the whole pheromone map.
-        if np.amax(pheromone_map[:, :, :, 0]) != 0:
+        if np.amax(pheromone_map[:, :, :, 0]) != 0 and self.pheromone_release(self.voxel_coordinates) < np.amax(pheromone_map[:, :, :, 0]):
             max_visit_number = int(
                 40
                 + 80
@@ -252,6 +252,7 @@ class Ant:
             < max_visit_number
             * self.pheromone_release(first_neighbours)
         )[0]
+        print(mask)
         valid_first_neighbours = first_neighbours[mask]
         if valid_first_neighbours.shape[0] == 0:
             return []
