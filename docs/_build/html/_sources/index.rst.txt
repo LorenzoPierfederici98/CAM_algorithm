@@ -64,7 +64,7 @@ Evaluation metrics
 ^^^^^^^^^^^^^^^^^^
 CAM performances are evaluated defining threshold values above which voxels can be considered as segmented. The following quantities are defined:
 
-* Sensitivity :math:`S = N_R/N_O` ratio between the number of segmented voxels which are also part of the image voxels and the number of voxels in these latter.
+* Sensitivity :math:`S = N_R/N_O` the ratio between the number of segmented voxels which are also part of the image voxels and the number of voxels in these latter.
 * Exploration level :math:`E = N_S/N_O` the ratio between the number of all segmented voxels and the number of voxels in the original image objects.
 * Contamination level :math:`C = N_C/N_O` the ratio between the number of segmented voxels which are not part of the image objects and these latter. It corresponds to :math:`C = E - S`.
 
