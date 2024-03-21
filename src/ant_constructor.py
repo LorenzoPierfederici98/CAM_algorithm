@@ -55,6 +55,7 @@ class Ant:
         self._alpha = 0.2
         self.energy = 1.0 + self._alpha
 
+
     @property
     def beta(self):
         """Defines the beta attribute as read-only."""
@@ -70,9 +71,11 @@ class Ant:
         """Defines the alpha attribute as read-only."""
         return self._alpha
 
+
     def update_energy(self, value):
         """Updates the ant energy."""
         self.energy = self.energy - self._alpha * (1.0 - value)
+
 
     def find_first_neighbours(self):
         """Finds the indexes of the first-order neighbours of
@@ -120,7 +123,8 @@ class Ant:
                 axis=0,
             )
         return neighbours
-    
+
+
     def find_second_neighbours(self):
         """Finds the indexes of the second-order neighbours of
         the ant current voxel. The construction is similar to
@@ -184,7 +188,7 @@ class Ant:
         """
 
         pheromone_value = (
-                self.image_matrix[
+                10 * self.image_matrix[
                 self.voxel_coordinates[0],
                 self.voxel_coordinates[1],
                 self.voxel_coordinates[2],
@@ -192,6 +196,7 @@ class Ant:
             + 0.01
         )
         return pheromone_value
+
 
     def evaluate_destination(self, first_neighbours, pheromone_map):
         """Computes the probability for the first-neighbouring voxels
@@ -234,7 +239,7 @@ class Ant:
             ]
             < max_visit_number
             * (
-                    self.image_matrix[
+                    10 * self.image_matrix[
                     first_neighbours[:, 0],
                     first_neighbours[:, 1],
                     first_neighbours[:, 2]
@@ -282,6 +287,7 @@ class Ant:
         rand_num = np.random.uniform(0, np.max(probability))
         next_voxel_index = np.where(probability >= rand_num)[0][0]
         return list(valid_first_neighbours[next_voxel_index])
+
 
 if __name__ == "__main__":
     ant = Ant([], [])

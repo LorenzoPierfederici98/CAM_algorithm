@@ -149,7 +149,7 @@ def plot_display(
     """
 
     _, ax = plt.subplots(2, 2, figsize=(10, 7))
-    norm = "asinh"
+    norm = "symlog"
     cmap = "gray"
     ax[0][0].set_aspect(a_ratio["axial"])
     plot_1 = ax[0][0].imshow(image_matrix[:, :, anthill_coordinates[2]], cmap="gray")
@@ -418,7 +418,7 @@ if __name__ == "__main__":
 
                 second_neighbours = ant.find_second_neighbours()
                 image_second_neigh = (
-                    image[
+                    10 * image[
                         second_neighbours[:, 0],
                         second_neighbours[:, 1],
                         second_neighbours[:, 2],
