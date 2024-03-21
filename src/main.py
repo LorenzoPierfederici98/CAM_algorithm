@@ -65,7 +65,7 @@ def set_colony(anthill_coordinates, image_matrix):
         If the input coordinates are not valid.
     """
 
-    if (np.array(anthill_coordinates) >= np.array(image_matrix.shape)).any() or (
+    if anthill_coordinates[0] >= image_matrix.shape[0] or anthill_coordinates[1] >= image_matrix.shape[1] or anthill_coordinates[2] >= image_matrix.shape[2] or (
         np.array(anthill_coordinates) < 0
     ).any():
         print("Invalid coordinates.\n")
@@ -214,7 +214,7 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
         The pheromone map.
     """
 
-    image_voxels = np.transpose(np.array(np.nonzero(image_matrix>200))).reshape(-1, 3)
+    image_voxels = np.transpose(np.array(np.nonzero(image_matrix>300))).reshape(-1, 3)
     visited_voxs = np.unique(
         np.transpose(np.array(np.nonzero(pheromone_matrix[:, :, :, 0]))).reshape(-1, 3),
         axis=0,

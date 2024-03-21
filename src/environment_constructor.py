@@ -93,12 +93,12 @@ class ImageData:
         """
 
         pheromone_map = np.zeros(
-            [
+            (
                 self.matrix_dimensions[0],
                 self.matrix_dimensions[1],
                 self.matrix_dimensions[2],
                 2,
-            ]
+        )
         )
         return pheromone_map
 
@@ -139,7 +139,7 @@ class ImageData:
             'sagittal': y/z,
             'coronal': x/z
         }
-        CT_array = CT_array[167 : 409, 30 : 230, 267 - 5 : 267 + 5] - 1024.
+        CT_array = CT_array[168 : 415, 284 : 460, 267 - 10 : 267 + 10] - 1024.
         # ax = plt.subplot(1, 1, 1)
         # ax.imshow(CT_array[:, :, CT_array.shape[2] // 2], cmap="gray")
         # ax.set_aspect(aspect_ratio['axial'])

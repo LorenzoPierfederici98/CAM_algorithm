@@ -252,7 +252,6 @@ class Ant:
             < max_visit_number
             * self.pheromone_release(first_neighbours)
         )[0]
-        print(mask)
         valid_first_neighbours = first_neighbours[mask]
         if valid_first_neighbours.shape[0] == 0:
             return []
