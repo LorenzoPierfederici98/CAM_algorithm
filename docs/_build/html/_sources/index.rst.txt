@@ -44,7 +44,7 @@ The life cycle of the ants is regulated by the energy parameter with a default v
 
 An ant dies whenever :math:`\varepsilon\leq \varepsilon_D = 1` and gives birth whenever :math:`\varepsilon\geq \varepsilon_R = 1.3`.
 
-The number of ants generated when a reproduction takes place :math:`N_{offspring}` is a function of the local properties of the environment, which are evaluated replacing :math:`T` with :math:`T_5` the pheromone realising rule considering the intensity :math:`I_5` as the image intensity averaged on the second-order neighbours of the ant current voxel.
+The number of ants generated when a reproduction takes place :math:`N_{offspring}` is a function of the local properties of the environment, which are evaluated replacing :math:`T` with :math:`T_5` the pheromone releasing rule considering the intensity :math:`I_5` as the image intensity averaged on the second-order neighbours of the ant current voxel.
 
 .. math:: N_{offspring} = 26 \frac{T_5 - T_{5,min}}{T_{5,max} - T_{5,min}}
 
@@ -58,6 +58,18 @@ The number of visits a voxel V can receive :math:`N_V` is voxel and pheromone de
 .. math:: N_V = 40 + 80 \frac{T - T_{max}}{T_{min} - T_{max}}
 
 :math:`N_V` ranges from 40 to 120. A voxel which has reached the maximum number cannot be further visited by the colony.
+
+
+Evaluation metrics
+^^^^^^^^^^^^^^^^^^
+CAM performances are evaluated defining threshold values above which voxels can be considered as segmented. The following quantities are defined:
+
+* Sensitivity :math:`S = N_R/N_O` ratio between the number of segmented voxels which are also part of the image voxels and the number of voxels in these latter.
+* Exploration level :math:`E = N_S/N_O` the ratio between the number of all segmented voxels and the number of voxels in the original image objects.
+* Contamination level :math:`C = N_C/N_O` the ratio between the number of segmented voxels which are not part of the image objects and these latter. It corresponds to :math:`C = E - S`.
+
+These quantities are evaluated as functions of the pheromone threshold.
+
 
 
 .. toctree::

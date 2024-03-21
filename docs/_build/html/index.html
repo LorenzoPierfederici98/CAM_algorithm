@@ -103,7 +103,7 @@
 <div class="math notranslate nohighlight">
 \[\Delta\varepsilon = -\alpha (1 - \frac{\Delta_{ph}}{&lt;\Delta_{ph}&gt;})\]</div>
 <p>An ant dies whenever <span class="math notranslate nohighlight">\(\varepsilon\leq \varepsilon_D = 1\)</span> and gives birth whenever <span class="math notranslate nohighlight">\(\varepsilon\geq \varepsilon_R = 1.3\)</span>.</p>
-<p>The number of ants generated when a reproduction takes place <span class="math notranslate nohighlight">\(N_{offspring}\)</span> is a function of the local properties of the environment, which are evaluated replacing <span class="math notranslate nohighlight">\(T\)</span> with <span class="math notranslate nohighlight">\(T_5\)</span> the pheromone realising rule considering the intensity <span class="math notranslate nohighlight">\(I_5\)</span> as the image intensity averaged on the second-order neighbours of the ant current voxel.</p>
+<p>The number of ants generated when a reproduction takes place <span class="math notranslate nohighlight">\(N_{offspring}\)</span> is a function of the local properties of the environment, which are evaluated replacing <span class="math notranslate nohighlight">\(T\)</span> with <span class="math notranslate nohighlight">\(T_5\)</span> the pheromone releasing rule considering the intensity <span class="math notranslate nohighlight">\(I_5\)</span> as the image intensity averaged on the second-order neighbours of the ant current voxel.</p>
 <div class="math notranslate nohighlight">
 \[N_{offspring} = 26 \frac{T_5 - T_{5,min}}{T_{5,max} - T_{5,min}}\]</div>
 <p><span class="math notranslate nohighlight">\(T_{5,min}\)</span> <span class="math notranslate nohighlight">\(T_{5,max}\)</span> being the minimum and maximum pheromone releases in the second-order neighbours. If <span class="math notranslate nohighlight">\(N_{offspring}\)</span> is greater than the number of free first-order neighbours, it is set to this latter.</p>
@@ -114,6 +114,16 @@
 <div class="math notranslate nohighlight">
 \[N_V = 40 + 80 \frac{T - T_{max}}{T_{min} - T_{max}}\]</div>
 <p><span class="math notranslate nohighlight">\(N_V\)</span> ranges from 40 to 120. A voxel which has reached the maximum number cannot be further visited by the colony.</p>
+</section>
+<section id="evaluation-metrics">
+<h2>Evaluation metrics<a class="headerlink" href="#evaluation-metrics" title="Permalink to this headline">¶</a></h2>
+<p>CAM performances are evaluated defining threshold values above which voxels can be considered as segmented. The following quantities are defined:</p>
+<ul class="simple">
+<li><p>Sensitivity <span class="math notranslate nohighlight">\(S = N_R/N_O\)</span> ratio between the number of segmented voxels which are also part of the image voxels and the number of voxels in these latter.</p></li>
+<li><p>Exploration level <span class="math notranslate nohighlight">\(E = N_S/N_O\)</span> the ratio between the number of all segmented voxels and the number of voxels in the original image objects.</p></li>
+<li><p>Contamination level <span class="math notranslate nohighlight">\(C = N_C/N_O\)</span> the ratio between the number of segmented voxels which are not part of the image objects and these latter. It corresponds to <span class="math notranslate nohighlight">\(C = E - S\)</span>.</p></li>
+</ul>
+<p>These quantities are evaluated as functions of the pheromone threshold.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
