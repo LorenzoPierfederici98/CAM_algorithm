@@ -36,6 +36,7 @@ logging.basicConfig(
     filename="../results/log_results.txt",
     filemode="w",
     level=logging.INFO,
+    encoding="utf-8"
 )
 
 
@@ -244,10 +245,12 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
     logging.info(
         f"Of which belonging to the image: {len(common_dict)} ({(100 * len(common_dict) / image_voxels.shape[0]):.1f}%)\n"
     )
+
     pheromone_threshold = np.linspace(0, np.amax(pheromone_matrix), 500)
     sensitivity = np.zeros(len(pheromone_threshold))
     expl_level = np.zeros(len(pheromone_threshold))
     cont_level = np.zeros(len(pheromone_threshold))
+
     for index, val in enumerate(pheromone_threshold):
         temp_common_dict = dict(
             (key, value) for key, value in common_dict.items() if value >= val
@@ -258,6 +261,7 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
         sensitivity[index] = len(temp_common_dict) / image_voxels.shape[0]
         expl_level[index] = len(temp_visited_dict) / image_voxels.shape[0]
         cont_level[index] = expl_level[index] - sensitivity[index]
+
     _, ax = plt.subplots(2, 2, figsize=(10, 7))
     ax[0][0].plot(ants_number)
     ax[0][0].set_title("Number of ants per cycle")
@@ -363,11 +367,6 @@ if __name__ == "__main__":
     pheromone_mean_sum = 0
     colony_length = 0
 
-    logging.info(f"Image dimensions: {image.shape}\n")
-    logging.info(f"Anthill coordinates: [{args.anthill_coordinates}]\n")
-    logging.info(f"Energy death: {energy_death}\n")
-    logging.info(f"Energy reproduction: {energy_reproduction}\n")
-
     ant_colony, anthill_position = set_colony(args.anthill_coordinates, image)
     start_time_local = time.perf_counter()
 
@@ -449,9 +448,15 @@ if __name__ == "__main__":
         ant_number.append(len(ant_colony))
         n_iteration += 1
 
+    logging.info(f"Image dimensions: {image.shape}\n")
+    logging.info(f"Anthill coordinates: {args.anthill_coordinates}\n")
+    logging.info(f"Energy death: {energy_death}\n")
+    logging.info(f"Energy reproduction: {energy_reproduction}\n")
+    logging.info(f"# iterations: {n_iteration}\n")
     logging.info(
         f"Elapsed time: {(time.perf_counter() - start_time_local) / 60:.3f} min\n"
     )
+
     statistics(ant_number, image, pheromone_map)
     plot_display(aspect_ratio, image, pheromone_map, anthill_position)
     plt.show()
