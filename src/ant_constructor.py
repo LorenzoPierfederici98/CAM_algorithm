@@ -181,6 +181,11 @@ class Ant:
         released corresponds to the intensity of the voxel of the image
         matrix plus a small offset which certifies that the voxel was visited.
 
+        Args
+        ----
+        voxel_coordinates : list or ndarray
+            The voxel cooridnates in which the pheromone is released.
+
         Returns
         -------
         pheromone_value : float

@@ -363,6 +363,11 @@ if __name__ == "__main__":
     pheromone_mean_sum = 0
     colony_length = 0
 
+    logging.info(f"Image dimensions: {image.shape}\n")
+    logging.info(f"Anthill coordinates: [{args.anthill_coordinates}]\n")
+    logging.info(f"Energy death: {energy_death}\n")
+    logging.info(f"Energy reproduction: {energy_reproduction}\n")
+
     ant_colony, anthill_position = set_colony(args.anthill_coordinates, image)
     start_time_local = time.perf_counter()
 

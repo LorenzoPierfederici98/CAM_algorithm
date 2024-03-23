@@ -139,6 +139,7 @@ class ImageData:
             'sagittal': y/z,
             'coronal': x/z
         }
+        # Return to HU units
         CT_array = CT_array[168 : 415, 284 : 460, 267 - 10 : 267 + 10] - 1024.
         # ax = plt.subplot(1, 1, 1)
         # ax.imshow(CT_array[:, :, CT_array.shape[2] // 2], cmap="gray")
