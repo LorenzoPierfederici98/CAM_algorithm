@@ -202,24 +202,33 @@ voxel is not considered as a first neighbour.</p>
 <span class="sig-name descname"><span class="pre">find_second_neighbours</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ant_constructor.Ant.find_second_neighbours" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds the indexes of the second-order neighbours of
 the ant current voxel. The construction is similar to
-that one of the find_first_neighbours function.
-:returns: <strong>neighbours</strong> – Array of the indexes of the second-order neighbours of the current voxel.
-:rtype: array[int]</p>
+that one of the find_first_neighbours function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>neighbours</strong> – Array of the indexes of the second-order neighbours of the current voxel.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>array[int]</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ant_constructor.Ant.pheromone_release">
-<span class="sig-name descname"><span class="pre">pheromone_release</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ant_constructor.Ant.pheromone_release" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">pheromone_release</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">voxel_coordinates</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ant_constructor.Ant.pheromone_release" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the quantity of pheromone to be released into
 the voxel to build the pheromone map. The quantity of pheromone
 released corresponds to the intensity of the voxel of the image
 matrix plus a small offset which certifies that the voxel was visited.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>pheromone_value</strong> – The pheromone value to be stored into the pheromone map voxel.</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>voxel_coordinates</strong> (<em>list</em><em> or </em><em>ndarray</em>) – The voxel cooridnates in which the pheromone is released.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>float</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>pheromone_value</strong> – The pheromone value to be stored into the pheromone map voxel.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>

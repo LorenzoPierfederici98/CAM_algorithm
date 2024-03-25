@@ -117,18 +117,18 @@ creates the image matrix and initializes the pheromone map.</p>
 <dt class="sig sig-object py" id="environment_constructor.ImageData.create_cube">
 <span class="sig-name descname"><span class="pre">create_cube</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment_constructor.ImageData.create_cube" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a cube with a certain length from the given center-coordinates.</p>
-<dl class="simple">
-<dt>length<span class="classifier">int</span></dt><dd><p>The length of the cube, which must be less than matrix dimensions.</p>
-</dd>
-<dt>center<span class="classifier">list[int]</span></dt><dd><p>The coordinates of the center of the cube.</p>
-</dd>
-</dl>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>image_matrix</strong> – The cube image matrix.</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>length</strong> (<em>int</em>) – The length of the cube, which must be less than matrix dimensions.</p></li>
+<li><p><strong>center</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The coordinates of the center of the cube.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>ndarray</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>image_matrix</strong> – The cube image matrix.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
 </dd>
 </dl>
 </dd></dl>
@@ -161,16 +161,15 @@ aspect ratio of the different slices.</p></li>
 <dd><p>Initializes the pheromone map. The first 3 dimensions store
 the voxels values of the image matrix, the fourth dimension stores
 False for every voxel i.e it isn’t occupied by an ant.</p>
-<dl class="simple">
-<dt>image_matrix<span class="classifier">ndarray</span></dt><dd><p>The matrix of the image to be segmented.</p>
-</dd>
-</dl>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>pheromone_map</strong> – The initialized pheromone map.</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image_matrix</strong> (<em>ndarray</em>) – The matrix of the image to be segmented.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>ndarray</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>pheromone_map</strong> – The initialized pheromone map.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
 </dd>
 </dl>
 </dd></dl>
