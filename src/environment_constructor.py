@@ -47,10 +47,11 @@ class ImageData:
     def __init__(self, matrix_dimensions):
         self.matrix_dimensions = matrix_dimensions
 
+
     def create_cube(self, length, center):
         """Creates a cube with a certain length from the given center-coordinates.
 
-        Inputs
+        Args
         ------
         length : int
             The length of the cube, which must be less than matrix dimensions.
@@ -76,12 +77,13 @@ class ImageData:
         ] = 10.0
         return image_matrix
 
+
     def initialize_pheromone_map(self):
         """Initializes the pheromone map. The first 3 dimensions store
         the voxels values of the image matrix, the fourth dimension stores
         False for every voxel i.e it isn't occupied by an ant.
 
-        Inputs
+        Args
         ------
         image_matrix : ndarray
             The matrix of the image to be segmented.

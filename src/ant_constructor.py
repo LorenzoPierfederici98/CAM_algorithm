@@ -129,6 +129,7 @@ class Ant:
         """Finds the indexes of the second-order neighbours of
         the ant current voxel. The construction is similar to
         that one of the find_first_neighbours function.
+
         Returns
         -------
         neighbours : array[int]
