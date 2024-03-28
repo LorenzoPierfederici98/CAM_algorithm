@@ -192,6 +192,7 @@ class Ant:
         pheromone_value : float
             The pheromone value to be stored into the pheromone map voxel.
         """
+
         propor_factor = 10
 
         if isinstance(voxel_coordinates, list):
@@ -227,7 +228,9 @@ class Ant:
             Array whose rows correspond to the indexes of the first-neighbouring voxels.
 
         pheromone_map : ndarray
-            Four-dimensional matrix. The first 3 dimensions contain the image matrix, the fourth dimension is used to store value 0 or 1 whether the corresponding voxel is free or occupied, respectively.
+            Four-dimensional matrix. The first 3 dimensions contain the image matrix, the
+            fourth dimension is used to store value 0 or 1 whether the corresponding voxel 
+            is free or occupied, respectively.
 
         Returns
         -------
