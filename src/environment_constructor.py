@@ -141,11 +141,14 @@ class ImageData:
             'sagittal': y/z,
             'coronal': x/z
         }
+        # Only for brain images
+        #CT_array = np.swapaxes(CT_array, 0, 2)
+        #CT_array = np.rot90(CT_array[..., 117 - 10 : 117 + 10], axes=(1,0))
         # Return to HU units
         CT_array = CT_array[168 : 415, 284 : 460, 267 - 10 : 267 + 10] - 1024.
-        # ax = plt.subplot(1, 1, 1)
-        # ax.imshow(CT_array[:, :, CT_array.shape[2] // 2], cmap="gray")
-        # ax.set_aspect(aspect_ratio['axial'])
+        #ax = plt.subplot(1, 1, 1)
+        #ax.imshow(CT_array[:, :, 10], cmap="gray")
+        #ax.set_aspect(aspect_ratio['axial'])
         return CT_array, aspect_ratio
 
 
@@ -153,5 +156,7 @@ if __name__ == "__main__":
     matrix_dim = [512, 512, 512]
     imagedata = ImageData(matrix_dim)
     CT_arr = ImageData.image_from_file("D:/train_data/Training/CASE01")[0]
+    plt.show()
+    plt.hist(np.ravel(CT_arr), bins=300)
     plt.show()
 

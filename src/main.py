@@ -215,7 +215,7 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
         The pheromone map.
     """
 
-    image_voxels = np.transpose(np.array(np.nonzero(image_matrix>300))).reshape(-1, 3)
+    image_voxels = np.transpose(np.array(np.nonzero(image_matrix>40))).reshape(-1, 3)
     visited_voxs = np.unique(
         np.transpose(np.array(np.nonzero(pheromone_matrix[:, :, :, 0]))).reshape(-1, 3),
         axis=0,
@@ -361,7 +361,7 @@ if __name__ == "__main__":
     np.copyto(pheromone_map, pheromone_map_init)
 
     n_iteration = 0
-    energy_death = 0.3
+    energy_death = 1.
     energy_reproduction = 1.25
     ant_number = []
     pheromone_mean_sum = 0
