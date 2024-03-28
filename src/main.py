@@ -18,7 +18,9 @@
 # pylint: disable=C0103
 # pylint: disable=W1203
 
+
 """Module implementing the CAM algorithm."""
+
 
 import time
 import argparse
@@ -27,8 +29,10 @@ import multiprocessing
 from multiprocessing.sharedctypes import RawArray
 import numpy as np
 import matplotlib.pyplot as plt
+
 from ant_constructor import Ant
 from environment_constructor import ImageData
+from region_growing import ground_truth
 
 
 logging.basicConfig(
@@ -152,25 +156,32 @@ def plot_display(
     _, ax = plt.subplots(2, 2, figsize=(10, 7))
     norm = "symlog"
     cmap = "gray"
+
     ax[0][0].set_aspect(a_ratio["axial"])
     plot_1 = ax[0][0].imshow(image_matrix[:, :, anthill_coordinates[2]], cmap="gray")
     ax[0][0].set_title("Original image, axial view")
     plot_2 = ax[0][1].imshow(
         pheromone_matrix[:, :, anthill_coordinates[2], 0], norm=norm, cmap=cmap
     )
+
     ax[0][1].set_title("Pheromone map, axial view")
     plot_3 = ax[1][0].imshow(
         pheromone_matrix[:, anthill_coordinates[1], :, 0], norm=norm, cmap=cmap
     )
+    ax[0][1].plot(anthill_coordinates[1], anthill_coordinates[0], "ro", label="Seed point")
+    ax[0][1].legend()
+
     ax[1][0].set_title("Pheromone map, coronal view")
     plot_4 = ax[1][1].imshow(
         pheromone_matrix[anthill_coordinates[0], :, :, 0], norm=norm, cmap=cmap
     )
     ax[1][1].set_title("Pheromone map, sagittal view")
+
     for plot, ax in zip(
         [plot_1, plot_2, plot_3, plot_4], [ax[0][0], ax[0][1], ax[1][0], ax[1][1]]
     ):
         plt.colorbar(plot, ax=ax)
+
     plt.tight_layout()
     plt.savefig("../results/CAM_results.png")
 
@@ -188,13 +199,14 @@ def pool_initializer(pheromone_matrix_shared, pheromone_matrix_shape):
     pheromone_matrix_shape : tuple[int]
         The shape of the pheromone map.
     """
+
     global np_x
     np_x = pheromone_matrix_shared
     global np_x_shape
     np_x_shape = pheromone_matrix_shape
 
 
-def statistics(ants_number, image_matrix, pheromone_matrix):
+def statistics(ants_number, anthill_coordinates, image_matrix, pheromone_matrix):
     """Provides statistics about the run such as: the number of
     non-zero image voxels, the number of voxels visited by the ants,
     the visited voxels which are also part of the non-zero image
@@ -208,6 +220,9 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
     ants_number : list[int]
         The list of the number of ants per cycle.
 
+    anthill_coordinates : list[int]
+        The coordinates of the voxel chosen as the anthill position.
+
     image_matrix : ndarray
         The image matrix.
 
@@ -215,7 +230,8 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
         The pheromone map.
     """
 
-    image_voxels = np.transpose(np.array(np.nonzero(image_matrix>40))).reshape(-1, 3)
+    #image_voxels = np.transpose(np.array(np.nonzero(image_matrix>40))).reshape(-1, 3)
+    _, image_voxels = ground_truth(image_matrix, anthill_coordinates)
     visited_voxs = np.unique(
         np.transpose(np.array(np.nonzero(pheromone_matrix[:, :, :, 0]))).reshape(-1, 3),
         axis=0,
@@ -457,6 +473,6 @@ if __name__ == "__main__":
         f"Elapsed time: {(time.perf_counter() - start_time_local) / 60:.3f} min\n"
     )
 
-    statistics(ant_number, image, pheromone_map)
+    statistics(ant_number, args.anthill_coordinates, image, pheromone_map)
     plot_display(aspect_ratio, image, pheromone_map, anthill_position)
     plt.show()
