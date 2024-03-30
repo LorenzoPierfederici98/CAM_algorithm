@@ -40,7 +40,7 @@ logging.basicConfig(
     filename="../results/log_results.txt",
     filemode="w",
     level=logging.INFO,
-    encoding="utf-8"
+    encoding="utf-8",
 )
 
 
@@ -70,9 +70,12 @@ def set_colony(anthill_coordinates, image_matrix):
         If the input coordinates are not valid.
     """
 
-    if anthill_coordinates[0] >= image_matrix.shape[0] or anthill_coordinates[1] >= image_matrix.shape[1] or anthill_coordinates[2] >= image_matrix.shape[2] or (
-        np.array(anthill_coordinates) < 0
-    ).any():
+    if (
+        anthill_coordinates[0] >= image_matrix.shape[0]
+        or anthill_coordinates[1] >= image_matrix.shape[1]
+        or anthill_coordinates[2] >= image_matrix.shape[2]
+        or (np.array(anthill_coordinates) < 0).any()
+    ):
         print("Invalid coordinates.\n")
         raise IndexError
 
@@ -168,7 +171,9 @@ def plot_display(
     plot_3 = ax[1][0].imshow(
         pheromone_matrix[:, anthill_coordinates[1], :, 0], norm=norm, cmap=cmap
     )
-    ax[0][1].plot(anthill_coordinates[1], anthill_coordinates[0], "ro", label="Seed point")
+    ax[0][1].plot(
+        anthill_coordinates[1], anthill_coordinates[0], "ro", label="Seed point"
+    )
     ax[0][1].legend()
 
     ax[1][0].set_title("Pheromone map, coronal view")
@@ -206,7 +211,7 @@ def pool_initializer(pheromone_matrix_shared, pheromone_matrix_shape):
     np_x_shape = pheromone_matrix_shape
 
 
-def statistics(ants_number, anthill_coordinates, image_matrix, pheromone_matrix):
+def statistics(ants_number, image_matrix, pheromone_matrix):
     """Provides statistics about the run such as: the number of
     non-zero image voxels, the number of voxels visited by the ants,
     the visited voxels which are also part of the non-zero image
@@ -220,9 +225,6 @@ def statistics(ants_number, anthill_coordinates, image_matrix, pheromone_matrix)
     ants_number : list[int]
         The list of the number of ants per cycle.
 
-    anthill_coordinates : list[int]
-        The coordinates of the voxel chosen as the anthill position.
-
     image_matrix : ndarray
         The image matrix.
 
@@ -230,8 +232,8 @@ def statistics(ants_number, anthill_coordinates, image_matrix, pheromone_matrix)
         The pheromone map.
     """
 
-    #image_voxels = np.transpose(np.array(np.nonzero(image_matrix>40))).reshape(-1, 3)
-    _, image_voxels = ground_truth(image_matrix, anthill_coordinates)
+    # image_voxels = np.transpose(np.array(np.nonzero(image_matrix>40))).reshape(-1, 3)
+    _, image_voxels = ground_truth(image_matrix)
     visited_voxs = np.unique(
         np.transpose(np.array(np.nonzero(pheromone_matrix[:, :, :, 0]))).reshape(-1, 3),
         axis=0,
@@ -262,7 +264,9 @@ def statistics(ants_number, anthill_coordinates, image_matrix, pheromone_matrix)
         f"Of which belonging to the image: {len(common_dict)} ({(100 * len(common_dict) / image_voxels.shape[0]):.1f}%)\n"
     )
 
-    pheromone_threshold = np.linspace(0, np.amax(pheromone_matrix), 500)
+    pheromone_threshold = np.linspace(
+        np.amin(pheromone_matrix), np.amax(pheromone_matrix), 500
+    )
     sensitivity = np.zeros(len(pheromone_threshold))
     expl_level = np.zeros(len(pheromone_threshold))
     cont_level = np.zeros(len(pheromone_threshold))
@@ -473,6 +477,6 @@ if __name__ == "__main__":
         f"Elapsed time: {(time.perf_counter() - start_time_local) / 60:.3f} min\n"
     )
 
-    statistics(ant_number, args.anthill_coordinates, image, pheromone_map)
+    statistics(ant_number, image, pheromone_map)
     plot_display(aspect_ratio, image, pheromone_map, anthill_position)
     plt.show()
