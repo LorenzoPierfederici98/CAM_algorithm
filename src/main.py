@@ -172,7 +172,7 @@ def plot_display(
         pheromone_matrix[:, anthill_coordinates[1], :, 0], norm=norm, cmap=cmap
     )
     ax[0][1].plot(
-        anthill_coordinates[1], anthill_coordinates[0], "ro", label="Seed point"
+        anthill_coordinates[1], anthill_coordinates[0], "ro", label="Anthill"
     )
     ax[0][1].legend()
 
@@ -285,8 +285,9 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
     _, ax = plt.subplots(2, 2, figsize=(10, 7))
     ax[0][0].plot(ants_number)
     ax[0][0].set_title("Number of ants per cycle")
-    ax[0][1].hist(common_dict.values(), bins="sqrt")
+    ax[0][1].hist(common_dict.values(), bins=50)
     ax[0][1].set_title("Hist of pheromone values into image objects")
+    ax[0][1].set_yscale("log")
     ax[0][1].set_xticks([])
     ax[1][0].plot(pheromone_threshold / 1000, sensitivity, label="S")
     ax[1][0].plot(pheromone_threshold / 1000, expl_level, label="E")
@@ -370,6 +371,7 @@ if __name__ == "__main__":
         "--file_path",
         type=str,
         help="The absolute path of the image directory.",
+        action="store_true",
         metavar="str",
     )
     args = parser.parse_args()

@@ -24,6 +24,8 @@ import glob
 import pydicom
 import numpy as np
 import matplotlib.pyplot as plt
+from skimage import data
+from skimage.util import invert
 
 
 class ImageData:
@@ -31,7 +33,7 @@ class ImageData:
 
     Attributes
     ----------
-    matrix_dimensions : list of int
+    matrix_dimensions : list[int]
         The shape of the image matrix
 
     Methods
@@ -81,7 +83,7 @@ class ImageData:
     def initialize_pheromone_map(self):
         """Initializes the pheromone map. The first 3 dimensions store
         the voxels values of the image matrix, the fourth dimension stores
-        False for every voxel i.e it isn't occupied by an ant.
+        0 for every voxel i.e it isn't occupied by an ant.
 
         Args
         ------
@@ -103,6 +105,7 @@ class ImageData:
         )
         )
         return pheromone_map
+
 
     @classmethod
     def image_from_file(cls, file_path):
@@ -147,6 +150,14 @@ class ImageData:
         # Return to HU units
         CT_array = CT_array[168 : 415, 284 : 460, 267 - 10 : 267 + 10] - 1024.
         return CT_array, aspect_ratio
+
+
+    @classmethod
+    def horse_image(cls):
+        """Returns the horse image from skimage.data"""
+
+        image_matrix = invert(data.horse())
+        return image_matrix
 
 
 if __name__ == "__main__":
