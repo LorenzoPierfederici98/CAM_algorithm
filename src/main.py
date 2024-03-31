@@ -211,7 +211,7 @@ def pool_initializer(pheromone_matrix_shared, pheromone_matrix_shape):
     np_x_shape = pheromone_matrix_shape
 
 
-def statistics(ants_number, image_matrix, pheromone_matrix):
+def statistics(ants_number, args_parser, image_matrix, pheromone_matrix):
     """Provides statistics about the run such as: the number of
     non-zero image voxels, the number of voxels visited by the ants,
     the visited voxels which are also part of the non-zero image
@@ -232,8 +232,10 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
         The pheromone map.
     """
 
-    # image_voxels = np.transpose(np.array(np.nonzero(image_matrix>40))).reshape(-1, 3)
-    _, image_voxels = ground_truth(image_matrix)
+    if args_parser.cmd == "file_path":
+        _, image_voxels = ground_truth(image_matrix)
+    elif args_parser.cmd in ("cube", "horse"):
+        image_voxels = np.transpose(np.array(np.nonzero(image_matrix))).reshape(-1, 3)
     visited_voxs = np.unique(
         np.transpose(np.array(np.nonzero(pheromone_matrix[:, :, :, 0]))).reshape(-1, 3),
         axis=0,
@@ -302,7 +304,7 @@ def statistics(ants_number, image_matrix, pheromone_matrix):
     plt.savefig("../results/CAM_statistics.png")
 
 
-def set_image_and_pheromone(file_path):
+def set_image_and_pheromone(args_parser):
     """Instantiates the image from a path given by the user and
     the pheromone map as a four-dimensional numpy array of zeros. A RawArray
     of multiprocessing.sharedctypes is first created and then used as a buffer
@@ -328,8 +330,26 @@ def set_image_and_pheromone(file_path):
         The pheromone map which will be deployed in the algorithm.
     """
 
-    image_matrix, a_ratio = ImageData.image_from_file(file_path)
-    imagedata = ImageData(image_matrix.shape)
+    if args_parser.cmd == "file_path":
+        image_matrix, a_ratio = ImageData.image_from_file(args_parser.file_path)
+        imagedata = ImageData(image_matrix.shape)
+    elif args_parser.cmd == "cube":
+        imagedata = ImageData(args_parser.matrix_dimensions)
+        image_matrix = imagedata.create_cube(args_parser.center_coordinates, args_parser.cube_length)
+        a_ratio = {
+            'axial': 1,
+            'sagittal': 1,
+            'coronal': 1
+        }
+    elif args_parser.cmd == "horse":
+        image_matrix = ImageData.horse_image()
+        imagedata = ImageData(image_matrix.shape)
+        a_ratio = {
+            'axial': 1,
+            'sagittal': 1,
+            'coronal': 1
+        }
+
     pheromone_map_init_ = imagedata.initialize_pheromone_map()
     global np_x_shape
     np_x_shape = pheromone_map_init_.shape
@@ -365,19 +385,49 @@ if __name__ == "__main__":
         "n_iteration",
         help="Number of iterations before stopping.",
         type=int,
+        nargs=1,
         metavar="n_iteration",
     )
-    parser.add_argument(
+    subparsers = parser.add_subparsers(help="sub-command help", dest="cmd")
+    parser_path = subparsers.add_parser("file_path", help="The DICOM folder path")
+    parser_path.add_argument(
+        "-f",
         "--file_path",
-        type=str,
-        help="The absolute path of the image directory.",
-        action="store_true",
-        metavar="str",
+        help="The DICOM folder path.",
+        type=str
     )
+    parser_cube = subparsers.add_parser("cube", help="Gives a cube as the image matrix.")
+    parser_cube.add_argument(
+        "-m",
+        "--matrix_dimensions",
+        help="Image matrix dimensions.",
+        type=int,
+        nargs=3,
+        metavar="int"
+    )
+    parser_cube.add_argument(
+        "-c",
+        "--center_coordinates",
+        help="The cube center.",
+        type=int,
+        nargs=3,
+        metavar="int"
+    )
+    parser_cube.add_argument(
+        "-l",
+        "--cube_length",
+        help="The cube center.",
+        type=int,
+        nargs=1,
+        metavar="int"
+    )
+    parser_horse = subparsers.add_parser("horse", help="Gives a horse as a 2D image matrix.")
     args = parser.parse_args()
+    args.n_iteration = args.n_iteration[0]
+    args.cube_length = args.cube_length[0]
 
     image, aspect_ratio, pheromone_map_init, pheromone_shared, pheromone_map = (
-        set_image_and_pheromone(args.file_path)
+        set_image_and_pheromone(args)
     )
     # copies pheromone_map_init into pheromone_map
     np.copyto(pheromone_map, pheromone_map_init)
@@ -448,14 +498,18 @@ if __name__ == "__main__":
                 image_second_neigh_mean = image_second_neigh.mean()
                 image_second_max = np.amax(image_second_neigh)
                 image_second_min = np.amin(image_second_neigh)
-                n_offspring = min(
-                    int(
-                        26
-                        * (image_second_neigh_mean - image_second_min)
-                        / (image_second_max - image_second_min)
-                    ),
-                    26,
-                )
+
+                try:
+                    n_offspring = min(
+                        int(
+                            26
+                            * (image_second_neigh_mean - image_second_min)
+                            / (image_second_max - image_second_min)
+                        ),
+                        int(valid_neighbours.shape[0]),
+                    )
+                except (ValueError, OverflowError):
+                    n_offspring = int(valid_neighbours.shape[0])
 
                 for neigh in valid_neighbours[:n_offspring]:
                     ant_colony.append(Ant(image, list(neigh)))
@@ -479,6 +533,6 @@ if __name__ == "__main__":
         f"Elapsed time: {(time.perf_counter() - start_time_local) / 60:.3f} min\n"
     )
 
-    statistics(ant_number, image, pheromone_map)
+    statistics(ant_number, args, image, pheromone_map)
     plot_display(aspect_ratio, image, pheromone_map, anthill_position)
     plt.show()

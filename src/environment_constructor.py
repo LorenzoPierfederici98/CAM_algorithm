@@ -50,7 +50,7 @@ class ImageData:
         self.matrix_dimensions = matrix_dimensions
 
 
-    def create_cube(self, length, center):
+    def create_cube(self, center, length):
         """Creates a cube with a certain length from the given center-coordinates.
 
         Args
@@ -66,6 +66,7 @@ class ImageData:
         image_matrix : ndarray
             The cube image matrix.
         """
+
         image_matrix = np.zeros(self.matrix_dimensions)
         image_matrix[
             center[0] - length // 2 : center[0] + length // 2,
