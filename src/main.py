@@ -81,10 +81,7 @@ def set_colony(anthill_coordinates, image_matrix):
 
     anthill_voxel = anthill_coordinates
     first_ant = Ant(image_matrix, anthill_voxel)
-    if image_matrix.shape[2] == 1:
-        first_ant_neighbours = first_ant.find_second_neighbours()
-    else:
-        first_ant_neighbours = first_ant.find_first_neighbours()
+    first_ant_neighbours = first_ant.find_first_neighbours()
     colony = [Ant(image_matrix, list(elem)) for elem in first_ant_neighbours]
     colony = colony[: len(colony) // 2] + [first_ant] + colony[len(colony) // 2 :]
     return colony, anthill_voxel
@@ -242,8 +239,9 @@ def statistics(ants_number, args_parser, image_matrix, pheromone_matrix):
 
     if args_parser.cmd == "file_path":
         _, image_voxels = ground_truth(image_matrix)
-    elif args_parser.cmd in ("cube", "horse"):
+    else:
         image_voxels = np.transpose(np.array(np.nonzero(image_matrix))).reshape(-1, 3)
+
     visited_voxs = np.unique(
         np.transpose(np.array(np.nonzero(pheromone_matrix[:, :, :, 0]))).reshape(-1, 3),
         axis=0,
@@ -342,20 +340,22 @@ def set_image_and_pheromone(args_parser):
         The pheromone map which will be deployed in the algorithm.
     """
 
+    a_ratio = {"axial": 1, "sagittal": 1, "coronal": 1}
+    imagedata = ImageData(args_parser.matrix_dimensions)
     if args_parser.cmd == "file_path":
         image_matrix, a_ratio = ImageData.image_from_file(args_parser.file_path)
         imagedata = ImageData(image_matrix.shape)
     elif args_parser.cmd == "cube":
-        imagedata = ImageData(args_parser.matrix_dimensions)
         image_matrix = imagedata.create_cube(
             args_parser.center_coordinates, args_parser.cube_length
         )
-        a_ratio = {"axial": 1, "sagittal": 1, "coronal": 1}
-    elif args_parser.cmd == "horse":
-        image_matrix = ImageData.horse_image()
-        image_matrix = np.expand_dims(image_matrix, 2)
-        imagedata = ImageData(image_matrix.shape)
-        a_ratio = {"axial": 1, "sagittal": 1, "coronal": 1}
+    elif args_parser.cmd == "sphere/ellipsoid":
+        image_matrix = imagedata.create_sphere_ellipsoid(
+            args_parser.center_coordinates, args_parser.radius, args_parser.semi_axes
+        )
+    elif args_parser.cmd == "donut":
+        image_matrix = imagedata.create_donut(args_parser.center_coordinates, args_parser.radius)
+
 
     pheromone_map_init_ = imagedata.initialize_pheromone_map()
     global np_x_shape
@@ -387,14 +387,14 @@ if __name__ == "__main__":
         help="The anthill voxel position.",
         type=int,
         nargs=3,
-        metavar="voxel_coordinate",
+        metavar="int",
     )
     parser.add_argument(
         "-n",
         "--n_iteration",
         help="Number of iterations before stopping.",
         type=int,
-        metavar="n_iteration",
+        metavar="int",
     )
     subparsers = parser.add_subparsers(help="sub-command help", dest="cmd")
     parser_path = subparsers.add_parser("file_path", help="The DICOM folder path")
@@ -402,7 +402,7 @@ if __name__ == "__main__":
         "-f", "--file_path", help="The DICOM folder path.", type=str
     )
     parser_cube = subparsers.add_parser(
-        "cube", help="Gives a cube as the image matrix."
+        "cube", help="Returns a cube as the image matrix."
     )
     parser_cube.add_argument(
         "-m",
@@ -423,8 +423,66 @@ if __name__ == "__main__":
     parser_cube.add_argument(
         "-l", "--cube_length", help="The cube center.", type=int, metavar="int"
     )
-    parser_horse = subparsers.add_parser(
-        "horse", help="Gives a horse as a 2D image matrix."
+    parser_curve = subparsers.add_parser(
+        "sphere/ellipsoid", help="Returns a sphere/ellipsoid as the image matrix."
+    )
+    parser_curve.add_argument(
+        "-m",
+        "--matrix_dimensions",
+        help="Image matrix dimensions.",
+        type=int,
+        nargs=3,
+        metavar="int",
+    )
+    parser_curve.add_argument(
+        "-c",
+        "--center_coordinates",
+        help="The center of the figure.",
+        type=int,
+        nargs=3,
+        metavar="int",
+    )
+    parser_curve.add_argument(
+        "-s",
+        "--semi_axes",
+        help="The semi-axes lengths.",
+        type=int,
+        nargs=3,
+        metavar="int",
+    )
+    parser_curve.add_argument(
+        "-r",
+        "--radius",
+        help="The radius of the figure.",
+        type=int,
+        metavar="int",
+    )
+    parser_donut = subparsers.add_parser(
+        "donut",
+        help="Returns a donut as the image matrix i.e a sphere with a concentric hole with half external radius as the internal radius.",
+    )
+    parser_donut.add_argument(
+        "-m",
+        "--matrix_dimensions",
+        help="Image matrix dimensions.",
+        type=int,
+        nargs=3,
+        metavar="int",
+    )
+    parser_donut.add_argument(
+        "-c",
+        "--center_coordinates",
+        help="The center of the donut.",
+        type=int,
+        nargs=3,
+        metavar="int",
+    )
+    parser_donut.add_argument(
+        "-r",
+        "--radius",
+        help="The external radius of the donut.",
+        type=int,
+        metavar="int",
     )
     args = parser.parse_args()
 
@@ -435,8 +493,8 @@ if __name__ == "__main__":
     np.copyto(pheromone_map, pheromone_map_init)
 
     n_iteration = 0
-    energy_death = 0.3
-    energy_reproduction = 1.25
+    energy_death = 1.0
+    energy_reproduction = 1.3
     ant_number = []
     pheromone_mean_sum = 0
     colony_length = 0

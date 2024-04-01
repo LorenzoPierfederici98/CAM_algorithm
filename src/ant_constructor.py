@@ -85,7 +85,7 @@ class Ant:
 
         Returns
         -------
-        neighbours : array[int]
+        neighbours : ndarray
             Array of the indexes of the first-order neighbours of the ant current voxel.
         """
 
@@ -132,7 +132,7 @@ class Ant:
 
         Returns
         -------
-        neighbours : array[int]
+        neighbours : ndarray
             Array of the indexes of the second-order neighbours of the current voxel.
         """
 
@@ -234,7 +234,7 @@ class Ant:
 
         Returns
         -------
-        valid_first_neigbours : list of int
+        valid_first_neigbours : list[int]
             Indexes of the chosen voxel-destination. Returns an empty list
             if there are no possible voxel destinations.
         """
