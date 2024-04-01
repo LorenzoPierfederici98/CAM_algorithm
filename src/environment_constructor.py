@@ -55,11 +55,11 @@ class ImageData:
 
         Args
         ------
-        length : int
-            The length of the cube, which must be less than matrix dimensions.
-
         center : list[int]
             The coordinates of the center of the cube.
+
+        length : int
+            The length of the cube, which must be less than matrix dimensions.
 
         Returns
         -------
@@ -73,11 +73,6 @@ class ImageData:
             center[1] - length // 2 : center[1] + length // 2,
             center[2] - length // 2 : center[2] + length // 2,
         ] = 5.0
-        image_matrix[
-            center[0] - length // 4 : center[0] + length // 4,
-            center[1] - length // 4 : center[1] + length // 4,
-            center[2] - length // 4 : center[2] + length // 4,
-        ] = 10.0
         return image_matrix
 
 
@@ -85,11 +80,6 @@ class ImageData:
         """Initializes the pheromone map. The first 3 dimensions store
         the voxels values of the image matrix, the fourth dimension stores
         0 for every voxel i.e it isn't occupied by an ant.
-
-        Args
-        ------
-        image_matrix : ndarray
-            The matrix of the image to be segmented.
 
         Returns
         -------
@@ -157,7 +147,7 @@ class ImageData:
     def horse_image(cls):
         """Returns the horse image from skimage.data"""
 
-        image_matrix = invert(data.horse())
+        image_matrix = 10 * invert(data.horse())
         return image_matrix
 
 

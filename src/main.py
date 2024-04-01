@@ -81,7 +81,10 @@ def set_colony(anthill_coordinates, image_matrix):
 
     anthill_voxel = anthill_coordinates
     first_ant = Ant(image_matrix, anthill_voxel)
-    first_ant_neighbours = first_ant.find_first_neighbours()
+    if image_matrix.shape[2] == 1:
+        first_ant_neighbours = first_ant.find_second_neighbours()
+    else:
+        first_ant_neighbours = first_ant.find_first_neighbours()
     colony = [Ant(image_matrix, list(elem)) for elem in first_ant_neighbours]
     colony = colony[: len(colony) // 2] + [first_ant] + colony[len(colony) // 2 :]
     return colony, anthill_voxel
@@ -145,6 +148,10 @@ def plot_display(
 
     Args
     ----
+    a_ratio : dict
+            Dictionary of values that preserve the
+            aspect ratio of the different slices.
+
     image_matrix : ndarray
         The matrix of the image to be segmented.
 
@@ -171,9 +178,7 @@ def plot_display(
     plot_3 = ax[1][0].imshow(
         pheromone_matrix[:, anthill_coordinates[1], :, 0], norm=norm, cmap=cmap
     )
-    ax[0][1].plot(
-        anthill_coordinates[1], anthill_coordinates[0], "ro", label="Anthill"
-    )
+    ax[0][1].plot(anthill_coordinates[1], anthill_coordinates[0], "ro", label="Anthill")
     ax[0][1].legend()
 
     ax[1][0].set_title("Pheromone map, coronal view")
@@ -224,6 +229,9 @@ def statistics(ants_number, args_parser, image_matrix, pheromone_matrix):
     ----
     ants_number : list[int]
         The list of the number of ants per cycle.
+
+    args_parser : obj
+        Namespace of ArgumentParser.
 
     image_matrix : ndarray
         The image matrix.
@@ -312,13 +320,17 @@ def set_image_and_pheromone(args_parser):
 
     Args
     ----
-    file_path : str
-        The path of the dicom folder given by the user.
+    args_parser : obj
+        Namespace of ArgumentParser.
 
     Returns
     -------
     image_matrix : ndarray
         The image_matrix.
+
+    a_ratio : dict
+            Dictionary of values that preserve the
+            aspect ratio of the different slices.
 
     pheromone_map_init : ndarray
         The initialized pheromone map.
@@ -335,20 +347,15 @@ def set_image_and_pheromone(args_parser):
         imagedata = ImageData(image_matrix.shape)
     elif args_parser.cmd == "cube":
         imagedata = ImageData(args_parser.matrix_dimensions)
-        image_matrix = imagedata.create_cube(args_parser.center_coordinates, args_parser.cube_length)
-        a_ratio = {
-            'axial': 1,
-            'sagittal': 1,
-            'coronal': 1
-        }
+        image_matrix = imagedata.create_cube(
+            args_parser.center_coordinates, args_parser.cube_length
+        )
+        a_ratio = {"axial": 1, "sagittal": 1, "coronal": 1}
     elif args_parser.cmd == "horse":
         image_matrix = ImageData.horse_image()
+        image_matrix = np.expand_dims(image_matrix, 2)
         imagedata = ImageData(image_matrix.shape)
-        a_ratio = {
-            'axial': 1,
-            'sagittal': 1,
-            'coronal': 1
-        }
+        a_ratio = {"axial": 1, "sagittal": 1, "coronal": 1}
 
     pheromone_map_init_ = imagedata.initialize_pheromone_map()
     global np_x_shape
@@ -375,35 +382,35 @@ if __name__ == "__main__":
         description="Module implementing the CAM algorithm."
     )
     parser.add_argument(
-        "anthill_coordinates",
+        "-a",
+        "--anthill_coordinates",
         help="The anthill voxel position.",
         type=int,
         nargs=3,
         metavar="voxel_coordinate",
     )
     parser.add_argument(
-        "n_iteration",
+        "-n",
+        "--n_iteration",
         help="Number of iterations before stopping.",
         type=int,
-        nargs=1,
         metavar="n_iteration",
     )
     subparsers = parser.add_subparsers(help="sub-command help", dest="cmd")
     parser_path = subparsers.add_parser("file_path", help="The DICOM folder path")
     parser_path.add_argument(
-        "-f",
-        "--file_path",
-        help="The DICOM folder path.",
-        type=str
+        "-f", "--file_path", help="The DICOM folder path.", type=str
     )
-    parser_cube = subparsers.add_parser("cube", help="Gives a cube as the image matrix.")
+    parser_cube = subparsers.add_parser(
+        "cube", help="Gives a cube as the image matrix."
+    )
     parser_cube.add_argument(
         "-m",
         "--matrix_dimensions",
         help="Image matrix dimensions.",
         type=int,
         nargs=3,
-        metavar="int"
+        metavar="int",
     )
     parser_cube.add_argument(
         "-c",
@@ -411,20 +418,15 @@ if __name__ == "__main__":
         help="The cube center.",
         type=int,
         nargs=3,
-        metavar="int"
+        metavar="int",
     )
     parser_cube.add_argument(
-        "-l",
-        "--cube_length",
-        help="The cube center.",
-        type=int,
-        nargs=1,
-        metavar="int"
+        "-l", "--cube_length", help="The cube center.", type=int, metavar="int"
     )
-    parser_horse = subparsers.add_parser("horse", help="Gives a horse as a 2D image matrix.")
+    parser_horse = subparsers.add_parser(
+        "horse", help="Gives a horse as a 2D image matrix."
+    )
     args = parser.parse_args()
-    args.n_iteration = args.n_iteration[0]
-    args.cube_length = args.cube_length[0]
 
     image, aspect_ratio, pheromone_map_init, pheromone_shared, pheromone_map = (
         set_image_and_pheromone(args)
