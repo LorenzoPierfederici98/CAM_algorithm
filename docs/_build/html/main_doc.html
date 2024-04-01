@@ -103,6 +103,8 @@ the different views correspond to those ones of the anthill location.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>a_ratio</strong> (<em>dict</em>) – Dictionary of values that preserve the
+aspect ratio of the different slices.</p></li>
 <li><p><strong>image_matrix</strong> (<em>ndarray</em>) – The matrix of the image to be segmented.</p></li>
 <li><p><strong>pheromone_matrix</strong> (<em>ndarray</em>) – The matrix of the pheromone map built by the ants.</p></li>
 <li><p><strong>anthill_coordinates</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The coordinates of the voxel chosen as the anthill position,
@@ -155,18 +157,20 @@ All the 26 first-neighbouring voxels are then occupied by an ant.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="main.set_image_and_pheromone">
-<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">set_image_and_pheromone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.set_image_and_pheromone" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">set_image_and_pheromone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args_parser</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.set_image_and_pheromone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instantiates the image from a path given by the user and
 the pheromone map as a four-dimensional numpy array of zeros. A RawArray
 of multiprocessing.sharedctypes is first created and then used as a buffer
 to share the pheromone map as a numpy array between processes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – The path of the dicom folder given by the user.</p>
+<dd class="field-odd"><p><strong>args_parser</strong> (<em>obj</em>) – Namespace of ArgumentParser.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>image_matrix</strong> (<em>ndarray</em>) – The image_matrix.</p></li>
+<li><p><strong>a_ratio</strong> (<em>dict</em>) – Dictionary of values that preserve the
+aspect ratio of the different slices.</p></li>
 <li><p><strong>pheromone_map_init</strong> (<em>ndarray</em>) – The initialized pheromone map.</p></li>
 <li><p><strong>pheromone_shared_</strong> (<em>RawArray[float]</em>) – The buffer used to share the pheromone map between processes.</p></li>
 <li><p><strong>pheromone_matrix</strong> (<em>ndarray</em>) – The pheromone map which will be deployed in the algorithm.</p></li>
@@ -178,7 +182,7 @@ to share the pheromone map as a numpy array between processes.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="main.statistics">
-<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ants_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pheromone_matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.statistics" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ants_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pheromone_matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.statistics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides statistics about the run such as: the number of
 non-zero image voxels, the number of voxels visited by the ants,
 the visited voxels which are also part of the non-zero image
@@ -190,6 +194,7 @@ of the pheromone threshold.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ants_number</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The list of the number of ants per cycle.</p></li>
+<li><p><strong>args_parser</strong> (<em>obj</em>) – Namespace of ArgumentParser.</p></li>
 <li><p><strong>image_matrix</strong> (<em>ndarray</em>) – The image matrix.</p></li>
 <li><p><strong>pheromone_matrix</strong> (<em>ndarray</em>) – The pheromone map.</p></li>
 </ul>

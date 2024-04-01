@@ -88,7 +88,7 @@ creates the image matrix and initializes the pheromone map.</p>
 <dd><p>The shape of the image matrix</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>list of int</p>
+<dd class="field-odd"><p>list[int]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -96,6 +96,21 @@ creates the image matrix and initializes the pheromone map.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">create_cube</span> <span class="pre">:</span> <span class="pre">creates</span> <span class="pre">a</span> <span class="pre">cube</span> <span class="pre">as</span> <span class="pre">an</span> <span class="pre">image</span> <span class="pre">matrix.</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">create_sphere_ellipsoid</span> <span class="pre">:</span> <span class="pre">creates</span> <span class="pre">a</span> <span class="pre">sphere</span> <span class="pre">or</span> <span class="pre">ellipsoid</span> <span class="pre">as</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">the</span> <span class="pre">image</span> <span class="pre">matrix.</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">create_donut</span> <span class="pre">:</span> <span class="pre">creates</span> <span class="pre">a</span> <span class="pre">donut</span> <span class="pre">as</span> <span class="pre">the</span> <span class="pre">image</span> <span class="pre">matrix.</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -115,17 +130,60 @@ creates the image matrix and initializes the pheromone map.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="environment_constructor.ImageData.create_cube">
-<span class="sig-name descname"><span class="pre">create_cube</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment_constructor.ImageData.create_cube" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a cube with a certain length from the given center-coordinates.</p>
+<span class="sig-name descname"><span class="pre">create_cube</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment_constructor.ImageData.create_cube" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a cube with a certain length from the center-coordinates
+given by the user.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>length</strong> (<em>int</em>) – The length of the cube, which must be less than matrix dimensions.</p></li>
 <li><p><strong>center</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The coordinates of the center of the cube.</p></li>
+<li><p><strong>length</strong> (<em>int</em>) – The length of the cube, which must be less than matrix dimensions.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>image_matrix</strong> – The cube image matrix.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="environment_constructor.ImageData.create_donut">
+<span class="sig-name descname"><span class="pre">create_donut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment_constructor.ImageData.create_donut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a sphere with a concetric hole of radius radius/2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The coordinates of the center.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – The radius of the figure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>image_matrix</strong> – The image matrix of the donut.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="environment_constructor.ImageData.create_sphere_ellipsoid">
+<span class="sig-name descname"><span class="pre">create_sphere_ellipsoid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semi_axes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment_constructor.ImageData.create_sphere_ellipsoid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a sphere or an ellipsoid with center and radius given by the user.
+If semi_axes is [1, 1, 1] a sphere is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The coordinates of the center.</p></li>
+<li><p><strong>semi_axes</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – The semi-axes lengths.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – The radius of the figure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>image_matrix</strong> – The image matrix of the sphere/ellipsoid.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>ndarray</p>
@@ -160,16 +218,13 @@ aspect ratio of the different slices.</p></li>
 <span class="sig-name descname"><span class="pre">initialize_pheromone_map</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#environment_constructor.ImageData.initialize_pheromone_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the pheromone map. The first 3 dimensions store
 the voxels values of the image matrix, the fourth dimension stores
-False for every voxel i.e it isn’t occupied by an ant.</p>
+0 for every voxel i.e it isn’t occupied by an ant.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>image_matrix</strong> (<em>ndarray</em>) – The matrix of the image to be segmented.</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>pheromone_map</strong> – The initialized pheromone map.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>pheromone_map</strong> – The initialized pheromone map.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>ndarray</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ndarray</p>
 </dd>
 </dl>
 </dd></dl>

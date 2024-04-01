@@ -135,12 +135,8 @@ class ImageData:
         y = np.linspace(0, self.matrix_dimensions[1] - 1, self.matrix_dimensions[1])
         z = np.linspace(0, self.matrix_dimensions[2] - 1, self.matrix_dimensions[2])
         x, y, z = np.meshgrid(x, y, z)
-        image_matrix = np.sqrt(
-            (x - center[0]) ** 2
-            + (y - center[1]) ** 2
-            + (z - center[2]) ** 2
-        )
-        image_matrix = np.where((image_matrix <= radius) & (image_matrix >= radius / 2), 5, 0)
+        image_matrix = np.sqrt((x - center[0]) ** 2 + (y - center[1]) ** 2 + (z - center[2]) ** 2)
+        image_matrix = np.where((image_matrix <= radius) & (image_matrix >= radius // 2), 5, 0)
         return image_matrix
 
 

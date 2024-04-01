@@ -167,7 +167,9 @@ is chosen with a roulette wheel algorithm among those neighbours</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>first_neighbours</strong> (<em>ndarray</em>) – Array whose rows correspond to the indexes of the first-neighbouring voxels.</p></li>
-<li><p><strong>pheromone_map</strong> (<em>ndarray</em>) – Four-dimensional matrix. The first 3 dimensions contain the image matrix, the fourth dimension is used to store value 0 or 1 whether the corresponding voxel is free or occupied, respectively.</p></li>
+<li><p><strong>pheromone_map</strong> (<em>ndarray</em>) – Four-dimensional matrix. The first 3 dimensions contain the image matrix, the
+fourth dimension is used to store value 0 or 1 whether the corresponding voxel
+is free or occupied, respectively.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -175,7 +177,7 @@ is chosen with a roulette wheel algorithm among those neighbours</p>
 if there are no possible voxel destinations.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list of int</p>
+<dd class="field-odd"><p>list[int]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -192,7 +194,7 @@ voxel is not considered as a first neighbour.</p>
 <dd class="field-odd"><p><strong>neighbours</strong> – Array of the indexes of the first-order neighbours of the ant current voxel.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>array[int]</p>
+<dd class="field-even"><p>ndarray</p>
 </dd>
 </dl>
 </dd></dl>
@@ -208,7 +210,7 @@ that one of the find_first_neighbours function.</p>
 <dd class="field-odd"><p><strong>neighbours</strong> – Array of the indexes of the second-order neighbours of the current voxel.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>array[int]</p>
+<dd class="field-even"><p>ndarray</p>
 </dd>
 </dl>
 </dd></dl>
