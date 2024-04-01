@@ -446,7 +446,7 @@ if __name__ == "__main__":
         "-s",
         "--semi_axes",
         help="The semi-axes lengths.",
-        type=int,
+        type=float,
         nargs=3,
         metavar="int",
     )
