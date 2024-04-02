@@ -399,7 +399,7 @@ if __name__ == "__main__":
     subparsers = parser.add_subparsers(help="sub-command help", dest="cmd")
     parser_path = subparsers.add_parser("file_path", help="The DICOM folder path")
     parser_path.add_argument(
-        "-f", "--file_path", help="The DICOM folder path.", type=str
+        "-f", "--file_path", help="The DICOM folder path.", type=str, metavar="str",
     )
     parser_cube = subparsers.add_parser(
         "cube", help="Returns a cube as the image matrix."
