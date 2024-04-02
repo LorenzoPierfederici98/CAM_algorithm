@@ -52,7 +52,6 @@ class ImageData:
     def __init__(self, matrix_dimensions):
         self.matrix_dimensions = matrix_dimensions
 
-
     def create_cube(self, center, length):
         """Creates a cube with a certain length from the center-coordinates
         given by the user.
@@ -78,7 +77,6 @@ class ImageData:
             center[2] - length // 2 : center[2] + length // 2,
         ] = 5.0
         return image_matrix
-
 
     def create_sphere_ellipsoid(self, center, radius, semi_axes):
         """Creates a sphere or an ellipsoid with center and radius given by the user.
@@ -113,10 +111,9 @@ class ImageData:
         image_matrix = np.where(image_matrix <= radius, 5, 0)
         return image_matrix
 
-
     def create_donut(self, center, radius):
         """Creates a sphere with a concetric hole of radius radius/2.
-        
+
         Args
         ----
         center : list[int]
@@ -128,17 +125,20 @@ class ImageData:
         Returns
         -------
         image_matrix : ndarray
-            The image matrix of the donut. 
+            The image matrix of the donut.
         """
 
         x = np.linspace(0, self.matrix_dimensions[0] - 1, self.matrix_dimensions[0])
         y = np.linspace(0, self.matrix_dimensions[1] - 1, self.matrix_dimensions[1])
         z = np.linspace(0, self.matrix_dimensions[2] - 1, self.matrix_dimensions[2])
         x, y, z = np.meshgrid(x, y, z)
-        image_matrix = np.sqrt((x - center[0]) ** 2 + (y - center[1]) ** 2 + (z - center[2]) ** 2)
-        image_matrix = np.where((image_matrix <= radius) & (image_matrix >= radius // 2), 5, 0)
+        image_matrix = np.sqrt(
+            (x - center[0]) ** 2 + (y - center[1]) ** 2 + (z - center[2]) ** 2
+        )
+        image_matrix = np.where(
+            (image_matrix <= radius) & (image_matrix >= radius // 2), 5, 0
+        )
         return image_matrix
-
 
     def initialize_pheromone_map(self):
         """Initializes the pheromone map. The first 3 dimensions store
@@ -161,18 +161,22 @@ class ImageData:
         )
         return pheromone_map
 
-
     @classmethod
-    def image_from_file(cls, file_path):
+    def image_from_file(cls, file_path, extrema):
         """Loads an image from a dicom folder whose path is
         given by the user. The output image is the result of
         the stacked slices of the dicom folder, sorted by their
-        SliceLocation value.
+        SliceLocation value; the voxels values are scaled back to the
+        Hounsfield units.
 
         Args
         ----
         file_path : str
             The absolute path of the dicom folder.
+
+        extrema : list[int]
+            The values to crop the image matrix as
+            image_matrix[extrema[0] : extrema[1], extrema[2] : extrema[3], extrema[4] : extrema[5]]
 
         Returns
         -------
@@ -199,17 +203,23 @@ class ImageData:
         CT_array = np.flip(CT_array, axis=1)
         x, y, z = *slices[0].PixelSpacing, slices[0].SliceThickness
         aspect_ratio = {"axial": y / x, "sagittal": y / z, "coronal": x / z}
-        # Only for brain images
-        # CT_array = np.swapaxes(CT_array, 0, 2)
-        # CT_array = np.rot90(CT_array[..., 117 - 10 : 117 + 10], axes=(1,0))
-        # Return to HU units
-        CT_array = CT_array[168:415, 284:460, 267 - 10 : 267 + 10] - 1024.0
+        # Crop and return to HU units
+        CT_array = (
+            CT_array[
+                extrema[0] : extrema[1],
+                extrema[2] : extrema[3],
+                extrema[4] : extrema[5],
+            ]
+            - 1024.0
+        )
         return CT_array, aspect_ratio
 
 
 if __name__ == "__main__":
 
-    CT_arr, aspect_rat = ImageData.image_from_file("D:/train_data/Training/CASE01")
+    CT_arr, aspect_rat = ImageData.image_from_file(
+        "D:/train_data/Training/CASE01", [168, 415, 284, 460, 257, 277]
+    )
     fig, ax = plt.subplots(1, 2)
     ax[0].imshow(CT_arr[:, :, CT_arr.shape[2] // 2], cmap="gray")
     ax[0].set_aspect(aspect_rat["axial"])

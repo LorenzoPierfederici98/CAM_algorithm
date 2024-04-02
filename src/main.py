@@ -236,7 +236,7 @@ def statistics(ants_number, args_parser, image_matrix, pheromone_matrix):
         The pheromone map.
     """
 
-    if args_parser.cmd == "file_path":
+    if args_parser.cmd == "dicom":
         _, image_voxels = ground_truth(image_matrix)
     else:
         image_voxels = np.transpose(np.array(np.nonzero(image_matrix))).reshape(-1, 3)
@@ -341,8 +341,9 @@ def set_image_and_pheromone(args_parser):
 
     a_ratio = {"axial": 1, "sagittal": 1, "coronal": 1}
     imagedata = ImageData(args_parser.matrix_dimensions)
-    if args_parser.cmd == "file_path":
-        image_matrix, a_ratio = ImageData.image_from_file(args_parser.file_path)
+    if args_parser.cmd == "dicom":
+        extrema = [168, 415, 284, 460, 257, 277]
+        image_matrix, a_ratio = ImageData.image_from_file(args_parser.file_path, extrema)
         imagedata = ImageData(image_matrix.shape)
     elif args_parser.cmd == "cube":
         image_matrix = imagedata.create_cube(
