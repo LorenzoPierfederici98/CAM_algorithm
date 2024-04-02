@@ -13,6 +13,7 @@ The ants lifespan is regulated by the energy parameter: all the ants are assigne
 Following those rules the ants build the pheromone map, which is deployed to segment bronchial and vascular trees in lung CT images. The algorithm parameters are defined in the documentation (click on the *docs* badge).
 
 ## Workflow
+
 ```mermaid
 graph TD;
     A[Initialized pheromone map, all voxels are ant and pheromone-free]-->B[Anthill position chosen by the user, all first neighb. voxels are occupied by ants];
@@ -26,6 +27,7 @@ in the first neighb. voxels]
     E-->|Neither| C
     F-->C
 ```
+
 ## Usage
 After cloning the repository with
 
