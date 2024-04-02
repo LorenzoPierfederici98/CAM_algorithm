@@ -46,26 +46,26 @@ cd src
 ```
 
 The user has to provide the voxel position of the anthill from which the segmentation starts and the number of iterations.
-There are four possible choices, given by ```{file_path,cube,sphere/ellipsoid,donut}```.
+There are four possible choices, given by ```{dicom,cube,sphere/ellipsoid,donut}```.
 
 ```bash
 python3.10 main.py -h
 usage: main.py [-h] [-a int int int] [-n int]
-               {file_path,cube,sphere/ellipsoid,donut} ...
+               {dicom,cube,sphere/ellipsoid,donut} ...
 
 
 Module implementing the CAM algorithm.
 
 positional arguments:
-  {file_path,cube,sphere/ellipsoid,donut}
+  {dicom,cube,sphere/ellipsoid,donut}
                         sub-command help
-    file_path           The DICOM folder path
+    dicom               Returns an image from a DICOM folder.
     cube                Returns a cube as the image matrix.
     sphere/ellipsoid    Returns a sphere/ellipsoid as the image
                         matrix.
     donut               Returns a donut as the image matrix i.e a
                         sphere with a concentric hole with half
-                        external radius as the internal radius.
+                        external radius as the internal radius.    
 
 options:
   -h, --help            show this help message and exit
@@ -75,10 +75,11 @@ options:
                         Number of iterations before stopping.
 ```
 
-For the file option:
+For the dicom option:
+
 ```bash
-python3.10 main.py file_path -h
-usage: main.py file_path [-h] [-f str]
+python3.10 main.py dicom -h
+usage: main.py dicom [-h] [-f str]
 
 options:
   -h, --help            show this help message and exit
@@ -87,6 +88,7 @@ options:
 ```
 
 For the cube option:
+
 ```bash
 python3.10 main.py cube -h     
 usage: main.py cube [-h] [-m int int int] [-c int int int]
@@ -102,7 +104,8 @@ options:
                         The cube length.
 ```
 
-For the sphere/ellipsoid option, if the ```--semi_axes``` option is ```1 1 1``` a sphere is returned: 
+For the sphere/ellipsoid option, if the ```--semi_axes``` option is ```1 1 1``` a sphere is returned:
+
 ```bash
 python3.10 main.py sphere/ellipsoid -h
 usage: main.py sphere/ellipsoid [-h] [-m int int int]
@@ -121,6 +124,7 @@ options:
 ```
 
 For the donut option:
+
 ```bash
 python3.10 main.py donut -h                                                             
 usage: main.py donut [-h] [-m int int int] [-c int int int]
@@ -135,7 +139,7 @@ options:
   -r int, --radius int  The external radius of the donut.
 ```
 
-The run results, such as the image matrix dimensions, the pheromone map, the evaluation metrics and the elapsed time, are placed in the results directory.
+The run results, such as the image matrix dimensions, the pheromone map, the evaluation metrics and the elapsed time, are placed in the ```results``` directory.
 
 ## Example
 
