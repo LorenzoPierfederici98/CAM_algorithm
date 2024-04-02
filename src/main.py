@@ -448,7 +448,7 @@ if __name__ == "__main__":
         help="The semi-axes lengths.",
         type=float,
         nargs=3,
-        metavar="int",
+        metavar="float",
     )
     parser_curve.add_argument(
         "-r",
