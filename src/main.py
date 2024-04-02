@@ -421,7 +421,7 @@ if __name__ == "__main__":
         metavar="int",
     )
     parser_cube.add_argument(
-        "-l", "--cube_length", help="The cube center.", type=int, metavar="int"
+        "-l", "--cube_length", help="The cube length.", type=int, metavar="int"
     )
     parser_curve = subparsers.add_parser(
         "sphere/ellipsoid", help="Returns a sphere/ellipsoid as the image matrix."
