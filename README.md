@@ -60,8 +60,11 @@ The run results, such as the image matrix dimensions, the pheromone map, the eva
 
 ```python3.10 main.py -a 45 35 20 -n 300 donut -m 100 100 50 -c 50 50 25 -r 30
 ```
+
 Produces
+
 <img src="assets/CAM_results_donut.png" width="400" height="300">
+
 <img src="assets/CAM_statistics_donut.png" width="400" height="300">
 
 ## References
