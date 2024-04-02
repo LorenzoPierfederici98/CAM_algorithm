@@ -1,4 +1,4 @@
-*.png
-*.txt
+/results.*png
+/results.*txt
 **/__pycache__
 **/region_growing.py
