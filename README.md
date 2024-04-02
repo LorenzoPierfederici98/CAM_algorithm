@@ -27,7 +27,8 @@ in the first neighb. voxels]
     F-->C
 ```
 ## Usage
-The user has to provide the voxel position of the anthill from which the segmentation starts and the path of the image dicom directory.
+The user has to provide the voxel position of the anthill from which the segmentation starts and the number of iterations.
+There are four possible choices, given by ```{file_path,cube,sphere/ellipsoid,donut}```
 
 ```python3.10 main.py -h
 usage: main.py [-h] [-a int int int] [-n int]
@@ -54,6 +55,59 @@ options:
   -n int, --n_iteration int
                         Number of iterations before stopping.
 ```
+
+```python3.10 main.py file_path -h
+usage: main.py file_path [-h] [-f str]
+
+options:
+  -h, --help            show this help message and exit
+  -f str, --file_path str
+                        The DICOM folder path.
+```
+
+```python3.10 main.py cube -h     
+usage: main.py cube [-h] [-m int int int] [-c int int int]
+                    [-l int]
+
+options:
+  -h, --help            show this help message and exit
+  -m int int int, --matrix_dimensions int int int
+                        Image matrix dimensions.
+  -c int int int, --center_coordinates int int int
+                        The cube center.
+  -l int, --cube_length int
+                        The cube length.
+```
+
+```python3.10 main.py sphere/ellipsoid -h
+usage: main.py sphere/ellipsoid [-h] [-m int int int]
+                                [-c int int int] [-s int int int]  
+                                [-r int]
+
+options:
+  -h, --help            show this help message and exit
+  -m int int int, --matrix_dimensions int int int
+                        Image matrix dimensions.
+  -c int int int, --center_coordinates int int int
+                        The center of the figure.
+  -s int int int, --semi_axes int int int
+                        The semi-axes lengths.
+  -r int, --radius int  The radius of the figure.
+```
+
+```python3.10 main.py donut -h                                                             
+usage: main.py donut [-h] [-m int int int] [-c int int int]
+                     [-r int]
+
+options:
+  -h, --help            show this help message and exit
+  -m int int int, --matrix_dimensions int int int
+                        Image matrix dimensions.
+  -c int int int, --center_coordinates int int int
+                        The center of the donut.
+  -r int, --radius int  The external radius of the donut.
+```
+
 The run results, such as the image matrix dimensions, the pheromone map, the evaluation metrics and the elapsed time, are placed in the results directory.
 
 ## Example
@@ -62,7 +116,7 @@ The run results, such as the image matrix dimensions, the pheromone map, the eva
 
 Produces
 
-<img src="assets/CAM_results_donut.png" width="400" height="400">  <img src="assets/CAM_statistics_donut.png" width="400" height="400">
+<img src="assets/CAM_results_donut.png" width="400" height="300">  <img src="assets/CAM_statistics_donut.png" width="400" height="300">
 
 ## References
 [Cerello, Piergiorgio, et al. "3-D object segmentation using ant colonies." Pattern Recognition 43.4 (2010): 1476-1490.](https://www.sciencedirect.com/science/article/abs/pii/S003132030900380X?via%3Dihub)
