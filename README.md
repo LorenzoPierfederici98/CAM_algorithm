@@ -29,8 +29,11 @@ in the first neighb. voxels]
 ## Usage
 After cloning the repository with
 ```git clone https://github.com/LorenzoPierfederici98/CAM_algorithm.git```
+
 Change your directory to the ```src``` directory:
-```cd CAM_algorithm``` ```cd src```
+
+```cd CAM_algorithm``` $\to$ ```cd src```
+
 The user has to provide the voxel position of the anthill from which the segmentation starts and the number of iterations.
 There are four possible choices, given by ```{file_path,cube,sphere/ellipsoid,donut}```.
 
