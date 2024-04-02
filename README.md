@@ -31,7 +31,7 @@ in the first neighb. voxels]
 ## Usage
 After cloning the repository with
 
-```
+```bash
 git clone https://github.com/LorenzoPierfederici98/CAM_algorithm.git
 ```
 
@@ -48,7 +48,8 @@ cd src
 The user has to provide the voxel position of the anthill from which the segmentation starts and the number of iterations.
 There are four possible choices, given by ```{file_path,cube,sphere/ellipsoid,donut}```.
 
-```python3.10 main.py -h
+```bash
+python3.10 main.py -h
 usage: main.py [-h] [-a int int int] [-n int]
                {file_path,cube,sphere/ellipsoid,donut} ...
 
@@ -75,7 +76,8 @@ options:
 ```
 
 For the file option:
-```python3.10 main.py file_path -h
+```bash
+python3.10 main.py file_path -h
 usage: main.py file_path [-h] [-f str]
 
 options:
@@ -85,7 +87,8 @@ options:
 ```
 
 For the cube option:
-```python3.10 main.py cube -h     
+```bash
+python3.10 main.py cube -h     
 usage: main.py cube [-h] [-m int int int] [-c int int int]
                     [-l int]
 
@@ -100,7 +103,8 @@ options:
 ```
 
 For the sphere/ellipsoid option, if the ```--semi_axes``` option is ```1 1 1``` a sphere is returned: 
-```python3.10 main.py sphere/ellipsoid -h
+```bash
+python3.10 main.py sphere/ellipsoid -h
 usage: main.py sphere/ellipsoid [-h] [-m int int int]
                                 [-c int int int]
                                 [-s float float float] [-r int]    
@@ -117,7 +121,8 @@ options:
 ```
 
 For the donut option:
-```python3.10 main.py donut -h                                                             
+```bash
+python3.10 main.py donut -h                                                             
 usage: main.py donut [-h] [-m int int int] [-c int int int]
                      [-r int]
 
@@ -134,7 +139,7 @@ The run results, such as the image matrix dimensions, the pheromone map, the eva
 
 ## Example
 
-```
+```bash
 python3.10 main.py -a 45 35 20 -n 300 donut -m 100 100 50 -c 50 50 25 -r 30
 ```
 
