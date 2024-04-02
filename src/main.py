@@ -214,10 +214,9 @@ def pool_initializer(pheromone_matrix_shared, pheromone_matrix_shape):
 
 
 def statistics(ants_number, args_parser, image_matrix, pheromone_matrix):
-    """Provides statistics about the run such as: the number of
-    non-zero image voxels, the number of voxels visited by the ants,
-    the visited voxels which are also part of the non-zero image
-    voxels and the respective number of visits. It also provides the
+    """Provides statistics about the run such as: the number of image voxels,
+    the number of voxels visited by the ants, the visited voxels which are also part 
+    of the image voxels and the respective number of visits. It also provides the
     algorithm evaluation metrics such as sensitivity, exploration and
     contamination level (defined in the documentation) as functions
     of the pheromone threshold.
@@ -397,7 +396,7 @@ if __name__ == "__main__":
         metavar="int",
     )
     subparsers = parser.add_subparsers(help="sub-command help", dest="cmd")
-    parser_path = subparsers.add_parser("file_path", help="The DICOM folder path")
+    parser_path = subparsers.add_parser("dicom", help="Returns an image from a DICOM folder.")
     parser_path.add_argument(
         "-f", "--file_path", help="The DICOM folder path.", type=str, metavar="str",
     )
