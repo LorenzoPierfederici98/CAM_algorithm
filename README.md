@@ -35,13 +35,13 @@ After cloning the repository with
 git clone https://github.com/LorenzoPierfederici98/CAM_algorithm.git
 ```
 
-Change your directory to the ```src``` directory:
+change your directory to the ```src``` directory:
 
-```
+```bash
 cd CAM_algorithm
 ```
 
-```
+```bash
 cd src
 ```
 
