@@ -27,8 +27,12 @@ in the first neighb. voxels]
     F-->C
 ```
 ## Usage
+After cloning the repository with
+```git clone https://github.com/LorenzoPierfederici98/CAM_algorithm.git```
+Change your directory to the ```src``` directory:
+```cd CAM_algorithm``` ```cd src```
 The user has to provide the voxel position of the anthill from which the segmentation starts and the number of iterations.
-There are four possible choices, given by ```{file_path,cube,sphere/ellipsoid,donut}```
+There are four possible choices, given by ```{file_path,cube,sphere/ellipsoid,donut}```.
 
 ```python3.10 main.py -h
 usage: main.py [-h] [-a int int int] [-n int]
@@ -56,6 +60,7 @@ options:
                         Number of iterations before stopping.
 ```
 
+For the file option:
 ```python3.10 main.py file_path -h
 usage: main.py file_path [-h] [-f str]
 
@@ -65,6 +70,7 @@ options:
                         The DICOM folder path.
 ```
 
+For the cube option:
 ```python3.10 main.py cube -h     
 usage: main.py cube [-h] [-m int int int] [-c int int int]
                     [-l int]
@@ -79,10 +85,11 @@ options:
                         The cube length.
 ```
 
+For the sphere/ellipsoid option, if the ```--semi_axes``` option is ```1 1 1``` a sphere is returned: 
 ```python3.10 main.py sphere/ellipsoid -h
 usage: main.py sphere/ellipsoid [-h] [-m int int int]
-                                [-c int int int] [-s int int int]  
-                                [-r int]
+                                [-c int int int]
+                                [-s float float float] [-r int]    
 
 options:
   -h, --help            show this help message and exit
@@ -90,11 +97,12 @@ options:
                         Image matrix dimensions.
   -c int int int, --center_coordinates int int int
                         The center of the figure.
-  -s int int int, --semi_axes int int int
+  -s float float float, --semi_axes float float float
                         The semi-axes lengths.
   -r int, --radius int  The radius of the figure.
 ```
 
+For the donut option:
 ```python3.10 main.py donut -h                                                             
 usage: main.py donut [-h] [-m int int int] [-c int int int]
                      [-r int]
