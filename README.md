@@ -13,6 +13,7 @@ The ants lifespan is regulated by the energy parameter: all the ants are assigne
 Following those rules the ants build the pheromone map, which is deployed to segment bronchial and vascular trees in lung CT images. The algorithm parameters are defined in the documentation (click on the *docs* badge).
 
 ## Workflow
+
 ```mermaid
 graph TD;
     A[Initialized pheromone map, all voxels are ant and pheromone-free]-->B[Anthill position chosen by the user, all first neighb. voxels are occupied by ants];
@@ -26,43 +27,45 @@ in the first neighb. voxels]
     E-->|Neither| C
     F-->C
 ```
+
 ## Usage
 After cloning the repository with
 
-```
+```bash
 git clone https://github.com/LorenzoPierfederici98/CAM_algorithm.git
 ```
 
-Change your directory to the ```src``` directory:
+change your directory to the ```src``` directory:
 
-```
+```bash
 cd CAM_algorithm
 ```
 
-```
+```bash
 cd src
 ```
 
 The user has to provide the voxel position of the anthill from which the segmentation starts and the number of iterations.
-There are four possible choices, given by ```{file_path,cube,sphere/ellipsoid,donut}```.
+There are four possible choices, given by ```{dicom,cube,sphere/ellipsoid,donut}```.
 
-```python3.10 main.py -h
+```bash
+python3.10 main.py -h
 usage: main.py [-h] [-a int int int] [-n int]
-               {file_path,cube,sphere/ellipsoid,donut} ...
+               {dicom,cube,sphere/ellipsoid,donut} ...
 
 
 Module implementing the CAM algorithm.
 
 positional arguments:
-  {file_path,cube,sphere/ellipsoid,donut}
+  {dicom,cube,sphere/ellipsoid,donut}
                         sub-command help
-    file_path           The DICOM folder path
+    dicom               Returns an image from a DICOM folder.
     cube                Returns a cube as the image matrix.
     sphere/ellipsoid    Returns a sphere/ellipsoid as the image
                         matrix.
     donut               Returns a donut as the image matrix i.e a
                         sphere with a concentric hole with half
-                        external radius as the internal radius.
+                        external radius as the internal radius.    
 
 options:
   -h, --help            show this help message and exit
@@ -72,9 +75,11 @@ options:
                         Number of iterations before stopping.
 ```
 
-For the file option:
-```python3.10 main.py file_path -h
-usage: main.py file_path [-h] [-f str]
+For the dicom option:
+
+```bash
+python3.10 main.py dicom -h
+usage: main.py dicom [-h] [-f str]
 
 options:
   -h, --help            show this help message and exit
@@ -83,7 +88,9 @@ options:
 ```
 
 For the cube option:
-```python3.10 main.py cube -h     
+
+```bash
+python3.10 main.py cube -h     
 usage: main.py cube [-h] [-m int int int] [-c int int int]
                     [-l int]
 
@@ -97,8 +104,10 @@ options:
                         The cube length.
 ```
 
-For the sphere/ellipsoid option, if the ```--semi_axes``` option is ```1 1 1``` a sphere is returned: 
-```python3.10 main.py sphere/ellipsoid -h
+For the sphere/ellipsoid option, if the ```--semi_axes``` option is ```1 1 1``` a sphere is returned:
+
+```bash
+python3.10 main.py sphere/ellipsoid -h
 usage: main.py sphere/ellipsoid [-h] [-m int int int]
                                 [-c int int int]
                                 [-s float float float] [-r int]    
@@ -115,7 +124,9 @@ options:
 ```
 
 For the donut option:
-```python3.10 main.py donut -h                                                             
+
+```bash
+python3.10 main.py donut -h                                                             
 usage: main.py donut [-h] [-m int int int] [-c int int int]
                      [-r int]
 
@@ -128,17 +139,17 @@ options:
   -r int, --radius int  The external radius of the donut.
 ```
 
-The run results, such as the image matrix dimensions, the pheromone map, the evaluation metrics and the elapsed time, are placed in the results directory.
+The run results, such as the image matrix dimensions, the pheromone map, the evaluation metrics and the elapsed time, are placed in the ```results``` directory.
 
 ## Example
 
-```
+```bash
 python3.10 main.py -a 45 35 20 -n 300 donut -m 100 100 50 -c 50 50 25 -r 30
 ```
 
 Produces
 
-<img src="assets/CAM_results_donut.png" width="400" height="300"> <img src="assets/CAM_statistics_donut.png" width="400" height="300">
+<img src="assets/CAM_results_donut.png" width="400" height="300"><img src="assets/CAM_statistics_donut.png" width="400" height="300">
 
 ## References
 [Cerello, Piergiorgio, et al. "3-D object segmentation using ant colonies." Pattern Recognition 43.4 (2010): 1476-1490.](https://www.sciencedirect.com/science/article/abs/pii/S003132030900380X?via%3Dihub)
