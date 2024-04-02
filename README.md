@@ -30,22 +30,39 @@ in the first neighb. voxels]
 The user has to provide the voxel position of the anthill from which the segmentation starts and the path of the image dicom directory.
 
 ```python3.10 main.py -h
-usage: main.py [-h] [--file_path str]
-               voxel_coordinate voxel_coordinate
-               voxel_coordinate n_iteration
+usage: main.py [-h] [-a int int int] [-n int]
+               {file_path,cube,sphere/ellipsoid,donut} ...
+
 
 Module implementing the CAM algorithm.
 
 positional arguments:
-  voxel_coordinate  The anthill voxel position.
-  n_iteration       Number of iterations before stopping.  
+  {file_path,cube,sphere/ellipsoid,donut}
+                        sub-command help
+    file_path           The DICOM folder path
+    cube                Returns a cube as the image matrix.
+    sphere/ellipsoid    Returns a sphere/ellipsoid as the image
+                        matrix.
+    donut               Returns a donut as the image matrix i.e a
+                        sphere with a concentric hole with half
+                        external radius as the internal radius.
 
 options:
-  -h, --help        show this help message and exit        
-  --file_path str   The absolute path of the image
-                    directory.
+  -h, --help            show this help message and exit
+  -a int int int, --anthill_coordinates int int int
+                        The anthill voxel position.
+  -n int, --n_iteration int
+                        Number of iterations before stopping.
 ```
 The run results, such as the image matrix dimensions, the pheromone map, the evaluation metrics and the elapsed time, are placed in the results directory.
+
+## Example
+
+```python3.10 main.py -a 45 35 20 -n 300 donut -m 100 100 50 -c 50 50 25 -r 30```
+
+Produces
+
+<img src="assets/CAM_results_donut.png" width="400" height="400">  <img src="assets/CAM_statistics_donut.png" width="400" height="400">
 
 ## References
 [Cerello, Piergiorgio, et al. "3-D object segmentation using ant colonies." Pattern Recognition 43.4 (2010): 1476-1490.](https://www.sciencedirect.com/science/article/abs/pii/S003132030900380X?via%3Dihub)
