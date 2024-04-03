@@ -89,7 +89,8 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    image, aspect_ratio = ImageData.image_from_file(args.file_path)
+    extrema = [168, 415, 284, 460, 257, 277]
+    image, aspect_ratio = ImageData.image_from_file(args.file_path, extrema)
 
     segm_mask_array, ground_truth_voxels = ground_truth(image)
 

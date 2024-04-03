@@ -340,20 +340,22 @@ def set_image_and_pheromone(args_parser):
     """
 
     a_ratio = {"axial": 1, "sagittal": 1, "coronal": 1}
-    imagedata = ImageData(args_parser.matrix_dimensions)
     if args_parser.cmd == "dicom":
         extrema = [168, 415, 284, 460, 257, 277]
         image_matrix, a_ratio = ImageData.image_from_file(args_parser.file_path, extrema)
         imagedata = ImageData(image_matrix.shape)
     elif args_parser.cmd == "cube":
+        imagedata = ImageData(args_parser.matrix_dimensions)
         image_matrix = imagedata.create_cube(
             args_parser.center_coordinates, args_parser.cube_length
         )
     elif args_parser.cmd == "sphere/ellipsoid":
+        imagedata = ImageData(args_parser.matrix_dimensions)
         image_matrix = imagedata.create_sphere_ellipsoid(
             args_parser.center_coordinates, args_parser.radius, args_parser.semi_axes
         )
     elif args_parser.cmd == "donut":
+        imagedata = ImageData(args_parser.matrix_dimensions)
         image_matrix = imagedata.create_donut(args_parser.center_coordinates, args_parser.radius)
 
 
