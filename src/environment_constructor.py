@@ -49,8 +49,10 @@ class ImageData:
     an image from a dicom folder.
     """
 
+
     def __init__(self, matrix_dimensions):
         self.matrix_dimensions = matrix_dimensions
+
 
     def create_cube(self, center, length):
         """Creates a cube with a certain length from the center-coordinates
@@ -77,6 +79,7 @@ class ImageData:
             center[2] - length // 2 : center[2] + length // 2,
         ] = 5.0
         return image_matrix
+
 
     def create_sphere_ellipsoid(self, center, radius, semi_axes):
         """Creates a sphere or an ellipsoid with center and radius given by the user.
@@ -111,6 +114,7 @@ class ImageData:
         image_matrix = np.where(image_matrix <= radius, 5, 0)
         return image_matrix
 
+
     def create_donut(self, center, radius):
         """Creates a sphere with a concetric hole of radius radius/2.
 
@@ -140,6 +144,7 @@ class ImageData:
         )
         return image_matrix
 
+
     def initialize_pheromone_map(self):
         """Initializes the pheromone map. The first 3 dimensions store
         the voxels values of the image matrix, the fourth dimension stores
@@ -160,6 +165,7 @@ class ImageData:
             )
         )
         return pheromone_map
+
 
     @classmethod
     def image_from_file(cls, file_path, extrema):
