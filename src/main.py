@@ -213,9 +213,9 @@ def pool_initializer(pheromone_matrix_shared, pheromone_matrix_shape):
     np_x_shape = pheromone_matrix_shape
 
 
-def statistics(ants_number, args_parser, image_matrix, pheromone_matrix):
+def statistics(ants_number, args_parser, mean_array, image_matrix, pheromone_matrix):
     """Provides statistics about the run such as: the number of image voxels,
-    the number of voxels visited by the ants, the visited voxels which are also part 
+    the number of voxels visited by the ants, the visited voxels which are also part
     of the image voxels and the respective number of visits. It also provides the
     algorithm evaluation metrics such as sensitivity, exploration and
     contamination level (defined in the documentation) as functions
@@ -292,10 +292,12 @@ def statistics(ants_number, args_parser, image_matrix, pheromone_matrix):
     _, ax = plt.subplots(2, 2, figsize=(10, 7))
     ax[0][0].plot(ants_number)
     ax[0][0].set_title("Number of ants per cycle")
-    ax[0][1].hist(common_dict.values(), bins=50)
-    ax[0][1].set_title("Hist of pheromone values into image objects")
-    ax[0][1].set_yscale("log")
-    ax[0][1].set_xticks([])
+    # ax[0][1].hist(common_dict.values(), bins=50)
+    # ax[0][1].set_title("Hist of pheromone values into image objects")
+    # ax[0][1].set_yscale("log")
+    # ax[0][1].set_xticks([])
+    ax[0][1].plot(mean_array)
+    ax[0][1].set_title("Average pheromone release per cycle")
     ax[1][0].plot(pheromone_threshold / 1000, sensitivity, label="S")
     ax[1][0].plot(pheromone_threshold / 1000, expl_level, label="E")
     ax[1][0].set_xlabel("Pheromone threshold x$10^3$")
@@ -342,7 +344,9 @@ def set_image_and_pheromone(args_parser):
     a_ratio = {"axial": 1, "sagittal": 1, "coronal": 1}
     if args_parser.cmd == "dicom":
         extrema = [168, 415, 284, 460, 257, 277]
-        image_matrix, a_ratio = ImageData.image_from_file(args_parser.file_path, extrema)
+        image_matrix, a_ratio = ImageData.image_from_file(
+            args_parser.file_path, extrema
+        )
         imagedata = ImageData(image_matrix.shape)
     elif args_parser.cmd == "cube":
         imagedata = ImageData(args_parser.matrix_dimensions)
@@ -356,8 +360,9 @@ def set_image_and_pheromone(args_parser):
         )
     elif args_parser.cmd == "donut":
         imagedata = ImageData(args_parser.matrix_dimensions)
-        image_matrix = imagedata.create_donut(args_parser.center_coordinates, args_parser.radius)
-
+        image_matrix = imagedata.create_donut(
+            args_parser.center_coordinates, args_parser.radius
+        )
 
     pheromone_map_init_ = imagedata.initialize_pheromone_map()
     global np_x_shape
@@ -399,9 +404,15 @@ if __name__ == "__main__":
         metavar="int",
     )
     subparsers = parser.add_subparsers(help="sub-command help", dest="cmd")
-    parser_path = subparsers.add_parser("dicom", help="Returns an image from a DICOM folder.")
+    parser_path = subparsers.add_parser(
+        "dicom", help="Returns an image from a DICOM folder."
+    )
     parser_path.add_argument(
-        "-f", "--file_path", help="The DICOM folder path.", type=str, metavar="str",
+        "-f",
+        "--file_path",
+        help="The DICOM folder path.",
+        type=str,
+        metavar="str",
     )
     parser_cube = subparsers.add_parser(
         "cube", help="Returns a cube as the image matrix."
@@ -495,10 +506,11 @@ if __name__ == "__main__":
     np.copyto(pheromone_map, pheromone_map_init)
 
     n_iteration = 0
-    energy_death = 0.3
-    energy_reproduction = 1.25
+    energy_death = 1.
+    energy_reproduction = 1.3
     ant_number = []
     pheromone_mean_sum = 0
+    pheromone_mean_array = []
     colony_length = 0
 
     ant_colony, anthill_position = set_colony(args.anthill_coordinates, image)
@@ -521,6 +533,7 @@ if __name__ == "__main__":
         colony_length += len(ant_colony)
         pheromone_mean_sum += sum(released_pheromone)
         pheromone_mean = pheromone_mean_sum / colony_length
+        pheromone_mean_array.append(pheromone_mean)
 
         for i, ant in enumerate(ant_colony):
             if len(next_voxel[i]) == 0:
@@ -595,6 +608,6 @@ if __name__ == "__main__":
         f"Elapsed time: {(time.perf_counter() - start_time_local) / 60:.3f} min\n"
     )
 
-    statistics(ant_number, args, image, pheromone_map[..., 0])
+    statistics(ant_number, args, pheromone_mean_array, image, pheromone_map[..., 0])
     plot_display(aspect_ratio, image, pheromone_map[..., 0], anthill_position)
     plt.show()

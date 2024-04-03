@@ -277,8 +277,8 @@ class Ant:
             valid_first_neighbours = np.delete(
                 valid_first_neighbours, occupied_indexes, axis=0
             )
-        if valid_first_neighbours.shape[0] == 0:
-            return []
+            if valid_first_neighbours.shape[0] == 0:
+                return []
         W_PROBABILITY = (
             1.0
             + pheromone_map[
