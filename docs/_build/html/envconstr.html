@@ -157,7 +157,7 @@ given by the user.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>center</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The coordinates of the center.</p></li>
-<li><p><strong>radius</strong> (<em>float</em>) – The radius of the figure.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – The external radius.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -193,14 +193,19 @@ If semi_axes is [1, 1, 1] a sphere is returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="environment_constructor.ImageData.image_from_file">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">image_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment_constructor.ImageData.image_from_file" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">image_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extrema</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#environment_constructor.ImageData.image_from_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads an image from a dicom folder whose path is
 given by the user. The output image is the result of
 the stacked slices of the dicom folder, sorted by their
-SliceLocation value.</p>
+SliceLocation value; the voxels values are scaled back to the
+Hounsfield units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – The absolute path of the dicom folder.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> (<em>str</em>) – The absolute path of the dicom folder.</p></li>
+<li><p><strong>extrema</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The values to crop the image matrix as
+image_matrix[extrema[0] : extrema[1], extrema[2] : extrema[3], extrema[4] : extrema[5]]</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">

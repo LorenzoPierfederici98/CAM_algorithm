@@ -31,7 +31,7 @@ Pheromone laying rule
 ^^^^^^^^^^^^^^^^^^^^^
 The pheromone value an ant deposits into a voxel :math:`v_i` before leaving is
 
-.. math:: T = \eta + I(v_i)
+.. math:: T = \eta + 10 I(v_i)
 
 With :math:`I(v_i)` the intensity of the corresponding image voxel and :math:`\eta = 0.01` a quantity that an ant would leave even into a voxel with zero intensity, certifying that it was visited. See the reference article for other laying rules.
 
@@ -42,7 +42,7 @@ The life cycle of the ants is regulated by the energy parameter with a default v
 
 .. math:: \Delta\varepsilon = -\alpha (1 - \frac{\Delta_{ph}}{<\Delta_{ph}>})
 
-An ant dies whenever :math:`\varepsilon\leq \varepsilon_D = 1` and gives birth whenever :math:`\varepsilon\geq \varepsilon_R = 1.3`.
+An ant dies whenever :math:`\varepsilon\leq \varepsilon_D = 0.3` and gives birth whenever :math:`\varepsilon\geq \varepsilon_R = 1.25`.
 
 The number of ants generated when a reproduction takes place :math:`N_{offspring}` is a function of the local properties of the environment, which are evaluated replacing :math:`T` with :math:`T_5` the pheromone releasing rule considering the intensity :math:`I_5` as the image intensity averaged on the second-order neighbours of the ant current voxel.
 
