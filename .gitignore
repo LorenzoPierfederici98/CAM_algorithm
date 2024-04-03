@@ -1,3 +1,4 @@
-**/results/.*png
-**/results/.*txt
+**/CAM_results.png
+**/CAM_statistics.png
+**/log_results.txt
 **/__pycache__

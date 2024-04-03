@@ -165,22 +165,22 @@ def plot_display(
     cmap = "gray"
 
     ax[0][0].set_aspect(a_ratio["axial"])
-    plot_1 = ax[0][0].imshow(image_matrix[:, :, anthill_coordinates[2]], cmap="gray")
+    plot_1 = ax[0][0].imshow(image_matrix[..., anthill_coordinates[2]], cmap="gray")
     ax[0][0].set_title("Original image, axial view")
     plot_2 = ax[0][1].imshow(
-        pheromone_matrix[:, :, anthill_coordinates[2], 0], norm=norm, cmap=cmap
+        pheromone_matrix[..., anthill_coordinates[2]], norm=norm, cmap=cmap
     )
 
     ax[0][1].set_title("Pheromone map, axial view")
     plot_3 = ax[1][0].imshow(
-        pheromone_matrix[:, anthill_coordinates[1], :, 0], norm=norm, cmap=cmap
+        pheromone_matrix[:, anthill_coordinates[1], :], norm=norm, cmap=cmap
     )
     ax[0][1].plot(anthill_coordinates[1], anthill_coordinates[0], "ro", label="Anthill")
     ax[0][1].legend()
 
     ax[1][0].set_title("Pheromone map, coronal view")
     plot_4 = ax[1][1].imshow(
-        pheromone_matrix[anthill_coordinates[0], :, :, 0], norm=norm, cmap=cmap
+        pheromone_matrix[anthill_coordinates[0], ...], norm=norm, cmap=cmap
     )
     ax[1][1].set_title("Pheromone map, sagittal view")
 
@@ -242,7 +242,7 @@ def statistics(ants_number, args_parser, image_matrix, pheromone_matrix):
         image_voxels = np.transpose(np.array(np.nonzero(image_matrix))).reshape(-1, 3)
 
     visited_voxs = np.unique(
-        np.transpose(np.array(np.nonzero(pheromone_matrix[:, :, :, 0]))).reshape(-1, 3),
+        np.transpose(np.array(np.nonzero(pheromone_matrix))).reshape(-1, 3),
         axis=0,
     )
     image_voxels_dict = {
@@ -257,7 +257,7 @@ def statistics(ants_number, args_parser, image_matrix, pheromone_matrix):
         for elem, value in zip(
             visited_voxs,
             pheromone_matrix[
-                visited_voxs[:, 0], visited_voxs[:, 1], visited_voxs[:, 2], 0
+                visited_voxs[:, 0], visited_voxs[:, 1], visited_voxs[:, 2]
             ],
         )
     }
@@ -595,6 +595,6 @@ if __name__ == "__main__":
         f"Elapsed time: {(time.perf_counter() - start_time_local) / 60:.3f} min\n"
     )
 
-    statistics(ant_number, args, image, pheromone_map)
-    plot_display(aspect_ratio, image, pheromone_map, anthill_position)
+    statistics(ant_number, args, image, pheromone_map[..., 0])
+    plot_display(aspect_ratio, image, pheromone_map[..., 0], anthill_position)
     plt.show()
