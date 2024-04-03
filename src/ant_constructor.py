@@ -271,13 +271,12 @@ class Ant:
             valid_first_neighbours[:, 2],
             1
         ].nonzero()[0]
-        if occupied_indexes.shape[0] == 0:
-            return []
-        # Delete the occupied voxels from the array of valid
-        # first neighbours
-        valid_first_neighbours = np.delete(
-            valid_first_neighbours, occupied_indexes, axis=0
-        )
+        if occupied_indexes.shape[0] != 0:
+            # Delete the occupied voxels from the array of valid
+            # first neighbours
+            valid_first_neighbours = np.delete(
+                valid_first_neighbours, occupied_indexes, axis=0
+            )
         if valid_first_neighbours.shape[0] == 0:
             return []
         W_PROBABILITY = (
@@ -285,7 +284,8 @@ class Ant:
             + pheromone_map[
                 valid_first_neighbours[:, 0],
                 valid_first_neighbours[:, 1],
-                valid_first_neighbours[:, 2]
+                valid_first_neighbours[:, 2],
+                0
             ]
             / (
                 1.0
@@ -293,7 +293,8 @@ class Ant:
                 * pheromone_map[
                     valid_first_neighbours[:, 0],
                     valid_first_neighbours[:, 1],
-                    valid_first_neighbours[:, 2]
+                    valid_first_neighbours[:, 2],
+                    0
                 ]
             )
         ) ** (self.beta)

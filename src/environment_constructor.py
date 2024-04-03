@@ -120,7 +120,7 @@ class ImageData:
             The coordinates of the center.
 
         radius : float
-            The radius of the figure.
+            The external radius.
 
         Returns
         -------
