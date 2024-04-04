@@ -18,8 +18,8 @@
 # pylint: disable=C0103
 
 
-"""Module implementing the region growing algorithm from scikit-image which 
-defines the ground truth for the CAM algorithm."""
+"""Module implementing the region growing algorithm from
+scikit-image which defines the ground truth for the CAM algorithm."""
 
 
 import argparse

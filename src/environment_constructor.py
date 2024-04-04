@@ -36,17 +36,17 @@ class ImageData:
 
     Methods
     -------
-    create_cube : creates a cube as an image matrix.
+    create_cube : creates a cube as the image matrix.
 
     create_sphere_ellipsoid : creates a sphere or ellipsoid as
-    the image matrix.
+        the image matrix.
 
     create_donut : creates a donut as the image matrix.
 
     initialize_pheromone_map : initializes the pheromone map.
 
     image_from_file : classmethod, alternative constructor which provides
-    an image from a dicom folder.
+        an image from a dicom folder.
     """
 
 

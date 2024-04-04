@@ -106,7 +106,7 @@ def update_pheromone_map(ant_worker):
     [x, y, z] = ant_worker.voxel_coordinates
     arr[x, y, z, 0] += pheromone
     arr[x, y, z, 1] = 1
-    return pheromone
+    return pheromone - ant_worker.eta
 
 
 def find_next_voxel(ant_worker):
@@ -146,8 +146,8 @@ def plot_display(
     Args
     ----
     a_ratio : dict
-            Dictionary of values that preserve the
-            aspect ratio of the different slices.
+        Dictionary of values that preserve the
+        aspect ratio of the different slices.
 
     image_matrix : ndarray
         The matrix of the image to be segmented.
@@ -292,10 +292,6 @@ def statistics(ants_number, args_parser, mean_array, image_matrix, pheromone_mat
     _, ax = plt.subplots(2, 2, figsize=(10, 7))
     ax[0][0].plot(ants_number)
     ax[0][0].set_title("Number of ants per cycle")
-    # ax[0][1].hist(common_dict.values(), bins=50)
-    # ax[0][1].set_title("Hist of pheromone values into image objects")
-    # ax[0][1].set_yscale("log")
-    # ax[0][1].set_xticks([])
     ax[0][1].plot(mean_array)
     ax[0][1].set_title("Average pheromone release per cycle")
     ax[1][0].plot(pheromone_threshold / 1000, sensitivity, label="S")
@@ -328,8 +324,8 @@ def set_image_and_pheromone(args_parser):
         The image_matrix.
 
     a_ratio : dict
-            Dictionary of values that preserve the
-            aspect ratio of the different slices.
+        Dictionary of values that preserve the
+        aspect ratio of the different slices.
 
     pheromone_map_init : ndarray
         The initialized pheromone map.

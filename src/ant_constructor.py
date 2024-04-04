@@ -32,19 +32,22 @@ class Ant:
         The coordinates of the ant current voxel.
 
     energy : float
-        The ant energy
+        The ant energy.
 
     Methods
     -------
     update_energy : updates the ant energy.
 
-    find_first_neighbours : finds the first-order neighbours of the current voxel.
+    find_first_neighbours : finds the first-order neighbours 
+        of the current voxel.
 
-    find_second_neighbours : finds the second-order neighbours of the current voxel.
+    find_second_neighbours : finds the second-order neighbours of 
+        the current voxel.
 
     pheromone_release : releases pheromone in a voxel.
 
-    compute_probability : computes the probability to choose a voxel destination.
+    evaluate_destination : computes the probability and chooses a 
+        voxel destination.
     """
 
     def __init__(self, image_matrix, voxel_coordinates):
@@ -53,6 +56,7 @@ class Ant:
         self._beta = 3.5
         self._delta = 0.2
         self._alpha = 0.2
+        self._eta = 0.01
         self.energy = 1.0 + self._alpha
 
 
@@ -70,6 +74,11 @@ class Ant:
     def alpha(self):
         """Defines the alpha attribute as read-only."""
         return self._alpha
+
+    @property
+    def eta(self):
+        """Defines the eta attribute as read-only."""
+        return self._eta
 
 
     def update_energy(self, value):
@@ -201,8 +210,7 @@ class Ant:
                     voxel_coordinates[0],
                     voxel_coordinates[1],
                     voxel_coordinates[2],
-                ]
-                + 0.01
+                ] + self._eta
             )
         elif isinstance(voxel_coordinates, np.ndarray):
             pheromone_value = (
@@ -210,8 +218,7 @@ class Ant:
                     voxel_coordinates[:, 0],
                     voxel_coordinates[:, 1],
                     voxel_coordinates[:, 2],
-                ]
-                + 0.01
+                ] + self._eta
             )
 
         return pheromone_value
