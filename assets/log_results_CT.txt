@@ -1,18 +1,18 @@
-2024-04-03 17:03:15,241:INFO: Image dimensions: (247, 176, 20)
+2024-04-04 22:21:32,720:INFO: Image dimensions: (247, 176, 20)
 
-2024-04-03 17:03:15,241:INFO: Anthill coordinates: [148, 4, 10]
+2024-04-04 22:21:32,720:INFO: Anthill coordinates: [148, 4, 10]
 
-2024-04-03 17:03:15,241:INFO: Energy death: 0.3
+2024-04-04 22:21:32,720:INFO: Energy death: 0.3
 
-2024-04-03 17:03:15,241:INFO: Energy reproduction: 1.25
+2024-04-04 22:21:32,720:INFO: Energy reproduction: 1.25
 
-2024-04-03 17:03:15,241:INFO: # iterations: 170
+2024-04-04 22:21:32,720:INFO: # iterations: 155
 
-2024-04-03 17:03:15,241:INFO: Elapsed time: 15.864 min
+2024-04-04 22:21:32,720:INFO: Elapsed time: 14.557 min
 
-2024-04-03 17:03:15,827:INFO: Image voxels: 93966
+2024-04-04 22:21:33,416:INFO: Image voxels: 93966
 
-2024-04-03 17:03:15,827:INFO: Visited voxels: 51122
+2024-04-04 22:21:33,416:INFO: Visited voxels: 50161
 
-2024-04-03 17:03:15,827:INFO: Of which belonging to the image: 36444 (38.8%)
+2024-04-04 22:21:33,416:INFO: Of which belonging to the image: 35974 (38.3%)
 

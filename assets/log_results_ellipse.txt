@@ -1,0 +1,18 @@
+2024-04-04 21:18:56,363:INFO: Image dimensions: (100, 100, 70)
+
+2024-04-04 21:18:56,363:INFO: Anthill coordinates: [50, 50, 35]
+
+2024-04-04 21:18:56,363:INFO: Energy death: 1.0
+
+2024-04-04 21:18:56,363:INFO: Energy reproduction: 1.3
+
+2024-04-04 21:18:56,363:INFO: # iterations: 185
+
+2024-04-04 21:18:56,363:INFO: Elapsed time: 19.191 min
+
+2024-04-04 21:18:57,225:INFO: Image voxels: 55357
+
+2024-04-04 21:18:57,225:INFO: Visited voxels: 305897
+
+2024-04-04 21:18:57,225:INFO: Of which belonging to the image: 51778 (93.5%)
+
