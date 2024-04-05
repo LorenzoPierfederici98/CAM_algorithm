@@ -42,7 +42,7 @@ The life cycle of the ants is regulated by the energy parameter with a default v
 
 .. math:: \Delta\varepsilon = -\alpha (1 - \frac{\Delta_{ph}}{<\Delta_{ph}>})
 
-An ant dies whenever :math:`\varepsilon\leq \varepsilon_D = 0.3` and gives birth whenever :math:`\varepsilon\geq \varepsilon_R = 1.25`.
+An ant dies whenever :math:`\varepsilon < \varepsilon_D = 0.3` and gives birth whenever :math:`\varepsilon > \varepsilon_R = 1.25`.
 
 The number of ants generated when a reproduction takes place :math:`N_{offspring}` is a function of the local properties of the environment, which are evaluated replacing :math:`T` with :math:`T_5` the pheromone releasing rule considering the intensity :math:`I_5` as the image intensity averaged on the second-order neighbours of the ant current voxel.
 
