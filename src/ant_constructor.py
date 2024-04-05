@@ -20,6 +20,7 @@
 
 import numpy as np
 
+
 class Ant:
     """Class describing the ant worker who builds the pheromone map.
 
@@ -38,17 +39,16 @@ class Ant:
     -------
     update_energy : updates the ant energy.
 
-    find_first_neighbours : finds the first-order neighbours 
-        of the current voxel.
+    find_first_neighbours : finds the first-order neighbours
+    of the current voxel.
 
-    find_second_neighbours : finds the second-order neighbours of 
-        the current voxel.
+    find_second_neighbours : finds the second-order neighbours of the current voxel.
 
     pheromone_release : releases pheromone in a voxel.
 
-    evaluate_destination : computes the probability and chooses a 
-        voxel destination.
+    evaluate_destination : computes the probability and chooses a voxel destination.
     """
+
 
     def __init__(self, image_matrix, voxel_coordinates):
         self.image_matrix = image_matrix
@@ -65,15 +65,18 @@ class Ant:
         """Defines the beta attribute as read-only."""
         return self._beta
 
+
     @property
     def delta(self):
         """Defines the delta attribute as read-only."""
         return self._delta
 
+
     @property
     def alpha(self):
         """Defines the alpha attribute as read-only."""
         return self._alpha
+
 
     @property
     def eta(self):
@@ -135,9 +138,8 @@ class Ant:
 
 
     def find_second_neighbours(self):
-        """Finds the indexes of the second-order neighbours of
-        the ant current voxel. The construction is similar to
-        that one of the find_first_neighbours function.
+        """Finds the indexes of the second-order neighbours of the ant current
+        voxel. The construction is similar to that one of the find_first_neighbours function.
 
         Returns
         -------
@@ -186,10 +188,10 @@ class Ant:
 
 
     def pheromone_release(self, voxel_coordinates):
-        """Computes the quantity of pheromone to be released into
-        the voxel to build the pheromone map. The quantity of pheromone
-        released corresponds to the intensity of the voxel of the image
-        matrix plus a small offset which certifies that the voxel was visited.
+        """Computes the quantity of pheromone to be released into the voxel to
+        build the pheromone map. The quantity of pheromone released corresponds to
+        the intensity of the voxel of the image matrix plus a small offset
+        which certifies that the voxel was visited.
 
         Args
         ----
@@ -206,27 +208,31 @@ class Ant:
 
         if isinstance(voxel_coordinates, list):
             pheromone_value = (
-                    propor_factor * self.image_matrix[
+                propor_factor
+                * self.image_matrix[
                     voxel_coordinates[0],
                     voxel_coordinates[1],
                     voxel_coordinates[2],
-                ] + self._eta
+                ]
+                + self._eta
             )
         elif isinstance(voxel_coordinates, np.ndarray):
             pheromone_value = (
-                    propor_factor * self.image_matrix[
+                propor_factor
+                * self.image_matrix[
                     voxel_coordinates[:, 0],
                     voxel_coordinates[:, 1],
                     voxel_coordinates[:, 2],
-                ] + self._eta
+                ]
+                + self._eta
             )
 
         return pheromone_value
 
 
     def evaluate_destination(self, first_neighbours, pheromone_map):
-        """Computes the probability for the first-neighbouring voxels
-        to be chosen as the next destination of the ant. The next voxel
+        """Computes the probability for the first-neighbouring voxels to be
+        chosen as the next destination of the ant. The next voxel
         is chosen with a roulette wheel algorithm among those neighbours
 
         Args
@@ -235,9 +241,9 @@ class Ant:
             Array whose rows correspond to the indexes of the first-neighbouring voxels.
 
         pheromone_map : ndarray
-            Four-dimensional matrix. The first 3 dimensions contain the image matrix, the
-            fourth dimension is used to store value 0 or 1 whether the corresponding voxel 
-            is free or occupied, respectively.
+            Four-dimensional matrix. The first 3 dimensions contain the image matrix,
+            the fourth dimension is used to store value 0 or 1 whether the
+            corresponding voxel is free or occupied, respectively.
 
         Returns
         -------
@@ -249,24 +255,32 @@ class Ant:
         # The maximum number of visits per voxel depends on the
         # quantity of pheromone in that voxel relative to that one in
         # the whole pheromone map.
-        if np.amax(pheromone_map[:, :, :, 0]) != 0 and self.pheromone_release(self.voxel_coordinates) < np.amax(pheromone_map[:, :, :, 0]):
+        if np.amax(pheromone_map[:, :, :, 0]) != 0 and self.pheromone_release(
+            self.voxel_coordinates
+        ) < np.amax(pheromone_map[:, :, :, 0]):
             max_visit_number = int(
                 40
                 + 80
-                *
-                    (self.pheromone_release(self.voxel_coordinates)
-                    - np.amax(pheromone_map[:, :, :, 0]))
-                    / (np.amin(pheromone_map[:, :, :, 0]) - np.amax(pheromone_map[:, :, :, 0]))
+                * (
+                    self.pheromone_release(self.voxel_coordinates)
+                    - np.amax(pheromone_map[:, :, :, 0])
+                )
+                / (
+                    np.amin(pheromone_map[:, :, :, 0])
+                    - np.amax(pheromone_map[:, :, :, 0])
+                )
             )
         else:
             max_visit_number = 40
         # Select only voxels with a number of visits less than max_visit_number
         mask = np.where(
             pheromone_map[
-                first_neighbours[:, 0], first_neighbours[:, 1], first_neighbours[:, 2], 0
+                first_neighbours[:, 0],
+                first_neighbours[:, 1],
+                first_neighbours[:, 2],
+                0,
             ]
-            < max_visit_number
-            * self.pheromone_release(first_neighbours)
+            < max_visit_number * self.pheromone_release(first_neighbours)
         )[0]
         valid_first_neighbours = first_neighbours[mask]
         if valid_first_neighbours.shape[0] == 0:
@@ -276,7 +290,7 @@ class Ant:
             valid_first_neighbours[:, 0],
             valid_first_neighbours[:, 1],
             valid_first_neighbours[:, 2],
-            1
+            1,
         ].nonzero()[0]
         if occupied_indexes.shape[0] != 0:
             # Delete the occupied voxels from the array of valid
@@ -292,7 +306,7 @@ class Ant:
                 valid_first_neighbours[:, 0],
                 valid_first_neighbours[:, 1],
                 valid_first_neighbours[:, 2],
-                0
+                0,
             ]
             / (
                 1.0
@@ -301,7 +315,7 @@ class Ant:
                     valid_first_neighbours[:, 0],
                     valid_first_neighbours[:, 1],
                     valid_first_neighbours[:, 2],
-                    0
+                    0,
                 ]
             )
         ) ** (self.beta)

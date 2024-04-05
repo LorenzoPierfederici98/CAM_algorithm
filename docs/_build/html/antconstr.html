@@ -122,14 +122,17 @@
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">find_first_neighbours</span> <span class="pre">:</span> <span class="pre">finds</span> <span class="pre">the</span> <span class="pre">first-order</span> <span class="pre">neighbours</span></span></dt>
-<dd><p>of the current voxel.</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">find_second_neighbours</span> <span class="pre">:</span> <span class="pre">finds</span> <span class="pre">the</span> <span class="pre">second-order</span> <span class="pre">neighbours</span> <span class="pre">of</span></span></dt>
-<dd><p>the current voxel.</p>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">of</span> <span class="pre">the</span> <span class="pre">current</span> <span class="pre">voxel.</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">find_second_neighbours</span> <span class="pre">:</span> <span class="pre">finds</span> <span class="pre">the</span> <span class="pre">second-order</span> <span class="pre">neighbours</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">current</span> <span class="pre">voxel.</span></span></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py">
@@ -138,9 +141,8 @@
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">evaluate_destination</span> <span class="pre">:</span> <span class="pre">computes</span> <span class="pre">the</span> <span class="pre">probability</span> <span class="pre">and</span> <span class="pre">chooses</span> <span class="pre">a</span></span></dt>
-<dd><p>voxel destination.</p>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">evaluate_destination</span> <span class="pre">:</span> <span class="pre">computes</span> <span class="pre">the</span> <span class="pre">probability</span> <span class="pre">and</span> <span class="pre">chooses</span> <span class="pre">a</span> <span class="pre">voxel</span> <span class="pre">destination.</span></span></dt>
+<dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="ant_constructor.Ant.alpha">
@@ -169,16 +171,16 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="ant_constructor.Ant.evaluate_destination">
 <span class="sig-name descname"><span class="pre">evaluate_destination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first_neighbours</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pheromone_map</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ant_constructor.Ant.evaluate_destination" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the probability for the first-neighbouring voxels
-to be chosen as the next destination of the ant. The next voxel
+<dd><p>Computes the probability for the first-neighbouring voxels to be
+chosen as the next destination of the ant. The next voxel
 is chosen with a roulette wheel algorithm among those neighbours</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>first_neighbours</strong> (<em>ndarray</em>) – Array whose rows correspond to the indexes of the first-neighbouring voxels.</p></li>
-<li><p><strong>pheromone_map</strong> (<em>ndarray</em>) – Four-dimensional matrix. The first 3 dimensions contain the image matrix, the
-fourth dimension is used to store value 0 or 1 whether the corresponding voxel
-is free or occupied, respectively.</p></li>
+<li><p><strong>pheromone_map</strong> (<em>ndarray</em>) – Four-dimensional matrix. The first 3 dimensions contain the image matrix,
+the fourth dimension is used to store value 0 or 1 whether the
+corresponding voxel is free or occupied, respectively.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -211,9 +213,8 @@ voxel is not considered as a first neighbour.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ant_constructor.Ant.find_second_neighbours">
 <span class="sig-name descname"><span class="pre">find_second_neighbours</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ant_constructor.Ant.find_second_neighbours" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds the indexes of the second-order neighbours of
-the ant current voxel. The construction is similar to
-that one of the find_first_neighbours function.</p>
+<dd><p>Finds the indexes of the second-order neighbours of the ant current
+voxel. The construction is similar to that one of the find_first_neighbours function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><strong>neighbours</strong> – Array of the indexes of the second-order neighbours of the current voxel.</p>
@@ -227,10 +228,10 @@ that one of the find_first_neighbours function.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ant_constructor.Ant.pheromone_release">
 <span class="sig-name descname"><span class="pre">pheromone_release</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">voxel_coordinates</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ant_constructor.Ant.pheromone_release" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the quantity of pheromone to be released into
-the voxel to build the pheromone map. The quantity of pheromone
-released corresponds to the intensity of the voxel of the image
-matrix plus a small offset which certifies that the voxel was visited.</p>
+<dd><p>Computes the quantity of pheromone to be released into the voxel to
+build the pheromone map. The quantity of pheromone released corresponds to
+the intensity of the voxel of the image matrix plus a small offset
+which certifies that the voxel was visited.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>voxel_coordinates</strong> (<em>list</em><em> or </em><em>ndarray</em>) – The voxel cooridnates in which the pheromone is released.</p>
