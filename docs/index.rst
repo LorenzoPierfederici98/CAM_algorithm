@@ -31,7 +31,9 @@ Pheromone laying rule
 ^^^^^^^^^^^^^^^^^^^^^
 The pheromone value an ant deposits into a voxel :math:`v_i` before leaving is
 
-.. math:: T = \eta + \Delta_{ph}\quad \Delta_{ph} = 10 I(v_i)
+.. math:: T = \eta + \Delta_{ph}
+
+.. math:: \Delta_{ph} = 10 I(v_i)
 
 With :math:`I(v_i)` the intensity of the corresponding image voxel and :math:`\eta = 0.01` a quantity that an ant would leave even into a voxel with zero intensity, certifying that it was visited. See the reference article for other laying rules.
 

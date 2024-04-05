@@ -94,7 +94,9 @@
 <h2>Pheromone laying rule<a class="headerlink" href="#pheromone-laying-rule" title="Permalink to this headline">¶</a></h2>
 <p>The pheromone value an ant deposits into a voxel <span class="math notranslate nohighlight">\(v_i\)</span> before leaving is</p>
 <div class="math notranslate nohighlight">
-\[T = \eta + 10 I(v_i)\]</div>
+\[T = \eta + \Delta_{ph}\]</div>
+<div class="math notranslate nohighlight">
+\[\Delta_{ph} = 10 I(v_i)\]</div>
 <p>With <span class="math notranslate nohighlight">\(I(v_i)\)</span> the intensity of the corresponding image voxel and <span class="math notranslate nohighlight">\(\eta = 0.01\)</span> a quantity that an ant would leave even into a voxel with zero intensity, certifying that it was visited. See the reference article for other laying rules.</p>
 </section>
 <section id="life-cycle">
