@@ -233,7 +233,7 @@ class Ant:
     def evaluate_destination(self, first_neighbours, pheromone_map):
         """Computes the probability for the first-neighbouring voxels to be
         chosen as the next destination of the ant. The next voxel
-        is chosen with a roulette wheel algorithm among those neighbours
+        is chosen with a roulette wheel algorithm among those neighbours.
 
         Args
         ------

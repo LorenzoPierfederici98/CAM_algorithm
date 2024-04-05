@@ -577,10 +577,10 @@ if __name__ == "__main__":
                             * (image_second_neigh_mean - image_second_min)
                             / (image_second_max - image_second_min)
                         ),
-                        int(valid_neighbours.shape[0]),
+                        valid_neighbours.shape[0],
                     )
                 except (ValueError, OverflowError):
-                    n_offspring = int(valid_neighbours.shape[0])
+                    n_offspring = valid_neighbours.shape[0]
 
                 for neigh in valid_neighbours[:n_offspring]:
                     ant_colony.append(Ant(image, list(neigh)))
