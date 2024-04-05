@@ -502,8 +502,8 @@ if __name__ == "__main__":
     np.copyto(pheromone_map, pheromone_map_init)
 
     n_iteration = 0
-    energy_death = 0.3
-    energy_reproduction = 1.25
+    energy_death = 1.
+    energy_reproduction = 1.3
     ant_number = []
     pheromone_mean_sum = 0
     pheromone_mean_array = []
