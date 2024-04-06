@@ -267,9 +267,6 @@ def statistics(ants_number, args_parser, mean_array, image_matrix, pheromone_mat
         common_dict[key] = visited_voxels_dict[key]
     logging.info(f"Image voxels: {image_voxels.shape[0]}\n")
     logging.info(f"Visited voxels: {visited_voxs.shape[0]}\n")
-    logging.info(
-        f"Of which belonging to the image: {len(common_dict)} ({(100 * len(common_dict) / image_voxels.shape[0]):.1f}%)\n"
-    )
 
     pheromone_threshold = np.linspace(
         np.amin(pheromone_matrix), np.amax(pheromone_matrix), 500
@@ -288,6 +285,15 @@ def statistics(ants_number, args_parser, mean_array, image_matrix, pheromone_mat
         sensitivity[index] = len(temp_common_dict) / image_voxels.shape[0]
         expl_level[index] = len(temp_visited_dict) / image_voxels.shape[0]
         cont_level[index] = expl_level[index] - sensitivity[index]
+
+    print(sensitivity[:5])
+    print(cont_level[:5])
+    print(pheromone_threshold[:5])
+
+    logging.info(f"Pheromone threshold: {pheromone_threshold[1]:.1f}\n")
+    logging.info(f"Sensitivity: {100 * sensitivity[1]:.1f} %\n")
+    logging.info(f"Expl. level: {100 * expl_level[1]:.1f} %\n")
+    logging.info(f"Cont. level: {100 * cont_level[1]:.1f} %\n")
 
     _, ax = plt.subplots(2, 2, figsize=(10, 7))
     ax[0][0].plot(ants_number)
