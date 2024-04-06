@@ -1,5 +1,5 @@
 main
 ====
 
-.. automodule:: main
+.. automodule:: CAM_functions
       :members:

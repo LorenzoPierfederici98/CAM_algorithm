@@ -23,10 +23,11 @@ import os
 import glob
 import pydicom
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 class ImageData:
+
+
     """Class handling the image matrix and the pheromone map.
 
     Attributes
@@ -219,17 +220,3 @@ class ImageData:
         )
         return CT_array, aspect_ratio
 
-
-if __name__ == "__main__":
-
-    CT_arr, aspect_rat = ImageData.image_from_file(
-        "D:/train_data/Training/CASE01", [168, 415, 284, 460, 257, 277]
-    )
-    fig, ax = plt.subplots(1, 2)
-    ax[0].imshow(CT_arr[:, :, CT_arr.shape[2] // 2], cmap="gray")
-    ax[0].set_aspect(aspect_rat["axial"])
-    ax[0].set_title("Original image, axial view")
-    ax[1].hist(np.ravel(CT_arr), bins=300)
-    ax[1].set_title("Image voxels histogram")
-    plt.tight_layout()
-    plt.show()

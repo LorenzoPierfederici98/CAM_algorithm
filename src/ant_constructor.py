@@ -22,6 +22,8 @@ import numpy as np
 
 
 class Ant:
+
+
     """Class describing the ant worker who builds the pheromone map.
 
     Attributes
@@ -323,7 +325,3 @@ class Ant:
         rand_num = np.random.uniform(0, np.max(probability))
         next_voxel_index = np.where(probability >= rand_num)[0][0]
         return list(valid_first_neighbours[next_voxel_index])
-
-
-if __name__ == "__main__":
-    ant = Ant([], [])
