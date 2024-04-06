@@ -219,4 +219,3 @@ class ImageData:
             - 1024.0
         )
         return CT_array, aspect_ratio
-

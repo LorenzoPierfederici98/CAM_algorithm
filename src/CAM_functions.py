@@ -101,7 +101,7 @@ def update_pheromone_map(ant_worker):
     arr = np.frombuffer(np_x, dtype=np.float32).reshape(np_x_shape)
     pheromone = ant_worker.pheromone_release(ant_worker.voxel_coordinates)
     [x, y, z] = ant_worker.voxel_coordinates
-    arr[x, y, z, 0] += pheromone
+    arr[x, y, z, 0] += pheromone + ant_worker.eta
     arr[x, y, z, 1] = 1
     return pheromone - ant_worker.eta
 
@@ -283,14 +283,15 @@ def statistics(ants_number, args_parser, mean_array, image_matrix, pheromone_mat
         expl_level[index] = len(temp_visited_dict) / image_voxels.shape[0]
         cont_level[index] = expl_level[index] - sensitivity[index]
 
-    print(sensitivity[:5])
-    print(cont_level[:5])
-    print(pheromone_threshold[:5])
+    index = 2
+    print(sensitivity[:10])
+    print(cont_level[:10])
+    print(pheromone_threshold[:10])
 
-    logging.info(f"Pheromone threshold: {pheromone_threshold[1]:.1f}\n")
-    logging.info(f"Sensitivity: {100 * sensitivity[1]:.1f} %\n")
-    logging.info(f"Expl. level: {100 * expl_level[1]:.1f} %\n")
-    logging.info(f"Cont. level: {100 * cont_level[1]:.1f} %\n")
+    logging.info(f"Pheromone threshold: {pheromone_threshold[index]:.1f}\n")
+    logging.info(f"Sensitivity: {100 * sensitivity[index]:.1f} %\n")
+    logging.info(f"Expl. level: {100 * expl_level[index]:.1f} %\n")
+    logging.info(f"Cont. level: {100 * cont_level[index]:.1f} %\n")
 
     _, ax = plt.subplots(2, 2, figsize=(10, 7))
     ax[0][0].plot(ants_number)
