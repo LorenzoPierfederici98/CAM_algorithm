@@ -210,33 +210,32 @@ def pool_initializer(pheromone_matrix_shared, pheromone_matrix_shape):
     np_x_shape = pheromone_matrix_shape
 
 
-def statistics(ants_number, args_parser, mean_array, image_matrix, pheromone_matrix):
-    """Provides statistics about the run such as: the number of image voxels,
-    the number of voxels visited by the ants, the visited voxels which are also part
-    of the image voxels and the respective number of visits. It also provides the
-    algorithm evaluation metrics such as sensitivity, exploration and
-    contamination level (defined in the documentation) as functions
-    of the pheromone threshold.
+def dictionaries(image_voxels, image_matrix, pheromone_matrix):
+    """Computes the dictionaries of the voxels part of the image,
+    the voxels visited by the ants and the intersection between them.
 
     Args
     ----
-    ants_number : list[int]
-        The list of the number of ants per cycle.
-
-    args_parser : obj
-        Namespace of ArgumentParser.
+    image_voxels : ndarray
+        The voxels which are part of the image.
 
     image_matrix : ndarray
         The image matrix.
 
     pheromone_matrix : ndarray
         The pheromone map.
-    """
 
-    if args_parser.cmd == "dicom":
-        _, image_voxels = ground_truth(image_matrix)
-    else:
-        image_voxels = np.transpose(np.array(np.nonzero(image_matrix))).reshape(-1, 3)
+    Returns
+    -------
+    visited_voxels_dict : dict
+        The dictionary whose keys are the coordinates of the voxels
+        visited by the ants, the values are the pheromone quantities
+        in the voxels.
+
+    common_dict : dict
+        The dictionary of voxels which are both part of the image matrix
+        and among those ones visited by the ants.
+    """
 
     visited_voxs = np.unique(
         np.transpose(np.array(np.nonzero(pheromone_matrix))).reshape(-1, 3),
@@ -264,26 +263,111 @@ def statistics(ants_number, args_parser, mean_array, image_matrix, pheromone_mat
         common_dict[key] = visited_voxels_dict[key]
     logging.info(f"Image voxels: {image_voxels.shape[0]}\n")
     logging.info(f"Visited voxels: {visited_voxs.shape[0]}\n")
+    return visited_voxels_dict, common_dict
 
-    pheromone_threshold = np.linspace(
-        np.amin(pheromone_matrix), np.amax(pheromone_matrix), 500
-    )
+
+def metrics(image_voxels, visited_voxels_dict, common_dict, pheromone_threshold):
+    """Provides the algorithm evaluation matrics: sensitivity, exploration level and
+    contamination level as functions of the pheromone threshold.
+    
+    Args
+    ----
+    image_voxels : ndarray
+        The voxels which are part of the image.
+
+    visited_voxels_dict : dict
+        The dictionary of the voxels visited by the ants.
+
+    common_dict : dict
+        The dictionary of voxels which are both part of the
+        image matrix and among those ones visited by the ants.
+    
+    pheromone_threshold : ndarray
+        The array of pheromone values used as thresholds to
+        evaluate the metrics.
+
+    Returns
+    -------
+    sensitivity : ndarray
+        Ratio of the number of segmented voxels (i.e with a pheromone value greater than
+        the threshold) part of the image and the total number of image voxels, one
+        for every pheromone threshold value.
+
+    expl_level : ndarray
+        Ratio of the number of segmented voxels and the total number of image voxels.
+
+    cont_level : ndarray
+        Difference of the sensitivity and expl_level values at a certain threshold
+        i.e the percentage of segmented voxels which are not part of the image.
+    """
+
     sensitivity = np.zeros(len(pheromone_threshold))
     expl_level = np.zeros(len(pheromone_threshold))
     cont_level = np.zeros(len(pheromone_threshold))
 
-    for index, val in enumerate(pheromone_threshold):
+    for i, val in enumerate(pheromone_threshold):
         temp_common_dict = dict(
             (key, value) for key, value in common_dict.items() if value >= val
         )
         temp_visited_dict = dict(
             (key, value) for key, value in visited_voxels_dict.items() if value >= val
         )
-        sensitivity[index] = len(temp_common_dict) / image_voxels.shape[0]
-        expl_level[index] = len(temp_visited_dict) / image_voxels.shape[0]
-        cont_level[index] = expl_level[index] - sensitivity[index]
+        sensitivity[i] = len(temp_common_dict) / image_voxels.shape[0]
+        expl_level[i] = len(temp_visited_dict) / image_voxels.shape[0]
+        cont_level[i] = expl_level[i] - sensitivity[i]
+    return sensitivity, expl_level, cont_level
 
-    index = 2
+
+def statistics(ants_number, args_parser, mean_list, image_matrix, pheromone_matrix):
+    """Provides and displays the statistics about the run.
+
+    Args
+    ----
+    ants_number : list[int]
+        The list of the number of ants per cycle.
+
+    args_parser : obj
+        Namespace of ArgumentParser.
+
+    image_matrix : ndarray
+        The image matrix.
+
+    mean_list : list[float]
+        The pheromone mean per iteration.
+
+    pheromone_matrix : ndarray
+        The pheromone map.
+    """
+
+    if args_parser.cmd == "dicom":
+        _, image_voxels, thresh_mean = ground_truth(image_matrix)
+        pheromone_threshold = np.linspace(
+            np.amin(pheromone_matrix),
+            np.amax(pheromone_matrix),
+            int(np.amax(pheromone_matrix) / thresh_mean),
+        )
+    else:
+        image_voxels = np.transpose(np.array(np.nonzero(image_matrix))).reshape(-1, 3)
+        pheromone_threshold = np.linspace(
+            np.amin(pheromone_matrix),
+            np.amax(pheromone_matrix),
+            int(np.amax(pheromone_matrix) / 50.01),
+        )
+
+    visited_voxels_dict, common_dict = dictionaries(
+        image_voxels, image_matrix, pheromone_matrix
+    )
+
+    sensitivity, expl_level, cont_level = metrics(
+        image_voxels, visited_voxels_dict, common_dict, pheromone_threshold
+    )
+
+    if args_parser.cmd == "dicom":
+        index = np.where(pheromone_threshold >= thresh_mean)[0][0]
+    else:
+        index = np.where(pheromone_threshold >= 50.01)[0][0]
+
+    print(pheromone_threshold.shape)
     print(sensitivity[:10])
     print(cont_level[:10])
     print(pheromone_threshold[:10])
@@ -296,7 +380,7 @@ def statistics(ants_number, args_parser, mean_array, image_matrix, pheromone_mat
     _, ax = plt.subplots(2, 2, figsize=(10, 7))
     ax[0][0].plot(ants_number)
     ax[0][0].set_title("Number of ants per cycle")
-    ax[0][1].plot(mean_array)
+    ax[0][1].plot(mean_list)
     ax[0][1].set_title("Average pheromone release per cycle")
     ax[1][0].plot(pheromone_threshold / 1000, sensitivity, label="S")
     ax[1][0].plot(pheromone_threshold / 1000, expl_level, label="E")
@@ -312,8 +396,7 @@ def statistics(ants_number, args_parser, mean_array, image_matrix, pheromone_mat
 
 
 def set_image_and_pheromone(args_parser):
-    """Instantiates the image from a path given by the user and
-    the pheromone map as a four-dimensional numpy array of zeros. A RawArray
+    """Instantiates the image matrix and the pheromone map. A RawArray
     of multiprocessing.sharedctypes is first created and then used as a buffer
     to share the pheromone map as a numpy array between processes.
 

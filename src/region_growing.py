@@ -26,7 +26,6 @@ import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 from skimage import segmentation, filters
-from scipy import ndimage as ndi
 from environment_constructor import ImageData
 
 
@@ -47,27 +46,34 @@ def ground_truth(image_matrix):
 
     ground_truth_vox : ndarray
         The coordinates of the voxels part of the aerial trees.
+
+    thresh_mean : float
+        The mean of the threshold value given by threshold_otsu which
+        distinguishes foreground and background, for all the z-slices.
     """
 
     segm_mask_arr = np.empty(image_matrix.shape, image_matrix.dtype)
+    thresh_mean = 0
 
     for i in range(image_matrix.shape[2]):
 
         smooth = filters.butterworth(image_matrix[..., i])
         thresh_value = filters.threshold_otsu(smooth)
-        thresh = smooth > thresh_value
-        fill = ndi.binary_fill_holes(thresh)
+        thresh_mean += thresh_value
+        fill = smooth > thresh_value
         mask = segmentation.disk_level_set(
             image_matrix[..., i].shape, radius=90
         ).astype(bool)
         fill[mask == 0] = 0
         segm_mask_arr[..., i] = fill
 
+    thresh_mean = thresh_mean / image_matrix.shape[2]
+
     x_truth = np.nonzero(segm_mask_arr)[0]
     y_truth = np.nonzero(segm_mask_arr)[1]
     z_truth = np.nonzero(segm_mask_arr)[2]
     ground_truth_vox = np.stack((x_truth, y_truth, z_truth)).transpose()
-    return segm_mask_arr, ground_truth_vox
+    return segm_mask_arr, ground_truth_vox, thresh_mean
 
 
 if __name__ == "__main__":
@@ -92,7 +98,7 @@ if __name__ == "__main__":
     extrema = [168, 415, 284, 460, 257, 277]
     image, aspect_ratio = ImageData.image_from_file(args.file_path, extrema)
 
-    segm_mask_array, ground_truth_voxels = ground_truth(image)
+    segm_mask_array, ground_truth_voxels, _ = ground_truth(image)
 
     fig, ax = plt.subplots(1, 2)
     ax[0].set_aspect(aspect_ratio["axial"])

@@ -164,11 +164,11 @@ if __name__ == "__main__":
     np.copyto(pheromone_map, pheromone_map_init)
 
     n_iteration = 0
-    energy_death = 0.3
-    energy_reproduction = 1.25
+    energy_death = 1.
+    energy_reproduction = 1.3
     ant_number = []
     pheromone_mean_sum = 0
-    pheromone_mean_array = []
+    pheromone_mean_list = []
     colony_length = 0
 
     ant_colony, anthill_position = cam.set_colony(args.anthill_coordinates, image)
@@ -191,7 +191,7 @@ if __name__ == "__main__":
         colony_length += len(ant_colony)
         pheromone_mean_sum += sum(released_pheromone)
         pheromone_mean = pheromone_mean_sum / colony_length
-        pheromone_mean_array.append(pheromone_mean)
+        pheromone_mean_list.append(pheromone_mean)
 
         for i, ant in enumerate(ant_colony):
             if len(next_voxel[i]) == 0:
@@ -266,6 +266,6 @@ if __name__ == "__main__":
         f"Elapsed time: {(time.perf_counter() - start_time_local) / 60:.3f} min\n"
     )
 
-    cam.statistics(ant_number, args, pheromone_mean_array, image, pheromone_map[..., 0])
+    cam.statistics(ant_number, args, pheromone_mean_list, image, pheromone_map[..., 0])
     cam.plot_display(aspect_ratio, image, pheromone_map[..., 0], anthill_position)
     plt.show()
