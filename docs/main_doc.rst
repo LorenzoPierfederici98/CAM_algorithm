@@ -1,4 +1,4 @@
-main
+CAM_functions
 ====
 
 .. automodule:: CAM_functions

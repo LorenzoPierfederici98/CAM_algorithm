@@ -344,8 +344,9 @@ def statistics(ants_number, args_parser, mean_list, image_matrix, pheromone_matr
         pheromone_threshold = np.linspace(
             np.amin(pheromone_matrix),
             np.amax(pheromone_matrix),
-            int(np.amax(pheromone_matrix) / thresh_mean),
+            int(np.amax(pheromone_matrix) / (10 * thresh_mean + 0.01)),
         )
+
     else:
         image_voxels = np.transpose(np.array(np.nonzero(image_matrix))).reshape(-1, 3)
         pheromone_threshold = np.linspace(
@@ -353,6 +354,7 @@ def statistics(ants_number, args_parser, mean_list, image_matrix, pheromone_matr
             np.amax(pheromone_matrix),
             int(np.amax(pheromone_matrix) / 50.01),
         )
+
 
     visited_voxels_dict, common_dict = dictionaries(
         image_voxels, image_matrix, pheromone_matrix
@@ -363,7 +365,7 @@ def statistics(ants_number, args_parser, mean_list, image_matrix, pheromone_matr
     )
 
     if args_parser.cmd == "dicom":
-        index = np.where(pheromone_threshold >= thresh_mean)[0][0]
+        index = np.where(pheromone_threshold >= 10 * thresh_mean + 0.01)[0][0]
     else:
         index = np.where(pheromone_threshold >= 50.01)[0][0]
 
