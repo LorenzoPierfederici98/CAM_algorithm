@@ -29,7 +29,7 @@ import matplotlib.pyplot as plt
 
 from ant_constructor import Ant
 from environment_constructor import ImageData
-from region_growing import ground_truth
+from watershed import ground_truth, image_segmenter
 
 
 logging.basicConfig(
@@ -340,11 +340,11 @@ def statistics(ants_number, args_parser, mean_list, image_matrix, pheromone_matr
     """
 
     if args_parser.cmd == "dicom":
-        _, image_voxels, thresh_mean = ground_truth(image_matrix)
+        image_voxels, thresh_mean = ground_truth(image_matrix)
         pheromone_threshold = np.linspace(
             np.amin(pheromone_matrix),
             np.amax(pheromone_matrix),
-            int(np.amax(pheromone_matrix) / (10 * thresh_mean + 0.01)),
+            100,
         )
 
     else:
@@ -427,22 +427,28 @@ def set_image_and_pheromone(args_parser):
     """
 
     a_ratio = {"axial": 1, "sagittal": 1, "coronal": 1}
+
     if args_parser.cmd == "dicom":
-        extrema = [168, 415, 284, 460, 257, 277]
-        image_matrix, a_ratio = ImageData.image_from_file(
+        #extrema = [168, 415, 284, 460, 257, 277]
+        extrema = [138, 475, 234, 600, 257, 277]
+        image_cropped, a_ratio = ImageData.image_from_file(
             args_parser.file_path, extrema
         )
+        image_matrix = image_segmenter(image_cropped)
         imagedata = ImageData(image_matrix.shape)
+    
     elif args_parser.cmd == "cube":
         imagedata = ImageData(args_parser.matrix_dimensions)
         image_matrix = imagedata.create_cube(
             args_parser.center_coordinates, args_parser.cube_length
         )
+
     elif args_parser.cmd == "sphere/ellipsoid":
         imagedata = ImageData(args_parser.matrix_dimensions)
         image_matrix = imagedata.create_sphere_ellipsoid(
             args_parser.center_coordinates, args_parser.radius, args_parser.semi_axes
         )
+
     elif args_parser.cmd == "donut":
         imagedata = ImageData(args_parser.matrix_dimensions)
         image_matrix = imagedata.create_donut(
