@@ -17,6 +17,10 @@ The life cycle of the ants is discretized in iterations: starting from the anthi
 
 The ants lifespan is reuglated by the energy parameter: all the ants are assigned with a default value which varies with every iteration, depending on the pheromone value released by the ant and the pheromone mean per iteration released by the ant colony since the first iteration. Whenever an ant has energy greater than a reproduction value it generates :math:`N_{offspring}\in[0, 26]` ants, related to the local properties of the enviornment, which are placed in the free first-order neighbouring voxels; if the energy is lower than a certain value or if the ant has no possible voxel destination it dies. Following those rules the ants build the pheromone map, which is deployed to segment bronchial and vascular trees in lung CT images.
 
+The CT image is preprocessed with a watershed algorithm to extract the lung ROI.
+
+.. note::
+   It is recommended to choose a few tens of slices (axial, coronal or sagittal) in order to limit the computational time.
 
 Moving rules
 ^^^^^^^^^^^^
@@ -75,12 +79,13 @@ These quantities are evaluated as functions of the pheromone threshold.
 
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 6
    :caption: Contents:
 
    antconstr
    envconstr
-   main_doc
+   CAM_algorithm
+   watershed
    license
    help
 

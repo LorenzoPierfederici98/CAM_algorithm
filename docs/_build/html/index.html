@@ -45,7 +45,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="antconstr.html">ant_constructor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="envconstr.html">environment_constructor</a></li>
-<li class="toctree-l1"><a class="reference internal" href="main_doc.html">main</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CAM_algorithm.html">CAM_functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watershed.html">watershed</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="help.html">Need help?</a></li>
 </ul>
@@ -82,6 +83,11 @@
 <p>The CAM algorithm exploits virtual ant colonies whose behaviour mimics the cooperation strategies put in place by real ants, which is here used in image processing. The ant colony lives in the digital habitat of the image voxels, in which ants move and deposit pheromone in order to build a pheromone map.</p>
 <p>The life cycle of the ants is discretized in iterations: starting from the anthill voxel (chosen by the user) and all its first-order neighbours, the ants deposit pheromone values, corresponding to the respective image voxels intensities, and evaluate the next voxel destination among all the first-order neighbouring voxels not occupied by an ant. The evaluation of the destination voxel is made by computing a probability for all the free neighbouring voxels, which depends on their pheromone values; the next voxel is chosen with a roulette wheel algorithm, in order to find a balance between random paths and “directional” paths given by the pheromone trails.</p>
 <p>The ants lifespan is reuglated by the energy parameter: all the ants are assigned with a default value which varies with every iteration, depending on the pheromone value released by the ant and the pheromone mean per iteration released by the ant colony since the first iteration. Whenever an ant has energy greater than a reproduction value it generates <span class="math notranslate nohighlight">\(N_{offspring}\in[0, 26]\)</span> ants, related to the local properties of the enviornment, which are placed in the free first-order neighbouring voxels; if the energy is lower than a certain value or if the ant has no possible voxel destination it dies. Following those rules the ants build the pheromone map, which is deployed to segment bronchial and vascular trees in lung CT images.</p>
+<p>The CT image is preprocessed with a watershed algorithm to extract the lung ROI.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is recommended to choose a few tens of slices (axial, coronal or sagittal) in order to limit the computational time.</p>
+</div>
 </section>
 <section id="moving-rules">
 <h2>Moving rules<a class="headerlink" href="#moving-rules" title="Permalink to this headline">¶</a></h2>
@@ -131,7 +137,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="antconstr.html">ant_constructor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="envconstr.html">environment_constructor</a></li>
-<li class="toctree-l1"><a class="reference internal" href="main_doc.html">main</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CAM_algorithm.html">CAM_functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watershed.html">watershed</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="help.html">Need help?</a></li>
 </ul>

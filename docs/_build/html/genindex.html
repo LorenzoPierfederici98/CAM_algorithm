@@ -42,7 +42,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="antconstr.html">ant_constructor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="envconstr.html">environment_constructor</a></li>
-<li class="toctree-l1"><a class="reference internal" href="main_doc.html">main</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CAM_algorithm.html">CAM_functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watershed.html">watershed</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="help.html">Need help?</a></li>
 </ul>
@@ -80,12 +81,14 @@
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  
 </div>
 <h2 id="A">A</h2>
@@ -118,10 +121,17 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="envconstr.html#environment_constructor.ImageData.create_cube">create_cube() (environment_constructor.ImageData method)</a>
+      <li>
+    CAM_functions
+
+      <ul>
+        <li><a href="CAM_algorithm.html#module-CAM_functions">module</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="envconstr.html#environment_constructor.ImageData.create_cube">create_cube() (environment_constructor.ImageData method)</a>
+</li>
       <li><a href="envconstr.html#environment_constructor.ImageData.create_donut">create_donut() (environment_constructor.ImageData method)</a>
 </li>
       <li><a href="envconstr.html#environment_constructor.ImageData.create_sphere_ellipsoid">create_sphere_ellipsoid() (environment_constructor.ImageData method)</a>
@@ -133,6 +143,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="antconstr.html#ant_constructor.Ant.delta">delta (ant_constructor.Ant property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="CAM_algorithm.html#CAM_functions.dictionaries">dictionaries() (in module CAM_functions)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -165,9 +179,21 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="main_doc.html#main.find_next_voxel">find_next_voxel() (in module main)</a>
+      <li><a href="CAM_algorithm.html#CAM_functions.find_next_voxel">find_next_voxel() (in module CAM_functions)</a>
 </li>
       <li><a href="antconstr.html#ant_constructor.Ant.find_second_neighbours">find_second_neighbours() (ant_constructor.Ant method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="watershed.html#watershed.generate_markers">generate_markers() (in module watershed)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="watershed.html#watershed.ground_truth">ground_truth() (in module watershed)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -181,6 +207,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="watershed.html#watershed.image_segmenter">image_segmenter() (in module watershed)</a>
+</li>
       <li><a href="envconstr.html#environment_constructor.ImageData">ImageData (class in environment_constructor)</a>
 </li>
       <li><a href="envconstr.html#environment_constructor.ImageData.initialize_pheromone_map">initialize_pheromone_map() (environment_constructor.ImageData method)</a>
@@ -191,26 +219,21 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li>
-    main
-
-      <ul>
-        <li><a href="main_doc.html#module-main">module</a>
-</li>
-      </ul></li>
       <li><a href="envconstr.html#environment_constructor.ImageData.matrix_dimensions">matrix_dimensions (environment_constructor.ImageData attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="CAM_algorithm.html#CAM_functions.metrics">metrics() (in module CAM_functions)</a>
+</li>
       <li>
     module
 
       <ul>
         <li><a href="antconstr.html#module-ant_constructor">ant_constructor</a>
 </li>
+        <li><a href="CAM_algorithm.html#module-CAM_functions">CAM_functions</a>
+</li>
         <li><a href="envconstr.html#module-environment_constructor">environment_constructor</a>
 </li>
-        <li><a href="main_doc.html#module-main">main</a>
+        <li><a href="watershed.html#module-watershed">watershed</a>
 </li>
       </ul></li>
   </ul></td>
@@ -223,9 +246,9 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="main_doc.html#main.plot_display">plot_display() (in module main)</a>
+      <li><a href="CAM_algorithm.html#CAM_functions.plot_display">plot_display() (in module CAM_functions)</a>
 </li>
-      <li><a href="main_doc.html#main.pool_initializer">pool_initializer() (in module main)</a>
+      <li><a href="CAM_algorithm.html#CAM_functions.pool_initializer">pool_initializer() (in module CAM_functions)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -233,13 +256,15 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="main_doc.html#main.set_colony">set_colony() (in module main)</a>
+      <li><a href="watershed.html#watershed.seperate_lungs">seperate_lungs() (in module watershed)</a>
+</li>
+      <li><a href="CAM_algorithm.html#CAM_functions.set_colony">set_colony() (in module CAM_functions)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="main_doc.html#main.set_image_and_pheromone">set_image_and_pheromone() (in module main)</a>
+      <li><a href="CAM_algorithm.html#CAM_functions.set_image_and_pheromone">set_image_and_pheromone() (in module CAM_functions)</a>
 </li>
-      <li><a href="main_doc.html#main.statistics">statistics() (in module main)</a>
+      <li><a href="CAM_algorithm.html#CAM_functions.statistics">statistics() (in module CAM_functions)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -251,7 +276,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="main_doc.html#main.update_pheromone_map">update_pheromone_map() (in module main)</a>
+      <li><a href="CAM_algorithm.html#CAM_functions.update_pheromone_map">update_pheromone_map() (in module CAM_functions)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -261,6 +286,19 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="antconstr.html#ant_constructor.Ant.voxel_coordinates">voxel_coordinates (ant_constructor.Ant attribute)</a>
 </li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    watershed
+
+      <ul>
+        <li><a href="watershed.html#module-watershed">module</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 

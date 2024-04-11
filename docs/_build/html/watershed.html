@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>watershed &mdash; CAM algorithm 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="License" href="license.html" />
+    <link rel="prev" title="CAM_functions" href="CAM_algorithm.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            CAM algorithm
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="antconstr.html">ant_constructor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="envconstr.html">environment_constructor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CAM_algorithm.html">CAM_functions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">watershed</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="help.html">Need help?</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CAM algorithm</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">watershed</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/watershed.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-watershed">
+<span id="watershed"></span><h1>watershed<a class="headerlink" href="#module-watershed" title="Permalink to this headline">¶</a></h1>
+<p>Module implementing the segmentation of the internal lung region
+with the watershed algorithm. The code is a slight modification of
+that one present in
+<a class="reference external" href="https://www.kaggle.com/code/ankasor/improved-lung-segmentation-using-watershed">https://www.kaggle.com/code/ankasor/improved-lung-segmentation-using-watershed</a></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="watershed.generate_markers">
+<span class="sig-prename descclassname"><span class="pre">watershed.</span></span><span class="sig-name descname"><span class="pre">generate_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#watershed.generate_markers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates the internal, external and watershed markers
+needed for the watershed algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image_matrix</strong> (<em>ndarray</em>) – The image matrix from the DICOM directory.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>marker_internal</strong> (<em>ndarray</em>) – Labeled array of the internal lung region.</p></li>
+<li><p><strong>marker_watershed</strong> (<em>ndarray</em>) – Superposition of internal and external labels.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="watershed.ground_truth">
+<span class="sig-prename descclassname"><span class="pre">watershed.</span></span><span class="sig-name descname"><span class="pre">ground_truth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">segmented_image</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#watershed.ground_truth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the ground truth i.e the voxels part of the aerial trees in
+the region segmented with the watershed algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>segmented_image</strong> (<em>ndarray</em>) – The image segmented with the watershed algorithm</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>ground_truth_vox</strong> (<em>ndarray</em>) – The coordinates of the voxels part of the aerial trees.</p></li>
+<li><p><strong>thresh_mean</strong> (<em>float</em>) – The mean of the threshold value given by threshold_otsu which
+distinguishes foreground and background, for all the z-slices.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="watershed.image_segmenter">
+<span class="sig-prename descclassname"><span class="pre">watershed.</span></span><span class="sig-name descname"><span class="pre">image_segmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#watershed.image_segmenter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the segmented image from a DICOM folder.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image_matrix</strong> (<em>ndarray</em>) – The image matrix.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>segm_mask_array</strong> (<em>ndarray</em>) – The boolean matrix which defines the voxels part of the aerial trees.</p></li>
+<li><p><strong>ground_truth_vox</strong> (<em>ndarray</em>) – The coordinates of the voxels part of the aerial trees.</p></li>
+<li><p><strong>thresh_mean</strong> (<em>float</em>) – The mean of the threshold value given by threshold_otsu which
+distinguishes foreground and background, for all the z-slices.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="watershed.seperate_lungs">
+<span class="sig-prename descclassname"><span class="pre">watershed.</span></span><span class="sig-name descname"><span class="pre">seperate_lungs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#watershed.seperate_lungs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Segments the lung area with the watershed algorithm, applied to
+the image filtered with a Sobel filter and with markers given by
+the generate_markers function. A black top hat operation is applied
+to include the voxels at the border.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image_matrix</strong> (<em>ndarray</em>) – The image matrix from the DICOM directory.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>segmented</strong> – The internal lung region.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="CAM_algorithm.html" class="btn btn-neutral float-left" title="CAM_functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="license.html" class="btn btn-neutral float-right" title="License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Lorenzo Pierfederici.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
