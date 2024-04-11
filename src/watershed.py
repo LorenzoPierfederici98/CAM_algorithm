@@ -135,15 +135,8 @@ def image_segmenter(image_matrix):
 
     Returns
     -------
-    segm_mask_array : ndarray
-        The boolean matrix which defines the voxels part of the aerial trees.
-
-    ground_truth_vox : ndarray
-        The coordinates of the voxels part of the aerial trees.
-
-    thresh_mean : float
-        The mean of the threshold value given by threshold_otsu which
-        distinguishes foreground and background, for all the z-slices.
+    segmented : ndarray
+        The segmented lung ROI.
     """
 
     segmented = np.empty(image_matrix.shape, image_matrix.dtype)
