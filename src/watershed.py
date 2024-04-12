@@ -135,16 +135,26 @@ def image_segmenter(image_matrix):
 
     Returns
     -------
-    segmented : ndarray
-        The segmented lung ROI.
+    cropped : ndarray
+        The segmented and cropped lung ROI.
     """
 
     segmented = np.empty(image_matrix.shape, image_matrix.dtype)
+    xl = np.empty(image_matrix.shape[2], dtype=int)
+    xr = np.empty(image_matrix.shape[2], dtype=int)
+    yl = np.empty(image_matrix.shape[2], dtype=int)
+    yr = np.empty(image_matrix.shape[2], dtype=int)
 
     for i in range(image_matrix.shape[2]):
         segmented[..., i] = seperate_lungs(image_matrix[..., i])
+        x, y = np.nonzero(segmented[..., i] + 1024.)
+        xl[i], xr[i] = x.min(), x.max()
+        yl[i], yr[i] = y.min(), y.max()
 
-    return segmented
+    x_left, x_right = xl.min(), xr.max()
+    y_left, y_right = yl.min(), yr.max()
+    cropped = segmented[x_left : x_right + 1, y_left : y_right + 1, :]
+    return cropped
 
 
 def ground_truth(segmented_image):
@@ -199,7 +209,6 @@ if __name__ == "__main__":
     image, aspect_ratio = ImageData.image_from_file(args.file_path, extrema)
 
     segmented_im = image_segmenter(image)
-    _, thresh = ground_truth(segmented_im)
     _, ax = plt.subplots(1, 2)
     ax[0].imshow(image[..., 10], cmap="gray")
     ax[1].imshow(segmented_im[..., 10], cmap="gray")
