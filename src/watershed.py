@@ -52,6 +52,7 @@ def generate_markers(image_matrix):
 
     # Creation of the internal Marker
     marker_internal = image_matrix < -400
+    #marker_internal = image_matrix < 0.15
     marker_internal = segmentation.clear_border(marker_internal)
     marker_internal_labels = measure.label(marker_internal)
     areas = [r.area for r in measure.regionprops(marker_internal_labels)]
@@ -120,7 +121,7 @@ def seperate_lungs(image_matrix):
     segmented = np.where(
         lungfilter == 1,
         image_matrix,
-        -1024 * np.ones((image_matrix.shape[0], image_matrix.shape[1])),
+        -1024. * np.ones((image_matrix.shape[0], image_matrix.shape[1])),
     )
     return segmented
 
@@ -210,6 +211,6 @@ if __name__ == "__main__":
 
     segmented_im = image_segmenter(image)
     _, ax = plt.subplots(1, 2)
-    ax[0].imshow(image[..., 10], cmap="gray")
-    ax[1].imshow(segmented_im[..., 10], cmap="gray")
+    ax[0].imshow(image[..., image.shape[2] // 2], cmap="gray")
+    ax[1].imshow(segmented_im[..., image.shape[2] // 2], cmap="gray")
     plt.show()

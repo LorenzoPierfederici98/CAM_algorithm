@@ -26,10 +26,13 @@ import argparse
 import logging
 import time
 import multiprocessing
+import warnings
 import numpy as np
 import matplotlib.pyplot as plt
 import CAM_functions as cam
 
+
+warnings.filterwarnings("ignore")
 
 logging.basicConfig(
     format="%(asctime)s:%(levelname)s: %(message)s",
@@ -164,8 +167,8 @@ if __name__ == "__main__":
     np.copyto(pheromone_map, pheromone_map_init)
 
     n_iteration = 0
-    energy_death = 0.3
-    energy_reproduction = 1.25
+    energy_death = 1.
+    energy_reproduction = 1.3
     ant_number = []
     pheromone_mean_sum = 0
     pheromone_mean_list = []

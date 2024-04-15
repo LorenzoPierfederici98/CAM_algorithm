@@ -24,7 +24,7 @@ import numpy as np
 class Ant:
 
 
-    """Class describing the ant worker who builds the pheromone map.
+    """Class describing the ant worker which builds the pheromone map.
 
     Attributes
     ----------
@@ -202,7 +202,7 @@ class Ant:
 
         Returns
         -------
-        pheromone_value : float
+        pheromone_value : float or list[float]
             The pheromone value to be stored into the pheromone map voxel.
         """
 
@@ -228,7 +228,6 @@ class Ant:
                 ]
                 + self._eta
             )
-
         return pheromone_value
 
 

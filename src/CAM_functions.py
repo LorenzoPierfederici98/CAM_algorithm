@@ -101,7 +101,7 @@ def update_pheromone_map(ant_worker):
     arr = np.frombuffer(np_x, dtype=np.float32).reshape(np_x_shape)
     pheromone = ant_worker.pheromone_release(ant_worker.voxel_coordinates)
     [x, y, z] = ant_worker.voxel_coordinates
-    arr[x, y, z, 0] += pheromone + ant_worker.eta
+    arr[x, y, z, 0] += pheromone
     arr[x, y, z, 1] = 1
     return pheromone - ant_worker.eta
 
@@ -429,14 +429,13 @@ def set_image_and_pheromone(args_parser):
     a_ratio = {"axial": 1, "sagittal": 1, "coronal": 1}
 
     if args_parser.cmd == "dicom":
-        #extrema = [168, 415, 284, 460, 257, 277]
         extrema = [138, 475, 234, 600, 257, 277]
         image_cropped, a_ratio = ImageData.image_from_file(
             args_parser.file_path, extrema
         )
         image_matrix = image_segmenter(image_cropped)
         imagedata = ImageData(image_matrix.shape)
-    
+
     elif args_parser.cmd == "cube":
         imagedata = ImageData(args_parser.matrix_dimensions)
         image_matrix = imagedata.create_cube(

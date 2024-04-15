@@ -215,7 +215,7 @@ class ImageData:
                 extrema[0] : extrema[1],
                 extrema[2] : extrema[3],
                 extrema[4] : extrema[5],
-            ]
-            - 1024.0
+            ] - 1024.
         )
+        #CT_array = (CT_array - np.amin(CT_array)) / (np.amax(CT_array) - np.amin(CT_array))
         return CT_array, aspect_ratio
