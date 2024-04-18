@@ -162,7 +162,7 @@ class ImageData:
                 self.matrix_dimensions[1],
                 self.matrix_dimensions[2],
                 2,
-            )
+            ), dtype="float"
         )
         return pheromone_map
 
@@ -189,9 +189,8 @@ class ImageData:
         CT_array : ndarray
             The image matrix.
 
-        aspect_ratio : dict
-            Dictionary of values that preserve the
-            aspect ratio of the different slices.
+        aspect_ratio : float
+            Value that preserves the aspect ratio of the axial slices.
         """
 
         dicom_files = glob.glob(os.path.join(file_path, "*"))
@@ -202,20 +201,37 @@ class ImageData:
             if hasattr(dcm_slice, "SliceLocation")
         ]
         slices.sort(key=lambda x: x.SliceLocation)
+
         shape = slices[0].Rows, slices[0].Columns, len(slices)
+        intercept = slices[0].RescaleIntercept
+        slope = slices[0].RescaleSlope
+
         CT_array = np.zeros(shape, dtype=slices[0].pixel_array.dtype)
+        CT_array[CT_array == -2000] = 0
+
         for i, dcm in enumerate(slices):
             CT_array[:, :, i] = dcm.pixel_array
         CT_array = np.flip(CT_array, axis=1)
-        x, y, z = *slices[0].PixelSpacing, slices[0].SliceThickness
-        aspect_ratio = {"axial": y / x, "sagittal": y / z, "coronal": x / z}
+        x, y = slices[0].PixelSpacing
+        aspect_ratio = y / x
+
+        if slope != 1:
+            CT_array = slope * CT_array.astype("float64")
+            CT_array = CT_array.astype(np.int16)
         # Crop and return to HU units
         CT_array = (
             CT_array[
                 extrema[0] : extrema[1],
                 extrema[2] : extrema[3],
                 extrema[4] : extrema[5],
-            ] - 1024.
+            ] + np.int16(intercept)
         )
-        #CT_array = (CT_array - np.amin(CT_array)) / (np.amax(CT_array) - np.amin(CT_array))
         return CT_array, aspect_ratio
+
+if __name__ == "__main__":
+    extrema = [138, 475, 234, 600, 257, 277]
+    image, _ = ImageData.image_from_file("D:/train_data/Training/CASE01", extrema)
+    print(image.dtype)
+    import matplotlib.pyplot as plt
+    plt.imshow(image[..., 10], cmap="gray")
+    plt.show()

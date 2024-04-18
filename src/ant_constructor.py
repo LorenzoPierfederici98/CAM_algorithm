@@ -189,6 +189,11 @@ class Ant:
         return neighbours
 
 
+    @staticmethod
+    def sigmoid(x):
+        return 1 / (1 + np.exp(-x - 517.))
+
+
     def pheromone_release(self, voxel_coordinates):
         """Computes the quantity of pheromone to be released into the voxel to
         build the pheromone map. The quantity of pheromone released corresponds to
@@ -211,21 +216,21 @@ class Ant:
         if isinstance(voxel_coordinates, list):
             pheromone_value = (
                 propor_factor
-                * self.image_matrix[
+                * self.sigmoid(self.image_matrix[
                     voxel_coordinates[0],
                     voxel_coordinates[1],
                     voxel_coordinates[2],
-                ]
+                ])
                 + self._eta
             )
         elif isinstance(voxel_coordinates, np.ndarray):
             pheromone_value = (
                 propor_factor
-                * self.image_matrix[
+                * self.sigmoid(self.image_matrix[
                     voxel_coordinates[:, 0],
                     voxel_coordinates[:, 1],
                     voxel_coordinates[:, 2],
-                ]
+                ])
                 + self._eta
             )
         return pheromone_value

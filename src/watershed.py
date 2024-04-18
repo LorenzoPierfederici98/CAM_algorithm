@@ -52,7 +52,6 @@ def generate_markers(image_matrix):
 
     # Creation of the internal Marker
     marker_internal = image_matrix < -400
-    #marker_internal = image_matrix < 0.15
     marker_internal = segmentation.clear_border(marker_internal)
     marker_internal_labels = measure.label(marker_internal)
     areas = [r.area for r in measure.regionprops(marker_internal_labels)]
@@ -116,12 +115,12 @@ def seperate_lungs(image_matrix):
     # Close holes in the lungfilter
     # fill_holes is not used here, since in some slices the heart would be reincluded by accident
     lungfilter = morphology.binary_closing(lungfilter, footprint=np.ones((12, 12)))
-
+    border = segmentation.find_boundaries(lungfilter)
     # Apply the lungfilter (note the filtered areas being assigned -1024 HU)
     segmented = np.where(
-        lungfilter == 1,
+        (lungfilter == 1) & (border == 0),
         image_matrix,
-        -1024. * np.ones((image_matrix.shape[0], image_matrix.shape[1])),
+        -1024.0 * np.ones((image_matrix.shape[0], image_matrix.shape[1])),
     )
     return segmented
 
@@ -148,7 +147,7 @@ def image_segmenter(image_matrix):
 
     for i in range(image_matrix.shape[2]):
         segmented[..., i] = seperate_lungs(image_matrix[..., i])
-        x, y = np.nonzero(segmented[..., i] + 1024.)
+        x, y = np.nonzero(segmented[..., i] + 1024.0)
         xl[i], xr[i] = x.min(), x.max()
         yl[i], yr[i] = y.min(), y.max()
 
@@ -161,7 +160,7 @@ def image_segmenter(image_matrix):
 def ground_truth(segmented_image):
     """Defines the ground truth i.e the voxels part of the aerial trees in
     the region segmented with the watershed algorithm.
-    
+
     Args
     ----
     segmented_image : ndarray
@@ -187,6 +186,25 @@ def ground_truth(segmented_image):
         segm_mask_arr[..., i] = thresh_image
 
     thresh_mean /= segmented_image.shape[2]
+
+    flood = segmentation.flood(
+        segmented_image,
+        (143, 41, 10),
+        footprint=np.ones(
+            (
+                21,
+                21,
+                21,
+            )
+        ),
+        tolerance=300,
+    )
+
+    _, ax = plt.subplots(1, 2)
+    ax[0].imshow(segm_mask_arr[..., segmented_image.shape[2] // 2], cmap="gray")
+    ax[1].imshow(flood[..., segmented_image.shape[2] // 2], cmap="gray")
+    plt.show()
+
     x_truth = np.nonzero(segm_mask_arr)[0]
     y_truth = np.nonzero(segm_mask_arr)[1]
     z_truth = np.nonzero(segm_mask_arr)[2]
@@ -210,7 +228,8 @@ if __name__ == "__main__":
     image, aspect_ratio = ImageData.image_from_file(args.file_path, extrema)
 
     segmented_im = image_segmenter(image)
+    ground_truth(segmented_im)
     _, ax = plt.subplots(1, 2)
-    ax[0].imshow(image[..., image.shape[2] // 2], cmap="gray")
-    ax[1].imshow(segmented_im[..., image.shape[2] // 2], cmap="gray")
-    plt.show()
+    # ax[0].imshow(image[..., image.shape[2] // 2], cmap="gray")
+    # ax[1].imshow(segmented_im[..., image.shape[2] // 2], cmap="gray")
+    # plt.show()

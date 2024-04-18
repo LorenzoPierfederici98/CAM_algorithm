@@ -142,9 +142,8 @@ def plot_display(
 
     Args
     ----
-    a_ratio : dict
-        Dictionary of values that preserve the
-        aspect ratio of the different slices.
+    aspect_ratio : float
+        Value that preserves the aspect ratio of the axial slices.
 
     image_matrix : ndarray
         The matrix of the image to be segmented.
@@ -161,7 +160,7 @@ def plot_display(
     norm = "symlog"
     cmap = "gray"
 
-    ax[0][0].set_aspect(a_ratio["axial"])
+    ax[0][0].set_aspect(a_ratio)
     plot_1 = ax[0][0].imshow(image_matrix[..., anthill_coordinates[2]], cmap="gray")
     ax[0][0].set_title("Original image, axial view")
     plot_2 = ax[0][1].imshow(
@@ -412,9 +411,8 @@ def set_image_and_pheromone(args_parser):
     image_matrix : ndarray
         The image_matrix.
 
-    a_ratio : dict
-        Dictionary of values that preserve the
-        aspect ratio of the different slices.
+    a_ratio : float
+        Value that preserves the aspect ratio of the axial slices.
 
     pheromone_map_init : ndarray
         The initialized pheromone map.
@@ -426,7 +424,7 @@ def set_image_and_pheromone(args_parser):
         The pheromone map which will be deployed in the algorithm.
     """
 
-    a_ratio = {"axial": 1, "sagittal": 1, "coronal": 1}
+    a_ratio = 1
 
     if args_parser.cmd == "dicom":
         extrema = [138, 475, 234, 600, 257, 277]
