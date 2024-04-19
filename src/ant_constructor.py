@@ -20,6 +20,25 @@
 
 import numpy as np
 
+def sigmoid(x, mean):
+    """Sigmoid function used in the pheromone_release method.
+    
+    Args
+    -----
+    x : float or ndarray
+        The voxel value of the image.
+    mean : float
+        The value which discriminates foreground
+        and background.
+
+    Returns
+    -------
+    The value of the sigmoid function of the image
+    voxel value, centered at the mean value.
+    """
+
+    return 1 / (1 + np.exp(-x + mean))
+
 
 class Ant:
 
@@ -52,7 +71,7 @@ class Ant:
     """
 
 
-    def __init__(self, image_matrix, voxel_coordinates):
+    def __init__(self, image_matrix, voxel_coordinates, thresh_mean):
         self.image_matrix = image_matrix
         self.voxel_coordinates = voxel_coordinates
         self._beta = 3.5
@@ -60,6 +79,7 @@ class Ant:
         self._alpha = 0.2
         self._eta = 0.01
         self.energy = 1.0 + self._alpha
+        self.thresh_mean = thresh_mean
 
 
     @property
@@ -189,11 +209,6 @@ class Ant:
         return neighbours
 
 
-    @staticmethod
-    def sigmoid(x):
-        return 1 / (1 + np.exp(-x - 517.))
-
-
     def pheromone_release(self, voxel_coordinates):
         """Computes the quantity of pheromone to be released into the voxel to
         build the pheromone map. The quantity of pheromone released corresponds to
@@ -216,21 +231,21 @@ class Ant:
         if isinstance(voxel_coordinates, list):
             pheromone_value = (
                 propor_factor
-                * self.sigmoid(self.image_matrix[
+                * sigmoid(self.image_matrix[
                     voxel_coordinates[0],
                     voxel_coordinates[1],
                     voxel_coordinates[2],
-                ])
+                ], self.thresh_mean)
                 + self._eta
             )
         elif isinstance(voxel_coordinates, np.ndarray):
             pheromone_value = (
                 propor_factor
-                * self.sigmoid(self.image_matrix[
+                * sigmoid(self.image_matrix[
                     voxel_coordinates[:, 0],
                     voxel_coordinates[:, 1],
                     voxel_coordinates[:, 2],
-                ])
+                ], self.thresh_mean)
                 + self._eta
             )
         return pheromone_value

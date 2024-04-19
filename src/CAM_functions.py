@@ -41,7 +41,7 @@ logging.basicConfig(
 )
 
 
-def set_colony(anthill_coordinates, image_matrix):
+def set_colony(anthill_coordinates, image_matrix, thresh):
     """Initializes the ant colony from a voxel given by the user.
     All the 26 first-neighbouring voxels are then occupied by an ant.
 
@@ -77,9 +77,9 @@ def set_colony(anthill_coordinates, image_matrix):
         raise IndexError
 
     anthill_voxel = anthill_coordinates
-    first_ant = Ant(image_matrix, anthill_voxel)
+    first_ant = Ant(image_matrix, anthill_voxel, thresh)
     first_ant_neighbours = first_ant.find_first_neighbours()
-    colony = [Ant(image_matrix, list(elem)) for elem in first_ant_neighbours]
+    colony = [Ant(image_matrix, list(elem), thresh) for elem in first_ant_neighbours]
     colony = colony[: len(colony) // 2] + [first_ant] + colony[len(colony) // 2 :]
     return colony, anthill_voxel
 
@@ -317,7 +317,37 @@ def metrics(image_voxels, visited_voxels_dict, common_dict, pheromone_threshold)
     return sensitivity, expl_level, cont_level
 
 
-def statistics(ants_number, args_parser, mean_list, image_matrix, pheromone_matrix):
+def cam_ground_truth(args_parser, image_matrix):
+    """Defines the ground truth for the algorithm i.e
+    the voxels part of the bronchial tree for the dicom image and the
+    non-zero voxels for the other geometric figures.
+
+    Args
+    ----
+    args_parser : obj
+        Namespace of ArgumentParser.
+
+    image_matrix : ndarray
+        The image matrix.
+
+    Returns
+    -------
+    image_voxels : ndarray
+        The voxels which are part of the image foreground.
+
+    thresh : float
+        The threshold value which discriminates foreground and background.
+    """
+
+    if args_parser.cmd == "dicom":
+        image_voxels, thresh = ground_truth(image_matrix)
+    else:
+        image_voxels = np.transpose(np.array(np.nonzero(image_matrix))).reshape(-1, 3)
+        thresh = 0
+    return image_voxels, thresh
+
+
+def statistics(ants_number, mean_list, image_matrix, pheromone_matrix, image_voxels):
     """Provides and displays the statistics about the run.
 
     Args
@@ -325,35 +355,24 @@ def statistics(ants_number, args_parser, mean_list, image_matrix, pheromone_matr
     ants_number : list[int]
         The list of the number of ants per cycle.
 
-    args_parser : obj
-        Namespace of ArgumentParser.
+    mean_list : list[float]
+        The pheromone mean per iteration.
 
     image_matrix : ndarray
         The image matrix.
 
-    mean_list : list[float]
-        The pheromone mean per iteration.
-
     pheromone_matrix : ndarray
         The pheromone map.
+
+    image_voxels : ndarray
+        The voxels which are part of the image foreground.
     """
 
-    if args_parser.cmd == "dicom":
-        image_voxels, thresh_mean = ground_truth(image_matrix)
-        pheromone_threshold = np.linspace(
+    pheromone_threshold = np.linspace(
             np.amin(pheromone_matrix),
             np.amax(pheromone_matrix),
-            100,
+            int(np.amax(pheromone_matrix) / 10.01),
         )
-
-    else:
-        image_voxels = np.transpose(np.array(np.nonzero(image_matrix))).reshape(-1, 3)
-        pheromone_threshold = np.linspace(
-            np.amin(pheromone_matrix),
-            np.amax(pheromone_matrix),
-            int(np.amax(pheromone_matrix) / 50.01),
-        )
-
 
     visited_voxels_dict, common_dict = dictionaries(
         image_voxels, image_matrix, pheromone_matrix
@@ -363,10 +382,7 @@ def statistics(ants_number, args_parser, mean_list, image_matrix, pheromone_matr
         image_voxels, visited_voxels_dict, common_dict, pheromone_threshold
     )
 
-    if args_parser.cmd == "dicom":
-        index = np.where(pheromone_threshold >= 10 * thresh_mean + 0.01)[0][0]
-    else:
-        index = np.where(pheromone_threshold >= 50.01)[0][0]
+    index = np.where(pheromone_threshold >= 10.01)[0][0]
 
     print(pheromone_threshold.shape)
     print(sensitivity[:10])

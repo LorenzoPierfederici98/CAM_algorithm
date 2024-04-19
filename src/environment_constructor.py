@@ -227,11 +227,3 @@ class ImageData:
             ] + np.int16(intercept)
         )
         return CT_array, aspect_ratio
-
-if __name__ == "__main__":
-    extrema = [138, 475, 234, 600, 257, 277]
-    image, _ = ImageData.image_from_file("D:/train_data/Training/CASE01", extrema)
-    print(image.dtype)
-    import matplotlib.pyplot as plt
-    plt.imshow(image[..., 10], cmap="gray")
-    plt.show()

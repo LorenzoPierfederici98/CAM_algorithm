@@ -24,6 +24,7 @@ that one present in
 https://www.kaggle.com/code/ankasor/improved-lung-segmentation-using-watershed
 """
 
+
 import argparse
 import numpy as np
 from scipy import ndimage
@@ -187,23 +188,17 @@ def ground_truth(segmented_image):
 
     thresh_mean /= segmented_image.shape[2]
 
-    flood = segmentation.flood(
-        segmented_image,
-        (143, 41, 10),
-        footprint=np.ones(
-            (
-                21,
-                21,
-                21,
-            )
-        ),
-        tolerance=300,
-    )
-
-    _, ax = plt.subplots(1, 2)
-    ax[0].imshow(segm_mask_arr[..., segmented_image.shape[2] // 2], cmap="gray")
-    ax[1].imshow(flood[..., segmented_image.shape[2] // 2], cmap="gray")
-    plt.show()
+    # seed = (143, 41, 10)
+    # flood = segmentation.flood(
+    #     segmented_image,
+    #     seed_point=seed,
+    #     footprint=np.ones((21, 21, 21)),
+    #     tolerance=400,
+    # )
+    # _, ax = plt.subplots(1, 2)
+    # ax[0].imshow(segm_mask_arr[..., segmented_image.shape[2] // 2], cmap="gray")
+    # ax[1].imshow(flood[..., segmented_image.shape[2] // 2], cmap="gray")
+    # plt.show()
 
     x_truth = np.nonzero(segm_mask_arr)[0]
     y_truth = np.nonzero(segm_mask_arr)[1]
@@ -229,7 +224,7 @@ if __name__ == "__main__":
 
     segmented_im = image_segmenter(image)
     ground_truth(segmented_im)
-    _, ax = plt.subplots(1, 2)
+    # _, ax = plt.subplots(1, 2)
     # ax[0].imshow(image[..., image.shape[2] // 2], cmap="gray")
     # ax[1].imshow(segmented_im[..., image.shape[2] // 2], cmap="gray")
     # plt.show()

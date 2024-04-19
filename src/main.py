@@ -43,9 +43,7 @@ logging.basicConfig(
 )
 
 
-parser = argparse.ArgumentParser(
-        description="Module implementing the CAM algorithm."
-    )
+parser = argparse.ArgumentParser(description="Module implementing the CAM algorithm.")
 parser.add_argument(
     "-a",
     "--anthill_coordinates",
@@ -71,10 +69,8 @@ parser_path.add_argument(
     help="The DICOM folder path.",
     type=str,
     metavar="str",
-    )
-parser_cube = subparsers.add_parser(
-    "cube", help="Returns a cube as the image matrix."
 )
+parser_cube = subparsers.add_parser("cube", help="Returns a cube as the image matrix.")
 parser_cube.add_argument(
     "-m",
     "--matrix_dimensions",
@@ -163,18 +159,19 @@ if __name__ == "__main__":
     image, aspect_ratio, pheromone_map_init, pheromone_shared, pheromone_map = (
         cam.set_image_and_pheromone(args)
     )
+    image_voxels, thresh_mean = cam.cam_ground_truth(args, image)
     # copies pheromone_map_init into pheromone_map
     np.copyto(pheromone_map, pheromone_map_init)
 
     n_iteration = 0
-    energy_death = 1.
+    energy_death = 1.0
     energy_reproduction = 1.3
     ant_number = []
     pheromone_mean_sum = 0
     pheromone_mean_list = []
     colony_length = 0
 
-    ant_colony, anthill_position = cam.set_colony(args.anthill_coordinates, image)
+    ant_colony, anthill_position = cam.set_colony(args.anthill_coordinates, image, thresh_mean)
     start_time_local = time.perf_counter()
 
     while len(ant_colony) != 0 and n_iteration <= args.n_iteration:
@@ -189,7 +186,9 @@ if __name__ == "__main__":
             released_pheromone = pool.map(
                 cam.update_pheromone_map, ant_colony, chunksize=chunksize
             )
-            next_voxel = pool.map(cam.find_next_voxel, ant_colony, chunksize=chunksize)
+            next_voxel = pool.map(
+                cam.find_next_voxel, ant_colony, chunksize=chunksize
+            )
 
         colony_length += len(ant_colony)
         pheromone_mean_sum += sum(released_pheromone)
@@ -229,7 +228,9 @@ if __name__ == "__main__":
                     continue
 
                 second_neighbours = ant.find_second_neighbours()
-                image_second_neigh = ant_colony[i].pheromone_release(second_neighbours)
+                image_second_neigh = ant_colony[i].pheromone_release(
+                    second_neighbours
+                )
 
                 image_second_neigh_mean = image_second_neigh.mean()
                 image_second_max = np.amax(image_second_neigh)
@@ -248,7 +249,7 @@ if __name__ == "__main__":
                     n_offspring = valid_neighbours.shape[0]
 
                 for neigh in valid_neighbours[:n_offspring]:
-                    ant_colony.append(cam.Ant(image, list(neigh)))
+                    ant_colony.append(cam.Ant(image, list(neigh), thresh_mean))
                 pheromone_map[
                     valid_neighbours[:, 0],
                     valid_neighbours[:, 1],
@@ -269,6 +270,12 @@ if __name__ == "__main__":
         f"Elapsed time: {(time.perf_counter() - start_time_local) / 60:.3f} min\n"
     )
 
-    cam.statistics(ant_number, args, pheromone_mean_list, image, pheromone_map[..., 0])
+    cam.statistics(
+        ant_number,
+        pheromone_mean_list,
+        image,
+        pheromone_map[..., 0],
+        image_voxels,
+    )
     cam.plot_display(aspect_ratio, image, pheromone_map[..., 0], anthill_position)
     plt.show()
