@@ -159,19 +159,19 @@ if __name__ == "__main__":
     image, aspect_ratio, pheromone_map_init, pheromone_shared, pheromone_map = (
         cam.set_image_and_pheromone(args)
     )
-    image_voxels, thresh_mean = cam.cam_ground_truth(args, image)
+    image_voxels, thresh_value = cam.cam_ground_truth(args, image)
     # copies pheromone_map_init into pheromone_map
     np.copyto(pheromone_map, pheromone_map_init)
 
     n_iteration = 0
-    energy_death = 1.0
-    energy_reproduction = 1.3
+    ENERGY_DEATH = 1.
+    ENERGY_REPRODUCTION = 1.3
     ant_number = []
     pheromone_mean_sum = 0
     pheromone_mean_list = []
     colony_length = 0
 
-    ant_colony, anthill_position = cam.set_colony(args.anthill_coordinates, image, thresh_mean)
+    ant_colony, anthill_position = cam.set_colony(args.anthill_coordinates, image, thresh_value)
     start_time_local = time.perf_counter()
 
     while len(ant_colony) != 0 and n_iteration <= args.n_iteration:
@@ -204,12 +204,12 @@ if __name__ == "__main__":
             ant.update_energy(released_pheromone[i] / pheromone_mean)
 
         for i, ant in enumerate(ant_colony):
-            if ant.energy < energy_death:
+            if ant.energy < ENERGY_DEATH:
                 del ant_colony[i]
                 if len(ant_colony) == 0:
                     print("No ants left.\n")
                 continue
-            if ant.energy > energy_reproduction:
+            if ant.energy > ENERGY_REPRODUCTION:
                 ant.energy = 1.0 + ant.alpha
                 first_neighbours = ant.find_first_neighbours()
                 valid_index = np.where(
@@ -249,7 +249,7 @@ if __name__ == "__main__":
                     n_offspring = valid_neighbours.shape[0]
 
                 for neigh in valid_neighbours[:n_offspring]:
-                    ant_colony.append(cam.Ant(image, list(neigh), thresh_mean))
+                    ant_colony.append(cam.Ant(image, list(neigh), thresh_value))
                 pheromone_map[
                     valid_neighbours[:, 0],
                     valid_neighbours[:, 1],
@@ -263,8 +263,8 @@ if __name__ == "__main__":
 
     logging.info(f"Image dimensions: {image.shape}\n")
     logging.info(f"Anthill coordinates: {args.anthill_coordinates}\n")
-    logging.info(f"Energy death: {energy_death}\n")
-    logging.info(f"Energy reproduction: {energy_reproduction}\n")
+    logging.info(f"Energy death: {ENERGY_DEATH}\n")
+    logging.info(f"Energy reproduction: {ENERGY_REPRODUCTION}\n")
     logging.info(f"# iterations: {n_iteration}\n")
     logging.info(
         f"Elapsed time: {(time.perf_counter() - start_time_local) / 60:.3f} min\n"

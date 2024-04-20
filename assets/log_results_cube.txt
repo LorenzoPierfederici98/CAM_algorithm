@@ -1,24 +1,24 @@
-2024-04-06 12:46:27,408:INFO: Image dimensions: (100, 100, 50)
+2024-04-20 12:39:21,441:INFO: Image dimensions: (50, 50, 50)
 
-2024-04-06 12:46:27,408:INFO: Anthill coordinates: [50, 50, 25]
+2024-04-20 12:39:21,441:INFO: Anthill coordinates: [25, 25, 25]
 
-2024-04-06 12:46:27,408:INFO: Energy death: 1.0
+2024-04-20 12:39:21,441:INFO: Energy death: 1.0
 
-2024-04-06 12:46:27,408:INFO: Energy reproduction: 1.3
+2024-04-20 12:39:21,441:INFO: Energy reproduction: 1.3
 
-2024-04-06 12:46:27,408:INFO: # iterations: 210
+2024-04-20 12:39:21,441:INFO: # iterations: 147
 
-2024-04-06 12:46:27,408:INFO: Elapsed time: 17.863 min
+2024-04-20 12:39:21,441:INFO: Elapsed time: 5.191 min
 
-2024-04-06 12:46:28,348:INFO: Image voxels: 64000
+2024-04-20 12:39:21,592:INFO: Image voxels: 8000
 
-2024-04-06 12:46:28,348:INFO: Visited voxels: 316620
+2024-04-20 12:39:21,592:INFO: Visited voxels: 59046
 
-2024-04-06 12:46:42,819:INFO: Pheromone threshold: 13.0
+2024-04-20 12:39:22,736:INFO: Pheromone threshold: 40.4
 
-2024-04-06 12:46:42,819:INFO: Sensitivity: 93.7 %
+2024-04-20 12:39:22,736:INFO: Sensitivity: 93.0 %
 
-2024-04-06 12:46:42,819:INFO: Expl. level: 93.7 %
+2024-04-20 12:39:22,736:INFO: Expl. level: 93.0 %
 
-2024-04-06 12:46:42,834:INFO: Cont. level: 0.0 %
+2024-04-20 12:39:22,736:INFO: Cont. level: 0.0 %
 

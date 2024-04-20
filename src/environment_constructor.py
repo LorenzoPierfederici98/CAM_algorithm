@@ -77,7 +77,7 @@ class ImageData:
             center[0] - length // 2 : center[0] + length // 2,
             center[1] - length // 2 : center[1] + length // 2,
             center[2] - length // 2 : center[2] + length // 2,
-        ] = 5.0
+        ] = 5
         return image_matrix
 
 

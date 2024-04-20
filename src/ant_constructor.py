@@ -20,6 +20,9 @@
 
 import numpy as np
 
+BETA = 3.5
+DELTA = 0.2
+
 def sigmoid(x, mean):
     """Sigmoid function used in the pheromone_release method.
     
@@ -27,6 +30,7 @@ def sigmoid(x, mean):
     -----
     x : float or ndarray
         The voxel value of the image.
+
     mean : float
         The value which discriminates foreground
         and background.
@@ -37,7 +41,7 @@ def sigmoid(x, mean):
     voxel value, centered at the mean value.
     """
 
-    return 1 / (1 + np.exp(-x + mean))
+    return 1 / (1 + np.exp(-x - abs(mean)))
 
 
 class Ant:
@@ -56,6 +60,12 @@ class Ant:
     energy : float
         The ant energy.
 
+    alpha, eta : float
+        The alpha, eta parameters defined in the documentation.
+
+    thresh_value : float or None, defaults to None
+        The threshold value used in the pheromone deposition rule.
+
     Methods
     -------
     update_energy : updates the ant energy.
@@ -71,27 +81,13 @@ class Ant:
     """
 
 
-    def __init__(self, image_matrix, voxel_coordinates, thresh_mean):
+    def __init__(self, image_matrix, voxel_coordinates, thresh_value=None):
         self.image_matrix = image_matrix
         self.voxel_coordinates = voxel_coordinates
-        self._beta = 3.5
-        self._delta = 0.2
         self._alpha = 0.2
         self._eta = 0.01
         self.energy = 1.0 + self._alpha
-        self.thresh_mean = thresh_mean
-
-
-    @property
-    def beta(self):
-        """Defines the beta attribute as read-only."""
-        return self._beta
-
-
-    @property
-    def delta(self):
-        """Defines the delta attribute as read-only."""
-        return self._delta
+        self.thresh_value = thresh_value
 
 
     @property
@@ -107,7 +103,16 @@ class Ant:
 
 
     def update_energy(self, value):
-        """Updates the ant energy."""
+        """Updates the ant energy.
+        
+        Args
+        ----
+        value : float
+            The updating value depending on the
+            released pheromone and on the pheromone mean
+            released by the colony since the start.
+        """
+
         self.energy = self.energy - self._alpha * (1.0 - value)
 
 
@@ -120,7 +125,8 @@ class Ant:
         Returns
         -------
         neighbours : ndarray
-            Array of the indexes of the first-order neighbours of the ant current voxel.
+            Array of the indexes of the first-order neighbours of the
+            ant current voxel.
         """
 
         # Create the matrix whose rows contain the indexes of the
@@ -160,13 +166,15 @@ class Ant:
 
 
     def find_second_neighbours(self):
-        """Finds the indexes of the second-order neighbours of the ant current
-        voxel. The construction is similar to that one of the find_first_neighbours function.
+        """Finds the indexes of the second-order neighbours of the
+        ant current voxel. The construction is similar to that one
+        of the find_first_neighbours function.
 
         Returns
         -------
         neighbours : ndarray
-            Array of the indexes of the second-order neighbours of the current voxel.
+            Array of the indexes of the second-order neighbours of
+            the current voxel.
         """
 
         neighbours = np.transpose(np.indices((5, 5, 5)) - 2).reshape(-1, 3)
@@ -228,26 +236,48 @@ class Ant:
 
         propor_factor = 10
 
-        if isinstance(voxel_coordinates, list):
-            pheromone_value = (
-                propor_factor
-                * sigmoid(self.image_matrix[
-                    voxel_coordinates[0],
-                    voxel_coordinates[1],
-                    voxel_coordinates[2],
-                ], self.thresh_mean)
-                + self._eta
-            )
-        elif isinstance(voxel_coordinates, np.ndarray):
-            pheromone_value = (
-                propor_factor
-                * sigmoid(self.image_matrix[
-                    voxel_coordinates[:, 0],
-                    voxel_coordinates[:, 1],
-                    voxel_coordinates[:, 2],
-                ], self.thresh_mean)
-                + self._eta
-            )
+        if self.thresh_value is None:
+            if isinstance(voxel_coordinates, list):
+                pheromone_value = (
+                    propor_factor
+                    * (self.image_matrix[
+                        voxel_coordinates[0],
+                        voxel_coordinates[1],
+                        voxel_coordinates[2],
+                    ])
+                    + self._eta
+                )
+            elif isinstance(voxel_coordinates, np.ndarray):
+                pheromone_value = (
+                    propor_factor
+                    * (self.image_matrix[
+                        voxel_coordinates[:, 0],
+                        voxel_coordinates[:, 1],
+                        voxel_coordinates[:, 2],
+                    ])
+                    + self._eta
+                )
+        else:
+            if isinstance(voxel_coordinates, list):
+                pheromone_value = (
+                    propor_factor
+                    * sigmoid(self.image_matrix[
+                        voxel_coordinates[0],
+                        voxel_coordinates[1],
+                        voxel_coordinates[2],
+                    ], self.thresh_value)
+                    + self._eta
+                )
+            elif isinstance(voxel_coordinates, np.ndarray):
+                pheromone_value = (
+                    propor_factor
+                    * sigmoid(self.image_matrix[
+                        voxel_coordinates[:, 0],
+                        voxel_coordinates[:, 1],
+                        voxel_coordinates[:, 2],
+                    ], self.thresh_value)
+                    + self._eta
+                )
         return pheromone_value
 
 
@@ -331,7 +361,7 @@ class Ant:
             ]
             / (
                 1.0
-                + self.delta
+                + DELTA
                 * pheromone_map[
                     valid_first_neighbours[:, 0],
                     valid_first_neighbours[:, 1],
@@ -339,7 +369,7 @@ class Ant:
                     0,
                 ]
             )
-        ) ** (self.beta)
+        ) ** (BETA)
         probability = W_PROBABILITY / W_PROBABILITY.sum()
         rand_num = np.random.uniform(0, np.max(probability))
         next_voxel_index = np.where(probability >= rand_num)[0][0]

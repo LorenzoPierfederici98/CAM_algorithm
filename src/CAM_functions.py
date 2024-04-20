@@ -53,6 +53,9 @@ def set_colony(anthill_coordinates, image_matrix, thresh):
     image_matrix : ndarray
         The matrix of the image to be segmented.
 
+    thresh : float
+        The threshold value used in the pheromone deposition rule.
+
     Returns
     -------
     colony : list[obj]
@@ -131,7 +134,7 @@ def find_next_voxel(ant_worker):
 
 
 def plot_display(
-    a_ratio,
+    aspect_ratio,
     image_matrix,
     pheromone_matrix,
     anthill_coordinates,
@@ -160,7 +163,7 @@ def plot_display(
     norm = "symlog"
     cmap = "gray"
 
-    ax[0][0].set_aspect(a_ratio)
+    ax[0][0].set_aspect(aspect_ratio)
     plot_1 = ax[0][0].imshow(image_matrix[..., anthill_coordinates[2]], cmap="gray")
     ax[0][0].set_title("Original image, axial view")
     plot_2 = ax[0][1].imshow(
@@ -335,7 +338,7 @@ def cam_ground_truth(args_parser, image_matrix):
     image_voxels : ndarray
         The voxels which are part of the image foreground.
 
-    thresh : float
+    thresh : float or None
         The threshold value which discriminates foreground and background.
     """
 
@@ -343,7 +346,7 @@ def cam_ground_truth(args_parser, image_matrix):
         image_voxels, thresh = ground_truth(image_matrix)
     else:
         image_voxels = np.transpose(np.array(np.nonzero(image_matrix))).reshape(-1, 3)
-        thresh = 0
+        thresh = None
     return image_voxels, thresh
 
 
@@ -382,7 +385,7 @@ def statistics(ants_number, mean_list, image_matrix, pheromone_matrix, image_vox
         image_voxels, visited_voxels_dict, common_dict, pheromone_threshold
     )
 
-    index = np.where(pheromone_threshold >= 10.01)[0][0]
+    index = np.where(sensitivity >= np.max(sensitivity))[0][-1]
 
     print(pheromone_threshold.shape)
     print(sensitivity[:10])
@@ -427,7 +430,7 @@ def set_image_and_pheromone(args_parser):
     image_matrix : ndarray
         The image_matrix.
 
-    a_ratio : float
+    aspect_ratio : float
         Value that preserves the aspect ratio of the axial slices.
 
     pheromone_map_init : ndarray
@@ -440,11 +443,11 @@ def set_image_and_pheromone(args_parser):
         The pheromone map which will be deployed in the algorithm.
     """
 
-    a_ratio = 1
+    aspect_ratio = 1
 
     if args_parser.cmd == "dicom":
         extrema = [138, 475, 234, 600, 257, 277]
-        image_cropped, a_ratio = ImageData.image_from_file(
+        image_cropped, aspect_ratio = ImageData.image_from_file(
             args_parser.file_path, extrema
         )
         image_matrix = image_segmenter(image_cropped)
@@ -480,7 +483,7 @@ def set_image_and_pheromone(args_parser):
     )
     return (
         image_matrix,
-        a_ratio,
+        aspect_ratio,
         pheromone_map_init_,
         pheromone_shared_,
         pheromone_matrix,

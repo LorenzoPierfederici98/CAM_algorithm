@@ -34,7 +34,7 @@ class AntTesting(unittest.TestCase):
 
     def test_energy_update(self):
         """Checks the update of the ant energy."""
-        ant = Ant([], [], 0)
+        ant = Ant([], [])
         ant_energy = ant.energy
         update_value = 10.0
         ant.update_energy(update_value)
@@ -55,7 +55,7 @@ class AntTesting(unittest.TestCase):
             ]
         )
         for i in range(len(voxel_coordinates[:, 0])):
-            ant = Ant(matrix, voxel_coordinates[i], 0)
+            ant = Ant(matrix, voxel_coordinates[i])
             neighbour_number = [7, 7, 11, 26]
             self.assertEqual(neighbour_number[i], ant.find_first_neighbours().shape[0])
 
@@ -72,7 +72,7 @@ class AntTesting(unittest.TestCase):
             ]
         )
         for i in range(len(voxel_coordinates[:, 0])):
-            ant = Ant(matrix, voxel_coordinates[i], 0)
+            ant = Ant(matrix, voxel_coordinates[i])
             neighbour_number = [26, 26, 35, 124]
             self.assertEqual(neighbour_number[i], ant.find_second_neighbours().shape[0])
 
@@ -91,7 +91,7 @@ class AntTesting(unittest.TestCase):
         image_matrix[2:4, 2:4, 2:4] = 5.0
         pheromone_map = self.build_pheromone_map(image_matrix)
         current_voxel = [2, 2, 2]
-        ant = Ant(image_matrix, current_voxel, 0)
+        ant = Ant(image_matrix, current_voxel)
         first_neighbours = ant.find_first_neighbours()
         # All the neighbouring voxels are occupied i.e the 4-th dimension
         # of the pheromone map has value True for all
