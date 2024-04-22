@@ -92,7 +92,7 @@ options:
                         matrix as
                         image_matrix[extrema[0] :     
                         extrema[1], extrema[2] :      
-                        extrema[3] extrema[4] :       
+                        extrema[3], extrema[4] :       
                         extrema[5]]
 ```
 
