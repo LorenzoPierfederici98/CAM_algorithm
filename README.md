@@ -144,7 +144,7 @@ The run results, such as the image matrix dimensions, the pheromone map, the eva
 ## Example
 
 ```bash
-python3.10 main.py -a 45 35 20 -n 300 donut -m 100 100 50 -c 50 50 25 -r 30
+python3.10 main.py -a 15 15 20 -n 300 donut -m 50 50 50 -c 25 25 25 -r 20
 ```
 
 Produces
