@@ -80,11 +80,20 @@ For the dicom option:
 ```bash
 python3.10 main.py dicom -h
 usage: main.py dicom [-h] [-f str]
+                     [-e int int int int int int]     
 
 options:
-  -h, --help            show this help message and exit
+  -h, --help            show this help message and    
+                        exit
   -f str, --file_path str
-                        The DICOM folder path.
+                        The DICOM folder path.        
+  -e int int int int int int, --extrema int int int int int int
+                        The values to crop the image  
+                        matrix as
+                        image_matrix[extrema[0] :     
+                        extrema[1], extrema[2] :      
+                        extrema[3] extrema[4] :       
+                        extrema[5]]
 ```
 
 For the cube option:
