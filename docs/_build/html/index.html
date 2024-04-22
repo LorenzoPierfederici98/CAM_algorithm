@@ -77,16 +77,16 @@
              
   <section id="welcome-to-cam-algorithm-s-documentation">
 <h1>Welcome to CAM algorithm’s documentation!<a class="headerlink" href="#welcome-to-cam-algorithm-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Repository of the project for the CMEPDA course implementing a Channeler Ant Model (CAM) algorithm in order to segment aerial trees, following the model described by Cerello et al. in the paper cited in the <em>References</em> section of the <a class="reference external" href="https://github.com/LorenzoPierfederici98/CAM_algorithm">github repository</a> .</p>
+<p>Repository of the project for the CMEPDA course implementing a Channeler Ant Model (CAM) algorithm in order to segment aerial trees, following the model described by Cerello et al. in the paper cited in the <em>References</em> section of the <a class="reference external" href="https://github.com/LorenzoPierfederici98/CAM_algorithm">github repository</a> . The DICOM image folder is provided by the <cite>EXACT09 &lt;http://image.diku.dk/exact/&gt;</cite> challenge database.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The CAM algorithm exploits virtual ant colonies whose behaviour mimics the cooperation strategies put in place by real ants, which is here used in image processing. The ant colony lives in the digital habitat of the image voxels, in which ants move and deposit pheromone in order to build a pheromone map.</p>
 <p>The life cycle of the ants is discretized in iterations: starting from the anthill voxel (chosen by the user) and all its first-order neighbours, the ants deposit pheromone values, corresponding to the respective image voxels intensities, and evaluate the next voxel destination among all the first-order neighbouring voxels not occupied by an ant. The evaluation of the destination voxel is made by computing a probability for all the free neighbouring voxels, which depends on their pheromone values; the next voxel is chosen with a roulette wheel algorithm, in order to find a balance between random paths and “directional” paths given by the pheromone trails.</p>
 <p>The ants lifespan is reuglated by the energy parameter: all the ants are assigned with a default value which varies with every iteration, depending on the pheromone value released by the ant and the pheromone mean per iteration released by the ant colony since the first iteration. Whenever an ant has energy greater than a reproduction value it generates <span class="math notranslate nohighlight">\(N_{offspring}\in[0, 26]\)</span> ants, related to the local properties of the enviornment, which are placed in the free first-order neighbouring voxels; if the energy is lower than a certain value or if the ant has no possible voxel destination it dies. Following those rules the ants build the pheromone map, which is deployed to segment bronchial and vascular trees in lung CT images.</p>
-<p>The CT image is preprocessed with a watershed algorithm to extract the lung ROI.</p>
+<p>The CT image is preprocessed with a watershed algorithm to extract the lung ROI. Since the ground truth wasn’t available, a new one is provided by the Otsu thresholding method from sckikit-image which distinguishes foreground and background. The CAM results are compared the region growing flood algorithm from sckikit-image.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>It is recommended to choose a few tens of slices (axial, coronal or sagittal) in order to limit the computational time.</p>
+<p>It is recommended to choose a few tens of slices (axial, coronal or sagittal) in order to limit the computational time (about 1.5 minutes per slice).</p>
 </div>
 </section>
 <section id="moving-rules">
@@ -101,8 +101,8 @@
 <p>The pheromone value an ant deposits into a voxel <span class="math notranslate nohighlight">\(v_i\)</span> before leaving is</p>
 <div class="math notranslate nohighlight">
 \[T = \eta + \Delta_{ph}\]</div>
-<div class="math notranslate nohighlight">
-\[\Delta_{ph} = 10 I(v_i)\]</div>
+<p>If a geometric figure is chosen then <span class="math notranslate nohighlight">\(\Delta_{ph} = 10 I(v_i)\)</span>, while for the DICOM image is
+<span class="math notranslate nohighlight">\(\Delta_{ph} = 10 \frac{1}{1 + e^{-I(v_i) - |\mu_{thresh}|}}\)</span> with <span class="math notranslate nohighlight">\(\mu_{thresh}\)</span> the mean threshold value given by the Otsu method for all the image slices.</p>
 <p>With <span class="math notranslate nohighlight">\(I(v_i)\)</span> the intensity of the corresponding image voxel and <span class="math notranslate nohighlight">\(\eta = 0.01\)</span> a quantity that an ant would leave even into a voxel with zero intensity, certifying that it was visited. See the reference article for other laying rules.</p>
 </section>
 <section id="life-cycle">
@@ -110,7 +110,7 @@
 <p>The life cycle of the ants is regulated by the energy parameter with a default value of <span class="math notranslate nohighlight">\(\varepsilon_0 = 1 + \alpha\)</span> with <span class="math notranslate nohighlight">\(\alpha = 0.2\)</span>. The energy update of an ant takes into account the amount of pheromone deposited by it <span class="math notranslate nohighlight">\(\Delta_{ph}\)</span> and the average amount of pheromone per iteration released by the colony since the start <span class="math notranslate nohighlight">\(&lt;\Delta_{ph}&gt;\)</span></p>
 <div class="math notranslate nohighlight">
 \[\Delta\varepsilon = -\alpha (1 - \frac{\Delta_{ph}}{&lt;\Delta_{ph}&gt;})\]</div>
-<p>An ant dies whenever <span class="math notranslate nohighlight">\(\varepsilon &lt; \varepsilon_D = 0.3\)</span> and gives birth whenever <span class="math notranslate nohighlight">\(\varepsilon &gt; \varepsilon_R = 1.25\)</span>.</p>
+<p>An ant dies whenever <span class="math notranslate nohighlight">\(\varepsilon &lt; \varepsilon_D = 1\)</span> and gives birth whenever <span class="math notranslate nohighlight">\(\varepsilon &gt; \varepsilon_R = 1.3\)</span>.</p>
 <p>The number of ants generated when a reproduction takes place <span class="math notranslate nohighlight">\(N_{offspring}\)</span> is a function of the local properties of the environment, which are evaluated replacing <span class="math notranslate nohighlight">\(T\)</span> with <span class="math notranslate nohighlight">\(T_5\)</span> the pheromone releasing rule considering the intensity <span class="math notranslate nohighlight">\(I_5\)</span> as the image intensity averaged on the second-order neighbours of the ant current voxel.</p>
 <div class="math notranslate nohighlight">
 \[N_{offspring} = 26 \frac{T_5 - T_{5,min}}{T_{5,max} - T_{5,min}}\]</div>

@@ -22,6 +22,8 @@
 with the watershed algorithm. The code is a slight modification of
 that one present in
 https://www.kaggle.com/code/ankasor/improved-lung-segmentation-using-watershed
+This module also implements the region growing flood algorithm from
+scikit image used as a benchmark for the CAM algorithm.
 """
 
 
@@ -165,7 +167,7 @@ def ground_truth(segmented_image):
     Args
     ----
     segmented_image : ndarray
-        The image segmented with the watershed algorithm
+        The image segmented with the watershed algorithm.
 
     Returns
     -------
@@ -187,44 +189,138 @@ def ground_truth(segmented_image):
         segm_mask_arr[..., i] = thresh_image
 
     thresh_mean /= segmented_image.shape[2]
-
-    # seed = (143, 41, 10)
-    # flood = segmentation.flood(
-    #     segmented_image,
-    #     seed_point=seed,
-    #     footprint=np.ones((21, 21, 21)),
-    #     tolerance=400,
-    # )
-    # _, ax = plt.subplots(1, 2)
-    # ax[0].imshow(segm_mask_arr[..., segmented_image.shape[2] // 2], cmap="gray")
-    # ax[1].imshow(flood[..., segmented_image.shape[2] // 2], cmap="gray")
-    # plt.show()
-
     x_truth = np.nonzero(segm_mask_arr)[0]
     y_truth = np.nonzero(segm_mask_arr)[1]
     z_truth = np.nonzero(segm_mask_arr)[2]
     ground_truth_vox = np.stack((x_truth, y_truth, z_truth)).transpose()
-    return ground_truth_vox, thresh_mean
+    return segm_mask_arr, ground_truth_vox, thresh_mean
+
+
+def region_growing(seed, segmented_image):
+    """Applies the region growing flood segmentation algorithm
+    from skimage.segmentation, to be compared with the CAM
+    algorithm. The seed corresponds to the anthill voxel coordinates;
+    it has to be a voxel with high intensity (100-200).
+
+    Args
+    ----
+    seed : list[int]
+        The anthill voxel coordinates from which the
+        segmentation starts.
+
+    segmented_image : ndarray
+        The image segmented with the watershed algorithm.
+
+    Returns
+    -------
+    flood_voxels : ndarray
+        The voxels segmented with the region growing flood
+        algorithm.
+    """
+
+    seed = tuple(seed)
+    flood = segmentation.flood(
+        segmented_image,
+        seed_point=seed,
+        footprint=np.ones((21, 21, 21)),
+        tolerance=400,
+    )
+    x_flood = np.nonzero(flood)[0]
+    y_flood = np.nonzero(flood)[1]
+    z_flood = np.nonzero(flood)[2]
+    flood_voxels = np.stack((x_flood, y_flood, z_flood)).transpose()
+    return flood, flood_voxels
+
+
+def plot_display(
+    image_matrix, a_ratio, segmented_image, ground_truth_image_, region_growing_image_
+):
+    """Displays the plots of the original image matrix, the ROI segmtented
+    and cropped with the watershed algorithm, the image of the ground truth
+    obtained with Otsu thresholding and the result of the region growing flood
+    segmentation.
+
+    Args
+    ----
+    image_matrix : ndarray
+        The image matrix.
+
+    a_ratio : float
+        Value that preserves the aspect ratio of the axial slices.
+
+    segmented_image : ndarray
+        The image segmented with the watershed algorithm.
+
+    ground_truth_image : ndarray
+        The ground truth image defined with Otsu thresholding.
+
+    region_growing_image : ndarray
+        The result of the region growing flood segmentation by
+        scikit-image.
+    """
+
+    _, ax = plt.subplots(2, 2, figsize=(8, 7))
+    cmap = "gray"
+    axial_slice = image_matrix.shape[2] // 2
+    plot_1 = ax[0][0].imshow(image_matrix[..., axial_slice], cmap=cmap)
+    ax[0][0].set_aspect(a_ratio)
+    ax[0][0].set_title("Original image, axial view")
+    plot_2 = ax[0][1].imshow(segmented_image[..., axial_slice], cmap=cmap)
+    ax[0][1].set_title("Segmented and cropped ROI with watershed")
+    plot_3 = ax[1][0].imshow(ground_truth_image_[..., axial_slice], cmap=cmap)
+    ax[1][0].set_title("Ground truth, defined with thresholding")
+    plot_4 = ax[1][1].imshow(region_growing_image_[..., axial_slice], cmap=cmap)
+    ax[1][1].set_title("Segmentation with flood region growing")
+    for plot, ax in zip(
+        [plot_1, plot_2, plot_3, plot_4], [ax[0][0], ax[0][1], ax[1][0], ax[1][1]]
+    ):
+        plt.colorbar(plot, ax=ax)
+    plt.tight_layout()
+    plt.savefig("../results/watershed_results.png")
 
 
 if __name__ == "__main__":
+
     parser = argparse.ArgumentParser(
-        description="Module implementing the region growing algorithm from scikit-image."
+        description="Module implementing the segmentation"
+        " of the lung ROI with the watershed algorithm and the"
+        " region growing flood algorithm from scikit-image."
     )
     parser.add_argument(
-        "file_path",
+        "-f",
+        "--file_path",
         type=str,
         help="The absolute path of the image directory.",
-        metavar="file_path",
+        metavar="str",
+    )
+    parser.add_argument(
+        "-s",
+        "--seed",
+        type=int,
+        nargs=3,
+        help="The seed voxel coordinates from which"
+        "the region growing segmentation starts.",
+        metavar="int",
+    )
+    parser.add_argument(
+        "-e",
+        "--extrema",
+        help="The values to crop the image matrix"
+        " as image_matrix[extrema[0] : extrema[1], extrema[2] : extrema[3],"
+        " extrema[4] : extrema[5]]",
+        type=int,
+        nargs=6,
+        metavar="int",
     )
     args = parser.parse_args()
 
-    extrema = [138, 475, 234, 600, 257, 277]
-    image, aspect_ratio = ImageData.image_from_file(args.file_path, extrema)
+    image, aspect_ratio = ImageData.image_from_file(args.file_path, args.extrema)
 
     segmented_im = image_segmenter(image)
-    ground_truth(segmented_im)
-    # _, ax = plt.subplots(1, 2)
-    # ax[0].imshow(image[..., image.shape[2] // 2], cmap="gray")
-    # ax[1].imshow(segmented_im[..., image.shape[2] // 2], cmap="gray")
-    # plt.show()
+    ground_truth_image, _, _ = ground_truth(segmented_im)
+    region_growing_image, _ = region_growing(args.seed, segmented_im)
+
+    plot_display(
+        image, aspect_ratio, segmented_im, ground_truth_image, region_growing_image
+    )
+    plt.show()

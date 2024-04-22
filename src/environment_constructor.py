@@ -16,8 +16,10 @@
 
 # pylint: disable=C0103
 
+
 """Module building the environment of the ant colony i.e 
 creates the image matrix and initializes the pheromone map."""
+
 
 import os
 import glob

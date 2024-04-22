@@ -80,8 +80,8 @@
 <p>Module building the ant class.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="ant_constructor.Ant">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ant_constructor.</span></span><span class="sig-name descname"><span class="pre">Ant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voxel_coordinates</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ant_constructor.Ant" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class describing the ant worker who builds the pheromone map.</p>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ant_constructor.</span></span><span class="sig-name descname"><span class="pre">Ant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voxel_coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ant_constructor.Ant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class describing the ant worker which builds the pheromone map.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ant_constructor.Ant.image_matrix">
 <span class="sig-name descname"><span class="pre">image_matrix</span></span><a class="headerlink" href="#ant_constructor.Ant.image_matrix" title="Permalink to this definition">¶</a></dt>
@@ -111,6 +111,28 @@
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">alpha,</span> <span class="pre">eta</span></span></dt>
+<dd><p>The alpha, eta parameters defined in the documentation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ant_constructor.Ant.thresh_value">
+<span class="sig-name descname"><span class="pre">thresh_value</span></span><a class="headerlink" href="#ant_constructor.Ant.thresh_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>The threshold value used in the pheromone deposition rule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float or None, defaults to None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -149,18 +171,6 @@
 <dt class="sig sig-object py" id="ant_constructor.Ant.alpha">
 <em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">alpha</span></span><a class="headerlink" href="#ant_constructor.Ant.alpha" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the alpha attribute as read-only.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="ant_constructor.Ant.beta">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">beta</span></span><a class="headerlink" href="#ant_constructor.Ant.beta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the beta attribute as read-only.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="ant_constructor.Ant.delta">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">delta</span></span><a class="headerlink" href="#ant_constructor.Ant.delta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the delta attribute as read-only.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -203,7 +213,8 @@ considering the borders of the image matrix. The current
 voxel is not considered as a first neighbour.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>neighbours</strong> – Array of the indexes of the first-order neighbours of the ant current voxel.</p>
+<dd class="field-odd"><p><strong>neighbours</strong> – Array of the indexes of the first-order neighbours of the
+ant current voxel.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>ndarray</p>
@@ -214,11 +225,13 @@ voxel is not considered as a first neighbour.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ant_constructor.Ant.find_second_neighbours">
 <span class="sig-name descname"><span class="pre">find_second_neighbours</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ant_constructor.Ant.find_second_neighbours" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds the indexes of the second-order neighbours of the ant current
-voxel. The construction is similar to that one of the find_first_neighbours function.</p>
+<dd><p>Finds the indexes of the second-order neighbours of the
+ant current voxel. The construction is similar to that one
+of the find_first_neighbours function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>neighbours</strong> – Array of the indexes of the second-order neighbours of the current voxel.</p>
+<dd class="field-odd"><p><strong>neighbours</strong> – Array of the indexes of the second-order neighbours of
+the current voxel.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>ndarray</p>
@@ -230,7 +243,7 @@ voxel. The construction is similar to that one of the find_first_neighbours func
 <dt class="sig sig-object py" id="ant_constructor.Ant.pheromone_release">
 <span class="sig-name descname"><span class="pre">pheromone_release</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">voxel_coordinates</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ant_constructor.Ant.pheromone_release" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the quantity of pheromone to be released into the voxel to
-build the pheromone map. The quantity of pheromone released corresponds to
+build the pheromone map. The quantity of pheromone released is related to
 the intensity of the voxel of the image matrix plus a small offset
 which certifies that the voxel was visited.</p>
 <dl class="field-list simple">
@@ -241,7 +254,7 @@ which certifies that the voxel was visited.</p>
 <dd class="field-even"><p><strong>pheromone_value</strong> – The pheromone value to be stored into the pheromone map voxel.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>float</p>
+<dd class="field-odd"><p>float or list[float]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -250,8 +263,37 @@ which certifies that the voxel was visited.</p>
 <dt class="sig sig-object py" id="ant_constructor.Ant.update_energy">
 <span class="sig-name descname"><span class="pre">update_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ant_constructor.Ant.update_energy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates the ant energy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>float</em>) – The updating value depending on the
+released pheromone and on the pheromone mean
+released by the colony since the start.</p>
+</dd>
+</dl>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ant_constructor.sigmoid">
+<span class="sig-prename descclassname"><span class="pre">ant_constructor.</span></span><span class="sig-name descname"><span class="pre">sigmoid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ant_constructor.sigmoid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sigmoid function used in the pheromone_release method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>float</em><em> or </em><em>ndarray</em>) – The voxel value of the image.</p></li>
+<li><p><strong>mean</strong> (<em>float</em>) – The value which discriminates foreground
+and background.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>The value of the sigmoid function of the image</em></p></li>
+<li><p><em>voxel value, centered at the mean value.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

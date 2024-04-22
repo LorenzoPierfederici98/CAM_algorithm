@@ -70,6 +70,16 @@ parser_path.add_argument(
     type=str,
     metavar="str",
 )
+parser_path.add_argument(
+    "-e",
+    "--extrema",
+    help="The values to crop the image matrix"
+    " as image_matrix[extrema[0] : extrema[1], extrema[2] : extrema[3]"
+    " extrema[4] : extrema[5]]",
+    type=int,
+    nargs=6,
+    metavar="int"
+)
 parser_cube = subparsers.add_parser("cube", help="Returns a cube as the image matrix.")
 parser_cube.add_argument(
     "-m",
@@ -126,7 +136,8 @@ parser_curve.add_argument(
 )
 parser_donut = subparsers.add_parser(
     "donut",
-    help="Returns a donut as the image matrix i.e a sphere with a concentric hole with half external radius as the internal radius.",
+    help="Returns a donut as the image matrix i.e a sphere with a concentric"
+    " hole with half external radius as the internal radius."
 )
 parser_donut.add_argument(
     "-m",
@@ -271,6 +282,7 @@ if __name__ == "__main__":
     )
 
     cam.statistics(
+        args,
         ant_number,
         pheromone_mean_list,
         image,

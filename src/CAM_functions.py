@@ -17,6 +17,7 @@
 
 # pylint: disable=C0103
 # pylint: disable=W1203
+# pylint: disable=W0601
 
 
 """Module implementing the CAM algorithm functions."""
@@ -29,7 +30,7 @@ import matplotlib.pyplot as plt
 
 from ant_constructor import Ant
 from environment_constructor import ImageData
-from watershed import ground_truth, image_segmenter
+from watershed import ground_truth, image_segmenter, region_growing
 
 
 logging.basicConfig(
@@ -53,8 +54,9 @@ def set_colony(anthill_coordinates, image_matrix, thresh):
     image_matrix : ndarray
         The matrix of the image to be segmented.
 
-    thresh : float
-        The threshold value used in the pheromone deposition rule.
+    thresh : float or None
+        The threshold value used in the pheromone deposition rule
+        for the dicom image, it's None if a geometric shape is chosen.
 
     Returns
     -------
@@ -271,7 +273,7 @@ def dictionaries(image_voxels, image_matrix, pheromone_matrix):
 def metrics(image_voxels, visited_voxels_dict, common_dict, pheromone_threshold):
     """Provides the algorithm evaluation matrics: sensitivity, exploration level and
     contamination level as functions of the pheromone threshold.
-    
+
     Args
     ----
     image_voxels : ndarray
@@ -283,7 +285,7 @@ def metrics(image_voxels, visited_voxels_dict, common_dict, pheromone_threshold)
     common_dict : dict
         The dictionary of voxels which are both part of the
         image matrix and among those ones visited by the ants.
-    
+
     pheromone_threshold : ndarray
         The array of pheromone values used as thresholds to
         evaluate the metrics.
@@ -317,7 +319,7 @@ def metrics(image_voxels, visited_voxels_dict, common_dict, pheromone_threshold)
         sensitivity[i] = len(temp_common_dict) / image_voxels.shape[0]
         expl_level[i] = len(temp_visited_dict) / image_voxels.shape[0]
         cont_level[i] = expl_level[i] - sensitivity[i]
-    return sensitivity, expl_level, cont_level
+    return np.round(sensitivity, 5), np.round(expl_level, 5), np.round(cont_level, 5)
 
 
 def cam_ground_truth(args_parser, image_matrix):
@@ -343,18 +345,25 @@ def cam_ground_truth(args_parser, image_matrix):
     """
 
     if args_parser.cmd == "dicom":
-        image_voxels, thresh = ground_truth(image_matrix)
+        _, image_voxels, thresh = ground_truth(image_matrix)
     else:
         image_voxels = np.transpose(np.array(np.nonzero(image_matrix))).reshape(-1, 3)
         thresh = None
     return image_voxels, thresh
 
 
-def statistics(ants_number, mean_list, image_matrix, pheromone_matrix, image_voxels):
-    """Provides and displays the statistics about the run.
+def statistics(
+    args_parser, ants_number, mean_list, image_matrix, pheromone_matrix, image_voxels
+):
+    """Provides and displays the statistics about the run. For the dicom image
+    it also compares the CAM performances with the region growing flood algorithm
+    by skimage.segmentation.
 
     Args
     ----
+    args_parser : obj
+        Namespace of ArgumentParser.
+
     ants_number : list[int]
         The list of the number of ants per cycle.
 
@@ -371,11 +380,14 @@ def statistics(ants_number, mean_list, image_matrix, pheromone_matrix, image_vox
         The voxels which are part of the image foreground.
     """
 
-    pheromone_threshold = np.linspace(
+    pheromone_threshold = np.round(
+        np.linspace(
             np.amin(pheromone_matrix),
             np.amax(pheromone_matrix),
             int(np.amax(pheromone_matrix) / 10.01),
-        )
+        ),
+        3,
+    )
 
     visited_voxels_dict, common_dict = dictionaries(
         image_voxels, image_matrix, pheromone_matrix
@@ -385,17 +397,20 @@ def statistics(ants_number, mean_list, image_matrix, pheromone_matrix, image_vox
         image_voxels, visited_voxels_dict, common_dict, pheromone_threshold
     )
 
-    index = np.where(sensitivity >= np.max(sensitivity))[0][-1]
+    logging.info(f"Pheromone threshold: {pheromone_threshold[:10]}\n")
+    logging.info(f"Sensitivity: {100 * sensitivity[:10]} %\n")
+    logging.info(f"Expl. level: {100 * expl_level[:10]} %\n")
+    logging.info(f"Cont. level: {100 * cont_level[:10]} %\n")
 
-    print(pheromone_threshold.shape)
-    print(sensitivity[:10])
-    print(cont_level[:10])
-    print(pheromone_threshold[:10])
+    if args_parser.cmd == "dicom":
 
-    logging.info(f"Pheromone threshold: {pheromone_threshold[index]:.1f}\n")
-    logging.info(f"Sensitivity: {100 * sensitivity[index]:.1f} %\n")
-    logging.info(f"Expl. level: {100 * expl_level[index]:.1f} %\n")
-    logging.info(f"Cont. level: {100 * cont_level[index]:.1f} %\n")
+        _, region_growing_voxels = region_growing(
+            args_parser.anthill_coordinates, image_matrix
+        )
+        segmeted_ratio = 100 * region_growing_voxels.shape[0] / image_voxels.shape[0]
+        logging.info(
+            f"Voxels segmented with region growing: {segmeted_ratio:.1f} %\n"
+        )
 
     _, ax = plt.subplots(2, 2, figsize=(10, 7))
     ax[0][0].plot(ants_number)
@@ -437,16 +452,24 @@ def set_image_and_pheromone(args_parser):
         The initialized pheromone map.
 
     pheromone_shared_ : RawArray[float]
-        The buffer used to share the pheromone map between processes.
+        The buffer used to share the pheromone map among processes.
 
     pheromone_matrix : ndarray
         The pheromone map which will be deployed in the algorithm.
+
+    Raises
+    ------
+    IndexError, only for the dicom option, if the extrema values
+    are not valid (e.g extrema[0] >= extrema[1]).
     """
 
     aspect_ratio = 1
 
     if args_parser.cmd == "dicom":
-        extrema = [138, 475, 234, 600, 257, 277]
+        extrema = args_parser.extrema
+        if (extrema[0] >= extrema[1]) or (extrema[2] >= extrema[3]) or (extrema[4] >= extrema[5]):
+            print("Cropping values not valid\n")
+            raise IndexError
         image_cropped, aspect_ratio = ImageData.image_from_file(
             args_parser.file_path, extrema
         )

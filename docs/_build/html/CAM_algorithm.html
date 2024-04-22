@@ -79,6 +79,29 @@
 <h1>CAM_functions<a class="headerlink" href="#cam-functions" title="Permalink to this headline">¶</a></h1>
 <span class="target" id="module-CAM_functions"></span><p>Module implementing the CAM algorithm functions.</p>
 <dl class="py function">
+<dt class="sig sig-object py" id="CAM_functions.cam_ground_truth">
+<span class="sig-prename descclassname"><span class="pre">CAM_functions.</span></span><span class="sig-name descname"><span class="pre">cam_ground_truth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args_parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CAM_functions.cam_ground_truth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the ground truth for the algorithm i.e
+the voxels part of the bronchial tree for the dicom image and the
+non-zero voxels for the other geometric figures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args_parser</strong> (<em>obj</em>) – Namespace of ArgumentParser.</p></li>
+<li><p><strong>image_matrix</strong> (<em>ndarray</em>) – The image matrix.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>image_voxels</strong> (<em>ndarray</em>) – The voxels which are part of the image foreground.</p></li>
+<li><p><strong>thresh</strong> (<em>float or None</em>) – The threshold value which discriminates foreground and background.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="CAM_functions.dictionaries">
 <span class="sig-prename descclassname"><span class="pre">CAM_functions.</span></span><span class="sig-name descname"><span class="pre">dictionaries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_voxels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pheromone_matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CAM_functions.dictionaries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the dictionaries of the voxels part of the image,
@@ -153,15 +176,14 @@ i.e the percentage of segmented voxels which are not part of the image.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="CAM_functions.plot_display">
-<span class="sig-prename descclassname"><span class="pre">CAM_functions.</span></span><span class="sig-name descname"><span class="pre">plot_display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a_ratio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pheromone_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anthill_coordinates</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CAM_functions.plot_display" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">CAM_functions.</span></span><span class="sig-name descname"><span class="pre">plot_display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aspect_ratio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pheromone_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anthill_coordinates</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CAM_functions.plot_display" title="Permalink to this definition">¶</a></dt>
 <dd><p>Displays the axial view of the image matrix, the axial, coronal
 and sagittal views of the pheromone map; the z, x and y slices of
 the different views correspond to those ones of the anthill location.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>a_ratio</strong> (<em>dict</em>) – Dictionary of values that preserve the
-aspect ratio of the different slices.</p></li>
+<li><p><strong>aspect_ratio</strong> (<em>float</em>) – Value that preserves the aspect ratio of the axial slices.</p></li>
 <li><p><strong>image_matrix</strong> (<em>ndarray</em>) – The matrix of the image to be segmented.</p></li>
 <li><p><strong>pheromone_matrix</strong> (<em>ndarray</em>) – The matrix of the pheromone map built by the ants.</p></li>
 <li><p><strong>anthill_coordinates</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The coordinates of the voxel chosen as the anthill position,
@@ -189,7 +211,7 @@ Sets the pheromone map and its shape as global variables.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="CAM_functions.set_colony">
-<span class="sig-prename descclassname"><span class="pre">CAM_functions.</span></span><span class="sig-name descname"><span class="pre">set_colony</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anthill_coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CAM_functions.set_colony" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">CAM_functions.</span></span><span class="sig-name descname"><span class="pre">set_colony</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anthill_coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CAM_functions.set_colony" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the ant colony from a voxel given by the user.
 All the 26 first-neighbouring voxels are then occupied by an ant.</p>
 <dl class="field-list simple">
@@ -197,6 +219,8 @@ All the 26 first-neighbouring voxels are then occupied by an ant.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>anthill_coordinates</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The coordinates of the first ant, chosen by the user.</p></li>
 <li><p><strong>image_matrix</strong> (<em>ndarray</em>) – The matrix of the image to be segmented.</p></li>
+<li><p><strong>thresh</strong> (<em>float</em><em> or </em><em>None</em>) – The threshold value used in the pheromone deposition rule
+for the dicom image, it’s None if a geometric shape is chosen.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -225,29 +249,37 @@ to share the pheromone map as a numpy array between processes.</p>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>image_matrix</strong> (<em>ndarray</em>) – The image_matrix.</p></li>
-<li><p><strong>a_ratio</strong> (<em>dict</em>) – Dictionary of values that preserve the
-aspect ratio of the different slices.</p></li>
+<li><p><strong>aspect_ratio</strong> (<em>float</em>) – Value that preserves the aspect ratio of the axial slices.</p></li>
 <li><p><strong>pheromone_map_init</strong> (<em>ndarray</em>) – The initialized pheromone map.</p></li>
-<li><p><strong>pheromone_shared_</strong> (<em>RawArray[float]</em>) – The buffer used to share the pheromone map between processes.</p></li>
+<li><p><strong>pheromone_shared_</strong> (<em>RawArray[float]</em>) – The buffer used to share the pheromone map among processes.</p></li>
 <li><p><strong>pheromone_matrix</strong> (<em>ndarray</em>) – The pheromone map which will be deployed in the algorithm.</p></li>
 </ul>
 </p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>IndexError</strong><strong>, </strong><strong>only for the dicom option</strong><strong>, </strong><strong>if the extrema values</strong> – </p></li>
+<li><p><strong>are not valid</strong><strong> (</strong><strong>e.g extrema</strong><strong>[</strong><strong>0</strong><strong>] </strong><strong>&gt;= extrema</strong><strong>[</strong><strong>1</strong><strong>]</strong><strong>)</strong><strong></strong> – </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="CAM_functions.statistics">
-<span class="sig-prename descclassname"><span class="pre">CAM_functions.</span></span><span class="sig-name descname"><span class="pre">statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ants_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args_parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pheromone_matrix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CAM_functions.statistics" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides and displays the statistics about the run.</p>
+<span class="sig-prename descclassname"><span class="pre">CAM_functions.</span></span><span class="sig-name descname"><span class="pre">statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args_parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ants_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pheromone_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_voxels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#CAM_functions.statistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides and displays the statistics about the run. For the dicom image
+it also compares the CAM performances with the region growing flood algorithm
+by skimage.segmentation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ants_number</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The list of the number of ants per cycle.</p></li>
 <li><p><strong>args_parser</strong> (<em>obj</em>) – Namespace of ArgumentParser.</p></li>
-<li><p><strong>image_matrix</strong> (<em>ndarray</em>) – The image matrix.</p></li>
+<li><p><strong>ants_number</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The list of the number of ants per cycle.</p></li>
 <li><p><strong>mean_list</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – The pheromone mean per iteration.</p></li>
+<li><p><strong>image_matrix</strong> (<em>ndarray</em>) – The image matrix.</p></li>
 <li><p><strong>pheromone_matrix</strong> (<em>ndarray</em>) – The pheromone map.</p></li>
+<li><p><strong>image_voxels</strong> (<em>ndarray</em>) – The voxels which are part of the image foreground.</p></li>
 </ul>
 </dd>
 </dl>

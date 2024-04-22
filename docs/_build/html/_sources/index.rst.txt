@@ -6,7 +6,7 @@
 Welcome to CAM algorithm's documentation!
 =========================================
 
-Repository of the project for the CMEPDA course implementing a Channeler Ant Model (CAM) algorithm in order to segment aerial trees, following the model described by Cerello et al. in the paper cited in the *References* section of the `github repository <https://github.com/LorenzoPierfederici98/CAM_algorithm>`_ .
+Repository of the project for the CMEPDA course implementing a Channeler Ant Model (CAM) algorithm in order to segment aerial trees, following the model described by Cerello et al. in the paper cited in the *References* section of the `github repository <https://github.com/LorenzoPierfederici98/CAM_algorithm>`_ . The DICOM image folder is provided by the `EXACT09 <http://image.diku.dk/exact/>` challenge database.
 
 
 Overview
@@ -17,10 +17,10 @@ The life cycle of the ants is discretized in iterations: starting from the anthi
 
 The ants lifespan is reuglated by the energy parameter: all the ants are assigned with a default value which varies with every iteration, depending on the pheromone value released by the ant and the pheromone mean per iteration released by the ant colony since the first iteration. Whenever an ant has energy greater than a reproduction value it generates :math:`N_{offspring}\in[0, 26]` ants, related to the local properties of the enviornment, which are placed in the free first-order neighbouring voxels; if the energy is lower than a certain value or if the ant has no possible voxel destination it dies. Following those rules the ants build the pheromone map, which is deployed to segment bronchial and vascular trees in lung CT images.
 
-The CT image is preprocessed with a watershed algorithm to extract the lung ROI.
+The CT image is preprocessed with a watershed algorithm to extract the lung ROI. Since the ground truth wasn't available, a new one is provided by the Otsu thresholding method from sckikit-image which distinguishes foreground and background. The CAM results are compared the region growing flood algorithm from sckikit-image.
 
 .. note::
-   It is recommended to choose a few tens of slices (axial, coronal or sagittal) in order to limit the computational time.
+   It is recommended to choose a few tens of slices (axial, coronal or sagittal) in order to limit the computational time (about 1.5 minutes per slice).
 
 Moving rules
 ^^^^^^^^^^^^
@@ -37,7 +37,8 @@ The pheromone value an ant deposits into a voxel :math:`v_i` before leaving is
 
 .. math:: T = \eta + \Delta_{ph}
 
-.. math:: \Delta_{ph} = 10 I(v_i)
+If a geometric figure is chosen then :math:`\Delta_{ph} = 10 I(v_i)`, while for the DICOM image is
+:math:`\Delta_{ph} = 10 \frac{1}{1 + e^{-I(v_i) - |\mu_{thresh}|}}` with :math:`\mu_{thresh}` the mean threshold value given by the Otsu method for all the image slices.
 
 With :math:`I(v_i)` the intensity of the corresponding image voxel and :math:`\eta = 0.01` a quantity that an ant would leave even into a voxel with zero intensity, certifying that it was visited. See the reference article for other laying rules.
 
@@ -48,7 +49,7 @@ The life cycle of the ants is regulated by the energy parameter with a default v
 
 .. math:: \Delta\varepsilon = -\alpha (1 - \frac{\Delta_{ph}}{<\Delta_{ph}>})
 
-An ant dies whenever :math:`\varepsilon < \varepsilon_D = 0.3` and gives birth whenever :math:`\varepsilon > \varepsilon_R = 1.25`.
+An ant dies whenever :math:`\varepsilon < \varepsilon_D = 1` and gives birth whenever :math:`\varepsilon > \varepsilon_R = 1.3`.
 
 The number of ants generated when a reproduction takes place :math:`N_{offspring}` is a function of the local properties of the environment, which are evaluated replacing :math:`T` with :math:`T_5` the pheromone releasing rule considering the intensity :math:`I_5` as the image intensity averaged on the second-order neighbours of the ant current voxel.
 
@@ -75,7 +76,6 @@ CAM performances are evaluated defining threshold values above which voxels can 
 * Contamination level :math:`C = N_C/N_O` the ratio between the number of segmented voxels which are not part of the image objects and these latter. It corresponds to :math:`C = E - S`.
 
 These quantities are evaluated as functions of the pheromone threshold.
-
 
 
 .. toctree::

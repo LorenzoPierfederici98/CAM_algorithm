@@ -16,7 +16,9 @@
 
 # pylint: disable=C0103
 
+
 """Module building the ant class."""
+
 
 import numpy as np
 
@@ -37,11 +39,11 @@ def sigmoid(x, mean):
 
     Returns
     -------
-    The value of the sigmoid function of the image
-    voxel value, centered at the mean value.
+        The value of the sigmoid function of the image
+        voxel value, centered at the mean value.
     """
 
-    return 1 / (1 + np.exp(-x - abs(mean)))
+    return 1 / (1 + np.exp(- x - abs(mean)))
 
 
 class Ant:
@@ -219,7 +221,7 @@ class Ant:
 
     def pheromone_release(self, voxel_coordinates):
         """Computes the quantity of pheromone to be released into the voxel to
-        build the pheromone map. The quantity of pheromone released corresponds to
+        build the pheromone map. The quantity of pheromone released is related to
         the intensity of the voxel of the image matrix plus a small offset
         which certifies that the voxel was visited.
 
