@@ -74,7 +74,7 @@ parser_path.add_argument(
     "-e",
     "--extrema",
     help="The values to crop the image matrix"
-    " as image_matrix[extrema[0] : extrema[1], extrema[2] : extrema[3]"
+    " as image_matrix[extrema[0] : extrema[1], extrema[2] : extrema[3],"
     " extrema[4] : extrema[5]]",
     type=int,
     nargs=6,
