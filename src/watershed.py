@@ -22,6 +22,7 @@
 with the watershed algorithm. The code is a slight modification of
 that one present in
 https://www.kaggle.com/code/ankasor/improved-lung-segmentation-using-watershed
+
 This module also implements the region growing flood algorithm from
 scikit image used as a benchmark for the CAM algorithm.
 """
@@ -184,8 +185,8 @@ def ground_truth(segmented_image):
 
     for i in range(segmented_image.shape[2]):
         thresh = filters.threshold_otsu(segmented_image[..., i])
-        thresh_mean += thresh
         thresh_image = segmented_image[..., i] > thresh
+        thresh_mean += thresh
         segm_mask_arr[..., i] = thresh_image
 
     thresh_mean /= segmented_image.shape[2]
@@ -200,7 +201,7 @@ def region_growing(seed, segmented_image):
     """Applies the region growing flood segmentation algorithm
     from skimage.segmentation, to be compared with the CAM
     algorithm. The seed corresponds to the anthill voxel coordinates;
-    it has to be a voxel with high intensity (100-200).
+    it has to be a voxel with high intensity (100-200 HU).
 
     Args
     ----
