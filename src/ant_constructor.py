@@ -27,7 +27,7 @@ DELTA = 0.2
 
 def sigmoid(x, mean):
     """Sigmoid function used in the pheromone_release method.
-    
+
     Args
     -----
     x : float or ndarray
@@ -106,7 +106,7 @@ class Ant:
 
     def update_energy(self, value):
         """Updates the ant energy.
-        
+
         Args
         ----
         value : float

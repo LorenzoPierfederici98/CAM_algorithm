@@ -172,6 +172,10 @@ def ground_truth(segmented_image):
 
     Returns
     -------
+    segm_mask_arr : ndarray
+        The ground truth image, containing the voxels classified
+        as aerial tree.
+
     ground_truth_vox : ndarray
         The coordinates of the voxels part of the aerial trees.
 
@@ -214,6 +218,9 @@ def region_growing(seed, segmented_image):
 
     Returns
     -------
+    flood : ndarray
+        The image-result of the region growing segmentation.
+
     flood_voxels : ndarray
         The voxels segmented with the region growing flood
         algorithm.
