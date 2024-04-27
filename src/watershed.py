@@ -241,7 +241,7 @@ def region_growing(seed, segmented_image):
 
 
 def plot_display(
-    image_matrix, a_ratio, segmented_image, ground_truth_image_, region_growing_image_
+    image_matrix, a_ratio, segmented_image, ground_truth_image_, seed
 ):
     """Displays the plots of the original image matrix, the ROI segmtented
     and cropped with the watershed algorithm, the image of the ground truth
@@ -262,27 +262,44 @@ def plot_display(
     ground_truth_image : ndarray
         The ground truth image defined with Otsu thresholding.
 
-    region_growing_image : ndarray
-        The result of the region growing flood segmentation by
-        scikit-image.
+    seed : list[int] or None
+        The seed from which the flood region growing algorithm starts
+        the segmentation. If the user doesn't specify this argument it
+        defaults to None, that happens the first time the user runs this
+        module in order to assess th anthill voxel position on the segmented
+        and cropped lung ROI.
     """
 
-    _, ax = plt.subplots(2, 2, figsize=(8, 7))
     cmap = "gray"
     axial_slice = image_matrix.shape[2] // 2
-    plot_1 = ax[0][0].imshow(image_matrix[..., axial_slice], cmap=cmap)
-    ax[0][0].set_aspect(a_ratio)
-    ax[0][0].set_title("Original image, axial view")
-    plot_2 = ax[0][1].imshow(segmented_image[..., axial_slice], cmap=cmap)
-    ax[0][1].set_title("Segmented and cropped ROI with watershed")
-    plot_3 = ax[1][0].imshow(ground_truth_image_[..., axial_slice], cmap=cmap)
-    ax[1][0].set_title("Ground truth, defined with thresholding")
-    plot_4 = ax[1][1].imshow(region_growing_image_[..., axial_slice], cmap=cmap)
-    ax[1][1].set_title("Segmentation with flood region growing")
-    for plot, ax in zip(
-        [plot_1, plot_2, plot_3, plot_4], [ax[0][0], ax[0][1], ax[1][0], ax[1][1]]
-    ):
-        plt.colorbar(plot, ax=ax)
+    if seed is not None:
+        region_growing_image_, _ = region_growing(seed, segmented_image)
+        _, ax = plt.subplots(2, 2, figsize=(8, 7))
+        plot_1 = ax[0][0].imshow(image_matrix[..., axial_slice], cmap=cmap)
+        ax[0][0].set_aspect(a_ratio)
+        ax[0][0].set_title("Original image, axial view")
+        plot_2 = ax[0][1].imshow(segmented_image[..., axial_slice], cmap=cmap)
+        ax[0][1].set_title("Segmented and cropped ROI with watershed")
+        plot_3 = ax[1][0].imshow(ground_truth_image_[..., axial_slice], cmap=cmap)
+        ax[1][0].set_title("Ground truth, defined with thresholding")
+        plot_4 = ax[1][1].imshow(region_growing_image_[..., axial_slice], cmap=cmap)
+        ax[1][1].set_title("Segmentation with flood region growing")
+        for plot, ax in zip(
+            [plot_1, plot_2, plot_3, plot_4], [ax[0][0], ax[0][1], ax[1][0], ax[1][1]]
+        ):
+            plt.colorbar(plot, ax=ax)
+    else:
+        _, ax = plt.subplots(1, 3, figsize=(15, 6))
+        plot_1 = ax[0].imshow(image_matrix[..., axial_slice], cmap=cmap)
+        ax[0].set_aspect(a_ratio)
+        plot_2 = ax[1].imshow(segmented_image[..., axial_slice], cmap=cmap)
+        ax[1].set_title("Segmented and cropped ROI with watershed")
+        plot_3 = ax[2].imshow(ground_truth_image_[..., axial_slice], cmap=cmap)
+        ax[2].set_title("Ground truth, defined with thresholding")
+        for plot, ax in zip(
+            [plot_1, plot_2, plot_3], [ax[0], ax[1], ax[2]]
+        ):
+            plt.colorbar(plot, ax=ax, fraction=0.05, pad=0.04)
     plt.tight_layout()
     plt.savefig("../results/watershed_results.png")
 
@@ -307,7 +324,9 @@ if __name__ == "__main__":
         type=int,
         nargs=3,
         help="The seed voxel coordinates from which"
-        "the region growing segmentation starts.",
+        " the region growing segmentation starts."
+        " Defaults to None if the user doesn't specify this argument.",
+        default=None,
         metavar="int",
     )
     parser.add_argument(
@@ -326,9 +345,8 @@ if __name__ == "__main__":
 
     segmented_im = image_segmenter(image)
     ground_truth_image, _, _ = ground_truth(segmented_im)
-    region_growing_image, _ = region_growing(args.seed, segmented_im)
 
     plot_display(
-        image, aspect_ratio, segmented_im, ground_truth_image, region_growing_image
+        image, aspect_ratio, segmented_im, ground_truth_image, args.seed
     )
     plt.show()

@@ -143,7 +143,7 @@ distinguishes foreground and background, for all the z-slices.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="watershed.plot_display">
-<span class="sig-prename descclassname"><span class="pre">watershed.</span></span><span class="sig-name descname"><span class="pre">plot_display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_ratio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segmented_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth_image_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region_growing_image_</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#watershed.plot_display" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">watershed.</span></span><span class="sig-name descname"><span class="pre">plot_display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_ratio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segmented_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth_image_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#watershed.plot_display" title="Permalink to this definition">¶</a></dt>
 <dd><p>Displays the plots of the original image matrix, the ROI segmtented
 and cropped with the watershed algorithm, the image of the ground truth
 obtained with Otsu thresholding and the result of the region growing flood
@@ -155,8 +155,11 @@ segmentation.</p>
 <li><p><strong>a_ratio</strong> (<em>float</em>) – Value that preserves the aspect ratio of the axial slices.</p></li>
 <li><p><strong>segmented_image</strong> (<em>ndarray</em>) – The image segmented with the watershed algorithm.</p></li>
 <li><p><strong>ground_truth_image</strong> (<em>ndarray</em>) – The ground truth image defined with Otsu thresholding.</p></li>
-<li><p><strong>region_growing_image</strong> (<em>ndarray</em>) – The result of the region growing flood segmentation by
-scikit-image.</p></li>
+<li><p><strong>seed</strong> (<em>list</em><em>[</em><em>int</em><em>] or </em><em>None</em>) – The seed from which the flood region growing algorithm starts
+the segmentation. If the user doesn’t specify this argument it
+defaults to None, that happens the first time the user runs this
+module in order to assess th anthill voxel position on the segmented
+and cropped lung ROI.</p></li>
 </ul>
 </dd>
 </dl>
