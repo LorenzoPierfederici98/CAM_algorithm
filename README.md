@@ -1,6 +1,8 @@
 
 [![LorenzoPierfederici98](https://circleci.com/gh/LorenzoPierfederici98/CAM_algorithm.svg?style=shield)](https://app.circleci.com/pipelines/github/LorenzoPierfederici98/CAM_algorithm)  [![Documentation Status](https://readthedocs.org/projects/cam-algorithm/badge/?version=latest)](https://cam-algorithm.readthedocs.io/en/latest/?badge=latest)
 
+(AWFULLY SLOW !!)
+
 ## Overview
 Repository of the project for the CMEPDA course implementing a Channeler Ant Model (CAM) algorithm in order to segment aerial trees.
 The CAM algorithm exploits virtual ant colonies whose behaviour mimics the cooperation strategies put in place by real ants, which is here used in image processing.
